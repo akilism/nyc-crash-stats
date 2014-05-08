@@ -1,0 +1,11 @@
+<div class="row crash-view-data-wrapper">
+  <h3>{{dataset.title}}</h3>
+  <ul class="crash-data-view col-xs-5">
+    <li class="crash-data-view-item" ng-repeat="data in dataset">
+      <crash-accident-display crashdata="data"></crash-accident-display>
+    </li>
+  </ul>
+  <div class="crash-data-view-map col-xs-7">
+    put map here.
+  </div>
+</div>
