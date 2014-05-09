@@ -1,6 +1,7 @@
 $icon-font-path: "/bower_components/bootstrap-sass-official/vendor/assets/fonts/bootstrap/";
 
 @import 'bootstrap-sass-official/vendor/assets/stylesheets/bootstrap';
+@import url(http://fonts.googleapis.com/css?family=PT+Sans:400,700,700italic);
 
 .browsehappy {
     margin: 0.2em 0;
@@ -11,9 +12,14 @@ $icon-font-path: "/bower_components/bootstrap-sass-official/vendor/assets/fonts/
 
 
 .crash-data-view-wrapper {
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid #C4CACA;
+    // border-bottom: 1px solid #C4CACA;
     padding-bottom: 10px;
     margin-bottom: 15px;
+
+    h3 {
+        border-bottom: 1px solid #C4CACA;
+    }
 }
 
 .crash-data-view {
@@ -22,39 +28,67 @@ $icon-font-path: "/bower_components/bootstrap-sass-official/vendor/assets/fonts/
     padding: 0;
 
     .crash-data-view-item {
-        padding: 5px 0;
+        padding: 0;
+
+        &:nth-child(odd) {
+            background-color:  #e7f8f8;
+        }
     }
+}
+
+
+.col-md-12 .yearly-total {
+    font-size: 32px;
+    font-weight: bold;
+    margin: 10px 0;
+    color: #343444;
+}
+
+.col-md-6 .yearly-total {
+    font-size: 22px;
+    font-weight: bold;
+    margin: 10px 0;
+    color: #343444;
 }
 
 .crash-data-view-map {
     border: 1px solid black;
+    height: 510px;
 }
 
 
 .accident-display {
+    padding: 5px;
+    cursor: pointer;
+
     .accident-borough {
         text-transform: capitalize;
     }
 
     .label {
-        color: #888;
+        color: #6d5555;
         font-size: 85%;
         padding-left: 0;
+        font-weight: normal;
+    }
+
+
+
+    .accident-injured,
+    .accident-killed {
+        .accident-details {
+            font-weight: bold;
+            font-size: 110%;
+        }
     }
 }
 
 
-
-
-
-
-/* Space out content a bit */
 body {
-    padding-top: 20px;
-    padding-bottom: 20px;
+    padding: 20px;
+    font-family: 'PT Sans', 'Futura', sans-serif;
 }
 
-/* Everything but the jumbotron gets side spacing for mobile first views */
 .header,
 .marketing,
 .footer {
@@ -62,69 +96,87 @@ body {
     padding-right: 15px;
 }
 
-/* Custom page header */
 .header {
+    padding-bottom: 15px;
     border-bottom: 1px solid #e5e5e5;
+
+    h3 {
+        font-size: 3em;
+        padding: 0;
+        margin: 0;
+        font-weight: bold;
+        color: #01535f;
+    }
 }
 
-/* Make the masthead heading the same height as the navigation */
-.header h3 {
-    margin-top: 0;
-    margin-bottom: 0;
-    line-height: 40px;
-    padding-bottom: 19px;
-}
-
-/* Custom page footer */
 .footer {
-    padding-top: 19px;
-    color: #777;
     border-top: 1px solid #e5e5e5;
+    padding-top: 15px;
 }
 
-.container-narrow > hr {
-    margin: 30px 0;
+
+.accident_path {
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    fill-rule: evenodd;
+    stroke: rgb(0, 51, 255);
+    stroke-opacity: 0.5;
+    stroke-width: 2px;
+    fill: rgb(0, 51, 255);
+    fill-opacity: 0.2;
+
+    &:hover {
+        fill: #EBFF00;
+        stroke: #F7A954;
+        stroke-opacity: 0.7;
+        fill-opacity: 0.4;
+    }
 }
 
-/* Main marketing message and sign up button */
-.jumbotron {
-    text-align: center;
-    border-bottom: 1px solid #e5e5e5;
+.hover-accident {
+    background-color: #F3E0CB;
+    fill: #EBFF00;
+    stroke: #F7A954;
+    stroke-opacity: 0.7;
+    fill-opacity: 0.4;
 }
 
-.jumbotron .btn {
-    font-size: 21px;
-    padding: 14px 24px;
-}
+/* This is the map popup */
+.accident-details {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
 
-/* Supporting marketing content */
-.marketing {
-    margin: 40px 0;
-}
+    .accident-streets {
+        text-transform: capitalize;
+    }
 
-.marketing p + h4 {
-    margin-top: 28px;
+    .accident-borough {
+        text-transform: capitalize;
+    }
+
+    .accident-factor {
+        text-transform: capitalize;
+    }
+
+    .accident-death-total,
+    .accident-injury-total {
+        font-size: 1.25em;
+        font-weight: bold;
+    }
+
+    .accident-death,
+    .accident-injury {
+        font-size: 1.125em;
+    }
+
+    li {
+        line-height: 1.3;
+        font-size: 1.1em;
+    }
 }
 
 /* Responsive: Portrait tablets and up */
 @media screen and (min-width: 768px) {
-    .container {
-        max-width: 730px;
-    }
 
-    /* Remove the padding we set earlier */
-    .header,
-    .marketing,
-    .footer {
-        padding-left: 0;
-        padding-right: 0;
-    }
-    /* Space out the masthead */
-    .header {
-        margin-bottom: 30px;
-    }
-    /* Remove the bottom border on the jumbotron for visual effect */
-    .jumbotron {
-        border-bottom: 0;
-    }
 }

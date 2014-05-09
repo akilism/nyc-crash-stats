@@ -1,24 +1,28 @@
 <div class="header">
-  <ul class="nav nav-pills pull-right">
+  <!-- <ul class="nav nav-pills pull-right">
     <li class="active"><a ng-href="#">Home</a></li>
     <li><a ng-href="#">About</a></li>
     <li><a ng-href="#">Contact</a></li>
-  </ul>
+  </ul> -->
   <h3 class="text-muted">NYC Crash Stats</h3>
 </div>
 
-<h2>Total accidents in 2014: {{yearly.total_accidents}}</h2>
-<h2>Total persons injured in 2014: {{yearly.total_injured}}</h2>
-<h2>Total persons killed in 2014: {{yearly.total_killed}}</h2>
-
-<h3 ng-if="newAccidents">Number of accidents since last visit: {{newAccidents}}</h3>
-<h3 ng-if="newKills">Number of persons killed since last visit: {{newKills}}</h3>
-<h3 ng-if="newInjuries">Number of persons injured since last visit: {{newInjuries}}</h3>
-
+<div class="row">
+  <div class="yearly-accident-totals" ng-class="setTotalsClass()">
+    <h2 class="yearly-total">Total accidents in 2014: {{yearly.total_accidents}}</h2>
+    <h2 class="yearly-total">Total persons injured in 2014: {{yearly.total_injured}}</h2>
+    <h2 class="yearly-total">Total persons killed in 2014: {{yearly.total_killed}}</h2>
+  </div>
+  <div class="new-accident-data" ng-class="setNewClass()">
+    <h3 class="yearly-total new" ng-if="newAccidents">Number of accidents since last visit: {{newAccidents}}</h3>
+    <h3 class="yearly-total new" ng-if="newKills">Number of persons killed since last visit: {{newKills}}</h3>
+    <h3 class="yearly-total new" ng-if="newInjuries">Number of persons injured since last visit: {{newInjuries}}</h3>
+  </div>
+</div>
 <crash-data-view dataset="crashStats.lastAccidents"></crash-data-view>
 <crash-data-view dataset="crashStats.lastDeaths"></crash-data-view>
 <crash-data-view dataset="crashStats.lastInjuries"></crash-data-view>
 
 <div class="footer">
-  <p>wolvesintheserverroom.com</p>
+  <p><a href="http://www.wolvesintheserverroom.com/" target="_blank" title="wolvesintheserverroom.com" class='text-muted'>wolvesintheserverroom.com</a></p>
 </div>

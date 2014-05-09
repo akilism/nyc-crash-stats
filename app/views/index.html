@@ -7,13 +7,14 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <base href="/">
-    <title></title>
-    <meta name="description" content="">
+    <title>NYC Crash Stats</title>
+    <meta name="description" content="NYC Crash Stats">
     <meta name="viewport" content="width=device-width">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <!-- build:css(app) styles/vendor.css -->
     <!-- bower:css -->
     <!-- endbower -->
+    <link rel="stylesheet" href="bower_components/leaflet/dist/leaflet.css">
     <!-- endbuild -->
     <!-- build:css({.tmp,app}) styles/main.css -->
     <link rel="stylesheet" href="styles/main.css">
@@ -34,7 +35,7 @@
        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-       ga('create', 'UA-XXXXX-X');
+       ga('create', 'UA-50833434-1');
        ga('send', 'pageview');
     </script>
 
@@ -54,6 +55,7 @@
     <script src="bower_components/d3/d3.js"></script>
     <script src="bower_components/lodash/dist/lodash.compat.js"></script>
     <!-- endbower -->
+    <script src="bower_components/leaflet/dist/leaflet.js"></script>
     <!-- endbuild -->
 
         <!-- build:js({.tmp,app}) scripts/scripts.js -->

@@ -25,27 +25,11 @@ var getDataWithOptions = function (options) {
 
 
 var getBaseData = function (path, $http, $q) {
-  // if (path === '/') {
-  //   //check localstorage for totals.
-  //   //To clear:
-  //   localStorage.removeItem('nycCrashStatsApp');
-  //   var storedData = getStoredDataset();
-  //   if (storedData) {
-  //     console.log('returning stored data.');
-  //     return storedData;
-  //   }
-  // }
   var deferred = $q.defer();
   var apiPath = getPath(path);
 
-  var getDefer = function () { $http.get(apiPath).success(function(data) {
-    // if (path === '/') {
-    //     //Store the data in localstorage.
-    //     console.log('saving to localStorage');
-    //     //appStorage = JSON.stringify(data);
-    //     localStorage[host] = JSON.stringify(data);
-    // }
-
+  var getDefer = function () { $http.get(apiPath).success(
+    function(data) {
       deferred.resolve(data);
     });
 

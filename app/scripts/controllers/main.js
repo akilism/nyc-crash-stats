@@ -3,12 +3,31 @@
 angular.module('nycCrashStatsApp')
   .controller('MainCtrl', function ($scope, crashStats) {
     crashStats.lastAccidents.title = 'Last ' + crashStats.lastAccidents.length + ' Accidents';
+    crashStats.lastAccidents.id = 'accident';
     crashStats.lastInjuries.title = 'Last ' + crashStats.lastInjuries.length + ' Injuries';
+    crashStats.lastInjuries.id = 'injury';
     crashStats.lastDeaths.title = 'Last ' + crashStats.lastDeaths.length + ' Deaths';
+    crashStats.lastDeaths.id = 'death';
 
     $scope.crashStats = crashStats;
 
     $scope.yearly = crashStats.yearly[0];
+
+    $scope.setTotalsClass = function () {
+      if($scope.newAccidents || $scope.newKills || $scope.newInjuries) {
+        return 'col-md-6';
+      } else {
+        return 'col-md-12';
+      }
+    };
+
+    $scope.setNewClass = function () {
+      if($scope.newAccidents || $scope.newKills || $scope.newInjuries) {
+        return 'col-md-6';
+      } else {
+        return 'hide';
+      }
+    };
 
     var setLocalStorage = function (crashData) {
       var newData = {};
@@ -61,5 +80,5 @@ angular.module('nycCrashStatsApp')
       setLocalStorage(crashStats.yearly[0]);
     }
     // console.log($scope.yearly);
-    console.log($scope.crashStats);
+    // console.log($scope.crashStats);
   });

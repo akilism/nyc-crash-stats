@@ -1,16 +1,16 @@
 
-<div class="accident-display row" ng-class="crashData.unique_key">
+<div class="accident-display row" ng-class="crashData.class" accident-id="{{crashData.unique_key}}" ng-click="showAccidentDetails($event)">
     <div class="accident-date col-xs-6">
-      <span class="label">Date:</span>{{crashData.date | dateDisplayFilter }}
+      <span class="label">Date:</span> <span class="accident-details">{{crashData.date | dateDisplayFilter }}</span>
     </div>
     <div class="accident-borough col-xs-6">
-      <span class="label">Borough:</span> {{crashData.borough | lowercase }}
+      <span class="label">Borough:</span> <span class="accident-details">{{crashData.borough | lowercase }}</span>
     </div>
     <div class="accident-injured col-xs-6">
-      <span class="label">Injured:</span> {{crashData.number_of_persons_injured}}
+      <span class="label">Injured:</span> <span class="accident-details">{{crashData.number_of_persons_injured}}</span>
     </div>
     <div class="accident-killed col-xs-6">
-      <span class="label">Killed:</span> {{crashData.number_of_persons_killed}}
+      <span class="label">Killed:</span> <span class="accident-details">{{crashData.number_of_persons_killed}}</span>
     </div>
 </div>
 <!-- borough: "BROOKLYN"
