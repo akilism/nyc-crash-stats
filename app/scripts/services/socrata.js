@@ -40,7 +40,7 @@ var getBaseData = function (path, $http, $q) {
 };
 
 
-services.factory('Socrata', function ($http, $q) {
+services.factory('Socrata', ['$http', '$q', function ($http, $q) {
   return function (options, path) {
     if (options) {
       return getDataWithOptions(options, $http);
@@ -49,4 +49,4 @@ services.factory('Socrata', function ($http, $q) {
     return getBaseData(path, $http, $q);
 
   };
-});
+}]);

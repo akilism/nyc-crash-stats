@@ -53,3 +53,5 @@ directives.directive('crashAccidentDisplay', function () {
 directives.crashAccidentDisplay = function ($scope, $element, $attrs, $http) {
 
 };
+
+directives.crashAccidentDisplay.$inject = ['$scope', '$element', '$attrs', '$http'];

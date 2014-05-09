@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('nycCrashStatsApp')
-  .controller('MainCtrl', function ($scope, crashStats) {
+  .controller('MainCtrl', ['$scope', 'crashStats', function ($scope, crashStats) {
     crashStats.lastAccidents.title = 'Last ' + crashStats.lastAccidents.length + ' Accidents';
     crashStats.lastAccidents.id = 'accident';
     crashStats.lastInjuries.title = 'Last ' + crashStats.lastInjuries.length + ' Injuries';
@@ -81,4 +81,4 @@ angular.module('nycCrashStatsApp')
     }
     // console.log($scope.yearly);
     // console.log($scope.crashStats);
-  });
+  }]);

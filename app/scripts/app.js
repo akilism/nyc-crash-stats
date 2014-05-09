@@ -15,10 +15,10 @@ angular.module('nycCrashStatsApp', [
     templateUrl: 'partials/main',
     controller: 'MainCtrl',
     resolve: {
-      crashStats: function(Socrata, $location) {
+      crashStats: ['Socrata', '$location', function(Socrata, $location) {
         return Socrata(null, $location.$$path);
       }
-    }
+    ]}
   })
   .otherwise({
     redirectTo: '/'
