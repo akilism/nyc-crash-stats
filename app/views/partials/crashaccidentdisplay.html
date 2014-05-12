@@ -1,5 +1,5 @@
 
-<div class="accident-display row" ng-class="crashData.class" accident-id="{{crashData.unique_key}}" ng-click="showAccidentDetails($event)">
+<div class="accident-display row" ng-class="crashData.class" accident-id="{{crashData.unique_key}}" ng-click="showAccidentDetails(crashData.unique_key)">
     <div class="accident-date col-xs-6">
       <span class="label">Date:</span> <span class="accident-details">{{crashData.date | dateDisplayFilter }}</span>
     </div>
@@ -13,23 +13,24 @@
       <span class="label">Killed:</span> <span class="accident-details">{{crashData.number_of_persons_killed}}</span>
     </div>
 </div>
-<!-- borough: "BROOKLYN"
-contributing_factor_vehicle_1: "Unspecified"
-contributing_factor_vehicle_2: "Unspecified"
-date: "2013-12-31T00:00:00"
-latitude: "40.5992541"
-longitude: "-73.989395"
-number_of_cyclist_injured: "0"
-number_of_cyclist_killed: "0"
-number_of_motorist_injured: "0"
-number_of_motorist_killed: "0"
-number_of_pedestrians_injured: "0"
-number_of_pedestrians_killed: "0"
-number_of_persons_injured: "0"
-number_of_persons_killed: "0"
-off_street_name: "24 AVENUE                       "
-on_street_name: "86 STREET                       "
-time: "0:02"
-unique_key: "125176"
-zip_code: "11214"
- -->
+<div class="accident-detail-panel vanish accident-detail-{{crashData.unique_key}}">
+  <ul class="accident-details">
+    <li>
+      <span class="accident-borough" ng=if="crashData.borough">{{crashData.borough | lowercase}} -</span> <span class="crashData.zip_code">{{crashData.zip_code}}</span>
+    </li>
+    <li class="accident-streets" ng-if="crashData.on_street_name">{{crashData.on_street_name | lowercase}} and {{crashData.off_street_name | lowercase}}</li>
+    <li ng-if="displayCount(crashData.number_of_persons_injured)">Number of persons injured: {{crashData.number_of_persons_injured}}</li>
+    <li ng-if="displayCount(crashData.number_of_persons_killed)">Number of persons killed: {{crashData.number_of_persons_killed}}</li>
+    <li ng-if="displayCount(crashData.number_of_pedestrians_injured)">Number of pedestrians injured: {{crashData.number_of_pedestrians_injured}}</li>
+    <li ng-if="displayCount(crashData.number_of_pedestrians_killed)">Number of pedestrians killed: {{crashData.number_of_pedestrians_killed}}</li>
+    <li ng-if="displayCount(crashData.number_of_cyclist_injured)">Number of cyclists injured: {{crashData.number_of_cyclist_injured}}</li>
+    <li ng-if="displayCount(crashData.number_of_cyclist_killed)">Number of cyclists killed: {{crashData.number_of_cyclist_killed}}</li>
+    <li ng-if="displayCount(crashData.number_of_motorist_injured)">Number of motorists injured: {{crashData.number_of_motorist_injured}}</li>
+    <li ng-if="displayCount(crashData.number_of_motorist_killed)">Number of motorists killed: {{crashData.number_of_motorist_killed}}</li>
+    <li ng-if="crashData.contributing_factor_vehicle_1">Vehicle 1 Contributing Factor: {{crashData.contributing_factor_vehicle_1}}</li>
+    <li ng-if="crashData.contributing_factor_vehicle_2">Vehicle 2 Contributing Factor: {{crashData.contributing_factor_vehicle_2}}</li>
+    <li ng-if="crashData.contributing_factor_vehicle_3">Vehicle 3 Contributing Factor: {{crashData.contributing_factor_vehicle_3}}</li>
+    <li ng-if="crashData.contributing_factor_vehicle_4">Vehicle 4 Contributing Factor: {{crashData.contributing_factor_vehicle_4}}</li>
+    <li ng-if="crashData.contributing_factor_vehicle_5">Vehicle 5 Contributing Factor: {{crashData.contributing_factor_vehicle_5}}</li>
+  </ul>
+</div>

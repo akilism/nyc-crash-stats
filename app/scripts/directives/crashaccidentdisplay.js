@@ -1,23 +1,28 @@
 'use strict';
 
+
 directives.directive('crashAccidentDisplay', function () {
     return {
       templateUrl: 'partials/crashaccidentdisplay.html',
       restrict: 'E',
-      contoller: directives.crashAccidentDisplay,
       scope: {
         crashData: '=crashdata'
       },
-      controllerAs: 'crashAccidentDisplay',
       link: function postLink(scope, element, attrs) {
-        //element.text('this is the crashAccidentDisplay directive');
         scope.crashData.class = 'accident-' + scope.crashData.unique_key;
 
-        //Trigger deatailed view.
-        scope.showAccidentDetails = function ($event) {
-          // var $$currentTarget = $($event.currentTarget);
-          // var className = '.accident-' + $$currentTarget.attr('accident-id');
-          // console.log(className, $('path' + className));
+        scope.displayCount = function (value) {
+          if(value && value > 0) {
+            return true;
+          }
+
+          return false;
+        };
+
+        //Trigger detailed view.
+        scope.showAccidentDetails = function (unique_key) {
+          var $$detailView = $('.accident-detail-' + unique_key);
+          $$detailView.toggleClass('vanish');
         };
 
         var onMouseOver = function (event) {
@@ -48,10 +53,3 @@ directives.directive('crashAccidentDisplay', function () {
       }
     };
   });
-
-
-directives.crashAccidentDisplay = function ($scope, $element, $attrs, $http) {
-
-};
-
-directives.crashAccidentDisplay.$inject = ['$scope', '$element', '$attrs', '$http'];

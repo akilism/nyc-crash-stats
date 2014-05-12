@@ -176,6 +176,50 @@ body {
     }
 }
 
+.detail-list {
+    list-style: none;
+    padding: 0 0 10px 15px;
+    font-size: 2rem;
+    margin-top: 5px;
+
+    div.maki-icon {
+        display: inline-block;
+        vertical-align: bottom;
+    }
+}
+
+.accident-popup {
+    position: absolute;
+    padding: 0;
+    display: none;
+    z-index: 1000;
+    left: 30%;
+
+    .btn-popup-close {
+        float: right;
+        vertical-align: middle;
+    }
+}
+
+.accident-detail-panel {
+    display: block;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid #ccc;
+    padding: 5px;
+    margin: 5px 0;
+
+    &.vanish {
+        opacity: 0;
+        height: 0;
+        padding: 0;
+        margin: 0;
+    }
+}
+
+.glyphicon {
+    padding: 4px 0;
+}
+
 /* Responsive: Portrait tablets and up */
 @media screen and (min-width: 768px) {
 

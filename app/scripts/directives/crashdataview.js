@@ -5,19 +5,20 @@ directives.directive('crashDataView', function () {
       templateUrl: 'partials/crashdataview.html',
       restrict: 'E',
       scope: {
-        dataset: '=dataset'
+        dataset: '=dataset',
+        setActiveAccident: '=setaccident'
       },
-      contoller: directives.crashData,
-      controllerAs: 'crashData',
       link: function postLink(scope, element, attrs) {
-        //element.text('this is the crashDataView directive');
-
         var miniMapId = scope.dataset.id;
         var map = element.find('.crash-data-view-map');
         map.attr('id', miniMapId);
 
+        scope.showAccidentDetails = function (unique_key) {
+          var $$detailView = $('.accident-detail-' + unique_key);
+          $$detailView.toggleClass('vanish');
+        };
 
-        var onMouseOut = function(event) {
+        var onMouseOut = function (event) {
             var className = event.target.options.className.split(' ')[0];
             $('.' + className).removeClass('hover-accident');
             event.target.off('mouseout', onMouseOut);
@@ -25,70 +26,76 @@ directives.directive('crashDataView', function () {
         };
 
 
-        var onMouseOver = function(event) {
+        var onMouseOver = function (event) {
             var className = event.target.options.className.split(' ')[0];
             $('.' + className).addClass('hover-accident');
             event.target.on('mouseout', onMouseOut);
             event.target.off('mouseover', onMouseOver);
         };
 
-        // TODO Move popup to an angular directive to show data for crashes with no geolocation data.
-        var getPopupContent = function (accidentData) {
-            var popupContent = [];
-            popupContent.unshift('<ul class="accident-details">');
-            if(accidentData.borough) {
-              popupContent.push('<li class="col-"><span class="accident-borough">' + accidentData.borough.toLowerCase() + ' -</span> <span class="accident-zip-code">' + accidentData.zip_code + '</span></li>');
-            }
-            if(accidentData.date) {
-              popupContent.push('<li>Occured on: ' + accidentData.date.slice(0, accidentData.date.indexOf('T')) + '</li>');
-            }
-            if(accidentData.on_street_name) {
-              popupContent.push('<li class="accident-streets">' + accidentData.on_street_name.toLowerCase() + ' and ' + accidentData.off_street_name.toLowerCase() + '</li>');
-            }
+        var onClick = function (event) {
+            var accidentId = event.target.options.className.split(' ')[0].replace('accident-','');
 
-            if(accidentData.number_of_persons_injured > 0) {
-              popupContent.push('<li class="accident-injury-total">Total Persons injured: ' + accidentData.number_of_persons_injured + '</li>');
-            }
-            if(accidentData.number_of_persons_killed > 0) {
-              popupContent.push('<li class="accident-death-total">Total Persons killed: ' + accidentData.number_of_persons_killed + '</li>');
-            }
-            if(accidentData.number_of_pedestrians_injured > 0) {
-              popupContent.push('<li class="accident-injury">Pedestrians injured: ' + accidentData.number_of_pedestrians_injured + '</li>');
-            }
-            if(accidentData.number_of_pedestrians_killed > 0) {
-              popupContent.push('<li class="accident-death">Pedestrians killed: ' + accidentData.number_of_pedestrians_killed + '</li>');
-            }
-            if(accidentData.number_of_cyclist_injured > 0) {
-              popupContent.push('<li class="accident-injury">Cyclists injured: ' + accidentData.number_of_cyclist_injured + '</li>');
-            }
-            if(accidentData.number_of_cyclist_killed > 0) {
-              popupContent.push('<li class="accident-death">Cyclists killed: ' + accidentData.number_of_cyclist_killed + '</li>');
-            }
-            if(accidentData.number_of_motorist_injured > 0) {
-              popupContent.push('<li class="accident-injury">Motorists injured: ' + accidentData.number_of_motorist_injured + '</li>');
-            }
-            if(accidentData.number_of_motorist_killed > 0) {
-              popupContent.push('<li class="accident-death">Motorists killed: ' + accidentData.number_of_motorist_killed + '</li>');
-            }
-            if(accidentData.contributing_factor_vehicle_1) {
-              popupContent.push('<li class="accident-factor">Contributing Factor Vehicle 1: ' + accidentData.contributing_factor_vehicle_1.toLowerCase() + '</li>');
-            }
-            if(accidentData.contributing_factor_vehicle_2) {
-              popupContent.push('<li class="accident-factor">Contributing Factor Vehicle 2: ' + accidentData.contributing_factor_vehicle_2.toLowerCase() + '</li>');
-            }
-            if(accidentData.contributing_factor_vehicle_3) {
-              popupContent.push('<li class="accident-factor">Contributing Factor Vehicle 3: ' + accidentData.contributing_factor_vehicle_3.toLowerCase() + '</li>');
-            }
-            if(accidentData.contributing_factor_vehicle_4) {
-              popupContent.push('<li class="accident-factor">Contributing Factor Vehicle 4: ' + accidentData.contributing_factor_vehicle_4.toLowerCase() + '</li>');
-            }
-            if(accidentData.contributing_factor_vehicle_5) {
-              popupContent.push('<li class="accident-factor">Contributing Factor Vehicle 5: ' + accidentData.contributing_factor_vehicle_5.toLowerCase() + '</li>');
-            }
-
-            popupContent.push('</ul>');
-            return popupContent.join('');
+            scope.showAccidentDetails(accidentId);
         };
+
+        // // TODO Move popup to an angular directive to show data for crashes with no geolocation data.
+        // var getPopupContent = function (accidentData) {
+        //     var popupContent = [];
+        //     popupContent.unshift('<ul class="accident-details">');
+        //     if(accidentData.borough) {
+        //       popupContent.push('<li class="col-"><span class="accident-borough">' + accidentData.borough.toLowerCase() + ' -</span> <span class="accident-zip-code">' + accidentData.zip_code + '</span></li>');
+        //     }
+        //     if(accidentData.date) {
+        //       popupContent.push('<li>Occured on: ' + accidentData.date.slice(0, accidentData.date.indexOf('T')) + '</li>');
+        //     }
+        //     if(accidentData.on_street_name) {
+        //       popupContent.push('<li class="accident-streets">' + accidentData.on_street_name.toLowerCase() + ' and ' + accidentData.off_street_name.toLowerCase() + '</li>');
+        //     }
+
+        //     if(accidentData.number_of_persons_injured > 0) {
+        //       popupContent.push('<li class="accident-injury-total">Total Persons injured: ' + accidentData.number_of_persons_injured + '</li>');
+        //     }
+        //     if(accidentData.number_of_persons_killed > 0) {
+        //       popupContent.push('<li class="accident-death-total">Total Persons killed: ' + accidentData.number_of_persons_killed + '</li>');
+        //     }
+        //     if(accidentData.number_of_pedestrians_injured > 0) {
+        //       popupContent.push('<li class="accident-injury">Pedestrians injured: ' + accidentData.number_of_pedestrians_injured + '</li>');
+        //     }
+        //     if(accidentData.number_of_pedestrians_killed > 0) {
+        //       popupContent.push('<li class="accident-death">Pedestrians killed: ' + accidentData.number_of_pedestrians_killed + '</li>');
+        //     }
+        //     if(accidentData.number_of_cyclist_injured > 0) {
+        //       popupContent.push('<li class="accident-injury">Cyclists injured: ' + accidentData.number_of_cyclist_injured + '</li>');
+        //     }
+        //     if(accidentData.number_of_cyclist_killed > 0) {
+        //       popupContent.push('<li class="accident-death">Cyclists killed: ' + accidentData.number_of_cyclist_killed + '</li>');
+        //     }
+        //     if(accidentData.number_of_motorist_injured > 0) {
+        //       popupContent.push('<li class="accident-injury">Motorists injured: ' + accidentData.number_of_motorist_injured + '</li>');
+        //     }
+        //     if(accidentData.number_of_motorist_killed > 0) {
+        //       popupContent.push('<li class="accident-death">Motorists killed: ' + accidentData.number_of_motorist_killed + '</li>');
+        //     }
+        //     if(accidentData.contributing_factor_vehicle_1) {
+        //       popupContent.push('<li class="accident-factor">Contributing Factor Vehicle 1: ' + accidentData.contributing_factor_vehicle_1.toLowerCase() + '</li>');
+        //     }
+        //     if(accidentData.contributing_factor_vehicle_2) {
+        //       popupContent.push('<li class="accident-factor">Contributing Factor Vehicle 2: ' + accidentData.contributing_factor_vehicle_2.toLowerCase() + '</li>');
+        //     }
+        //     if(accidentData.contributing_factor_vehicle_3) {
+        //       popupContent.push('<li class="accident-factor">Contributing Factor Vehicle 3: ' + accidentData.contributing_factor_vehicle_3.toLowerCase() + '</li>');
+        //     }
+        //     if(accidentData.contributing_factor_vehicle_4) {
+        //       popupContent.push('<li class="accident-factor">Contributing Factor Vehicle 4: ' + accidentData.contributing_factor_vehicle_4.toLowerCase() + '</li>');
+        //     }
+        //     if(accidentData.contributing_factor_vehicle_5) {
+        //       popupContent.push('<li class="accident-factor">Contributing Factor Vehicle 5: ' + accidentData.contributing_factor_vehicle_5.toLowerCase() + '</li>');
+        //     }
+
+        //     popupContent.push('</ul>');
+        //     return popupContent.join('');
+        // };
 
 
         var setMiniMap = function (mapElement) {
@@ -105,7 +112,8 @@ directives.directive('crashDataView', function () {
                   fill: false
                 });
                 marker.on('mouseover', onMouseOver);
-                marker.bindPopup(getPopupContent(accident));
+                marker.on('click', onClick);
+                // marker.bindPopup(getPopupContent(accident));
                 accidents.addLayer(marker);
               }
           });
@@ -133,8 +141,8 @@ directives.directive('crashDataView', function () {
     };
   });
 
-directives.crashData = function ($scope, $element, $attrs, $http) {
+// directives.crashData = function ($scope, $element, $attrs, $http) {
 
-};
+// };
 
-directives.crashData.$inject = ['$scope', '$element', '$attrs', '$http'];
+// directives.crashData.$inject = ['$scope', '$element', '$attrs', '$http'];

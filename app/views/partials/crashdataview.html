@@ -2,37 +2,10 @@
   <h3>{{dataset.title}}</h3>
   <ul class="crash-data-view col-md-5">
     <li class="crash-data-view-item" ng-repeat="data in dataset">
-      <crash-accident-display crashdata="data"></crash-accident-display>
+      <crash-accident-display setaccident="setActiveAccident" crashdata="data"></crash-accident-display>
     </li>
   </ul>
   <div class="crash-data-view-map col-md-7" ng-class="dataset.id">
 
   </div>
 </div>
-
-<!-- <div id="{{dataset.id}}" class="panel panel-default">
-  <div class="panel-heading title">Accident Details: {{activeAccident.unique_key}} {{activeAccident.date | dateDisplayFilter}}</div>
-  <div class="panel-body">
-    <ul class="accident-details">
-      <li>
-        <span ng=if="activeAccident.borough">{{activeAccident.borough}} -</span> <span class="activeAccident.zip_code">{{activeAccident.zip_code}}</span>
-      </li>
-      <li ng-if="activeAccident.date">{{activeAccident.date}}</li>
-      <li ng-if="activeAccident.off_street_name">{{activeAccident.off_street_name}}</li>
-      <li ng-if="activeAccident.on_street_name">{{activeAccident.on_street_name}}</li>
-      <li ng-if="displayCount(activeAccident.number_of_persons_injured)">{{activeAccident.number_of_persons_injured}}</li>
-      <li ng-if="displayCount(activeAccident.number_of_persons_killed)">{{activeAccident.number_of_persons_killed}}</li>
-      <li ng-if="displayCount(activeAccident.number_of_pedestrians_injured)">{{activeAccident.number_of_pedestrians_injured}}</li>
-      <li ng-if="displayCount(activeAccident.number_of_pedestrians_killed)">{{activeAccident.number_of_pedestrians_killed}}</li>
-      <li ng-if="displayCount(activeAccident.number_of_cyclist_injured)">{{activeAccident.number_of_cyclist_injured}}</li>
-      <li ng-if="displayCount(activeAccident.number_of_cyclist_killed)">{{activeAccident.number_of_cyclist_killed}}</li>
-      <li ng-if="displayCount(activeAccident.number_of_motorist_injured)">{{activeAccident.number_of_motorist_injured}}</li>
-      <li ng-if="displayCount(activeAccident.number_of_motorist_killed)">{{activeAccident.number_of_motorist_killed}}</li>
-      <li ng-if="activeAccident.contributing_factor_vehicle_1">{{activeAccident.contributing_factor_vehicle_1}}</li>
-      <li ng-if="activeAccident.contributing_factor_vehicle_2">{{activeAccident.contributing_factor_vehicle_2}}</li>
-      <li ng-if="activeAccident.contributing_factor_vehicle_3">{{activeAccident.contributing_factor_vehicle_3}}</li>
-      <li ng-if="activeAccident.contributing_factor_vehicle_4">{{activeAccident.contributing_factor_vehicle_4}}</li>
-      <li ng-if="activeAccident.contributing_factor_vehicle_5">{{activeAccident.contributing_factor_vehicle_5}}</li>
-    </ul>
-  </div>
-</div> -->
