@@ -90,6 +90,10 @@ angular.module('nycCrashStatsApp')
       // crashData.total_injured = 100000;
       // crashData.total_accidents = 1000000;
 
+      if(crashData.total_accidents > storedData.total_accidents) {
+        $scope.newAccidents = crashData.total_accidents - storedData.total_accidents;
+      }
+
       if(crashData.total_killed > storedData.total_killed) {
         $scope.newKills = crashData.total_killed - storedData.total_killed;
       }
