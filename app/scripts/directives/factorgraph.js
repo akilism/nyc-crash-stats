@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('nycCrashStatsApp')
-  .directive('factorGraph', function () {
+  .directive('factorGraph', ['numberFilter', function (numberFilter) {
     return {
       templateUrl: 'partials/factorgraph.html',
       restrict: 'E',
@@ -12,6 +12,7 @@ angular.module('nycCrashStatsApp')
       link: function postLink(scope, element, attrs) {
 
         // scope.dataset = scope.dataset.slice(0, 11);
+        scope.factors = scope.dataset.slice(1, 11);
 
         scope.unspecified = function () {
           var factor = _.find(scope.dataset, function (factor) {
@@ -22,7 +23,7 @@ angular.module('nycCrashStatsApp')
             return false;
           });
 
-          return factor.total_accidents + ' Accidents With ' + factor.factor + ' Factors.';
+          return numberFilter(factor.total_accidents) + ' Accidents with ' + factor.factor + ' Contributing Factors.';
         };
 
         var setGraph = function (data){
@@ -44,7 +45,7 @@ angular.module('nycCrashStatsApp')
 
           setScaleRange(1, 100);
 
-          var bar = d3.select(element[0]).select('.factor-graph').selectAll('.factor-graph-item')
+          var bar = d3.select(element.find('.factor-graph')[0]).selectAll('.factor-graph-item')
             .data(data, function(d) {
                 return d.factor;
             });
@@ -61,21 +62,35 @@ angular.module('nycCrashStatsApp')
             return factor + ' ' + d.total_accidents;
           });
 
+          var barUpdate = bar.transition().style('width', function (d) {
+            return totalScale(d.total_accidents) + '%';
+          });
+
+          bar.exit().remove();
+
         };
 
 
-        scope.showAll = function () {
-          element.find('.factor-graph').toggleClass('full-height');
-
-          var buttonText = element.find('.factor-graph-show-all').text();
-          if(buttonText === 'Hide') {
-            element.find('.factor-graph-show-all').text('Show All');
+        scope.showAll = function ($event) {
+          if (scope.factors.length > 10) {
+            scope.factors = scope.dataset.slice(1, 11);
+            element.find('.view-all-factors').text('View all Contributing Factors...');
           } else {
-            element.find('.factor-graph-show-all').text('Hide');
+            scope.factors = scope.dataset.slice(1, scope.dataset.length);
+            element.find('.view-all-factors').text('Hide...');
           }
+
+          // var buttonText = element.find('.factor-graph-show-all').text();
+          // if(buttonText === 'Hide') {
+          //   element.find('.factor-graph-show-all').text('Show All');
+          //   setGraph(scope.dataset.slice(1, 11));
+          // } else {
+          //   element.find('.factor-graph-show-all').text('Hide');
+          //   setGraph(scope.dataset.slice(1, scope.dataset.length));
+          // }
         };
 
-        setGraph(scope.dataset.slice(1, scope.dataset.length));
+        // setGraph(scope.dataset.slice(1, 11));
       }
     };
-  });
+  }]);
