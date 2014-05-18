@@ -4,220 +4,245 @@ $icon-font-path: "/bower_components/bootstrap-sass-official/vendor/assets/fonts/
 @import url(http://fonts.googleapis.com/css?family=PT+Sans:400,700,700italic);
 
 .browsehappy {
-    margin: 0.2em 0;
-    background: #ccc;
-    color: #000;
-    padding: 0.2em 0;
+  margin: 0.2em 0;
+  background: #ccc;
+  color: #000;
+  padding: 0.2em 0;
 }
 
 
 .crash-data-view-wrapper {
-    border-bottom: 1px solid #C4CACA;
-    // border-bottom: 1px solid #C4CACA;
-    padding-bottom: 10px;
-    margin-bottom: 15px;
+  border-bottom: 1px solid #C4CACA;
+  // border-bottom: 1px solid #C4CACA;
+  padding-bottom: 10px;
+  margin-bottom: 15px;
 
-    h3 {
-        border-bottom: 1px solid #C4CACA;
-    }
+  h3 {
+    border-bottom: 1px solid #C4CACA;
+  }
 }
 
 .crash-data-view {
-    list-style-type: none;
-    margin: 0;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+
+  .crash-data-view-item {
     padding: 0;
 
-    .crash-data-view-item {
-        padding: 0;
-
-        &:nth-child(odd) {
-            background-color:  #e7f8f8;
-        }
+    &:nth-child(odd) {
+      background-color:  #e7f8f8;
     }
+  }
 }
 
 
 .col-md-12 .yearly-total {
-    font-size: 32px;
-    font-weight: bold;
-    margin: 10px 0;
-    color: #343444;
+  font-size: 32px;
+  font-weight: bold;
+  margin: 10px 0;
+  color: #343444;
 }
 
 .col-md-6 .yearly-total {
-    font-size: 22px;
-    font-weight: bold;
-    margin: 10px 0;
-    color: #343444;
+  font-size: 22px;
+  font-weight: bold;
+  margin: 10px 0;
+  color: #343444;
 }
 
 .crash-data-view-map {
-    border: 1px solid black;
-    height: 510px;
+  border: 1px solid black;
+  height: 510px;
 }
 
 
 .accident-display {
-    padding: 5px;
-    cursor: pointer;
+  padding: 5px;
+  cursor: pointer;
 
-    .accident-borough {
-        text-transform: capitalize;
+  .accident-borough {
+    text-transform: capitalize;
+  }
+
+  .label {
+    color: #6d5555;
+    font-size: 85%;
+    padding-left: 0;
+    font-weight: normal;
+  }
+
+
+
+  .accident-injured,
+  .accident-killed {
+    .accident-details {
+      font-weight: bold;
+      font-size: 110%;
     }
-
-    .label {
-        color: #6d5555;
-        font-size: 85%;
-        padding-left: 0;
-        font-weight: normal;
-    }
-
-
-
-    .accident-injured,
-    .accident-killed {
-        .accident-details {
-            font-weight: bold;
-            font-size: 110%;
-        }
-    }
+  }
 }
 
 
 body {
-    padding: 20px;
-    font-family: 'PT Sans', 'Futura', sans-serif;
+  padding: 20px;
+  font-family: 'PT Sans', 'Futura', sans-serif;
 }
 
 .header,
 .marketing,
 .footer {
-    padding-left: 15px;
-    padding-right: 15px;
+  padding-left: 15px;
+  padding-right: 15px;
 }
 
 .header {
-    padding-bottom: 15px;
-    border-bottom: 1px solid #e5e5e5;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e5e5e5;
 
-    h3 {
-        font-size: 3em;
-        padding: 0;
-        margin: 0;
-        font-weight: bold;
-        color: #01535f;
-    }
+  h3 {
+    font-size: 3em;
+    padding: 0;
+    margin: 0;
+    font-weight: bold;
+    color: #01535f;
+  }
 }
 
 .footer {
-    border-top: 1px solid #e5e5e5;
-    padding-top: 15px;
+  border-top: 1px solid #e5e5e5;
+  padding-top: 15px;
 }
 
 
 .accident_path {
-    stroke-linejoin: round;
-    stroke-linecap: round;
-    fill-rule: evenodd;
-    stroke: rgb(0, 51, 255);
-    stroke-opacity: 0.5;
-    stroke-width: 2px;
-    fill: rgb(0, 51, 255);
-    fill-opacity: 0.2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  fill-rule: evenodd;
+  stroke: rgb(0, 51, 255);
+  stroke-opacity: 0.5;
+  stroke-width: 2px;
+  fill: rgb(0, 51, 255);
+  fill-opacity: 0.2;
 
-    &:hover {
-        fill: #EBFF00;
-        stroke: #F7A954;
-        stroke-opacity: 0.7;
-        fill-opacity: 0.4;
-    }
-}
-
-.hover-accident {
-    background-color: #F3E0CB;
+  &:hover {
     fill: #EBFF00;
     stroke: #F7A954;
     stroke-opacity: 0.7;
     fill-opacity: 0.4;
+  }
+}
+
+.hover-accident {
+  background-color: #F3E0CB;
+  fill: #EBFF00;
+  stroke: #F7A954;
+  stroke-opacity: 0.7;
+  fill-opacity: 0.4;
 }
 
 /* This is the map popup */
 .accident-details {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
 
-    .accident-streets {
-        text-transform: capitalize;
-    }
+  .accident-streets {
+    text-transform: capitalize;
+  }
 
-    .accident-borough {
-        text-transform: capitalize;
-    }
+  .accident-borough {
+    text-transform: capitalize;
+  }
 
-    .accident-factor {
-        text-transform: capitalize;
-    }
+  .accident-factor {
+    text-transform: capitalize;
+  }
 
-    .accident-death-total,
-    .accident-injury-total {
-        font-size: 1.25em;
-        font-weight: bold;
-    }
+  .accident-death-total,
+  .accident-injury-total {
+    font-size: 1.25em;
+    font-weight: bold;
+  }
 
-    .accident-death,
-    .accident-injury {
-        font-size: 1.125em;
-    }
+  .accident-death,
+  .accident-injury {
+    font-size: 1.125em;
+  }
 
-    li {
-        line-height: 1.3;
-        font-size: 1.1em;
-    }
+  li {
+    line-height: 1.3;
+    font-size: 1.1em;
+  }
 }
 
 .detail-list {
-    list-style: none;
-    padding: 0 0 10px 15px;
-    font-size: 2rem;
-    margin-top: 5px;
+  list-style: none;
+  padding: 0 0 10px 15px;
+  font-size: 2rem;
+  margin-top: 5px;
 
-    div.maki-icon {
-        display: inline-block;
-        vertical-align: bottom;
-    }
+  div.maki-icon {
+    display: inline-block;
+    vertical-align: bottom;
+  }
 }
 
 .accident-popup {
-    position: absolute;
-    padding: 0;
-    display: none;
-    z-index: 1000;
-    left: 30%;
+  position: absolute;
+  padding: 0;
+  display: none;
+  z-index: 1000;
+  left: 30%;
 
-    .btn-popup-close {
-        float: right;
-        vertical-align: middle;
-    }
+  .btn-popup-close {
+    float: right;
+    vertical-align: middle;
+  }
 }
 
 .accident-detail-panel {
-    display: block;
-    transition: all 0.2s ease;
-    border-bottom: 1px solid #ccc;
-    padding: 5px;
-    margin: 5px 0;
+  display: block;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid #ccc;
+  padding: 5px;
+  margin: 5px 0;
 
-    &.vanish {
-        opacity: 0;
-        height: 0;
-        padding: 0;
-        margin: 0;
-    }
+  &.vanish {
+    opacity: 0;
+    height: 0;
+    padding: 0;
+    margin: 0;
+  }
 }
 
 .glyphicon {
-    padding: 4px 0;
+  padding: 4px 0;
+}
+
+.factor-graph {
+  list-style: none;
+  padding: 0;
+  height: 440px;
+  overflow: hidden;
+
+  .factor-graph-item {
+    padding: 5px 0;
+  }
+
+  .factor-bar {
+    display: inline-block;
+    white-space: nowrap;
+    background-color: #8D9906;
+    vertical-align: middle;
+    padding: 5px 10px;
+    border-radius: 0 5px 5px 0;
+    transition: all .5s ease;
+  }
+
+  &.full-height {
+    height: auto;
+  }
 }
 
 /* Responsive: Portrait tablets and up */

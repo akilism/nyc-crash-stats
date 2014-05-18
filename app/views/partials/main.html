@@ -5,9 +5,11 @@
     <li><a ng-href="#">Contact</a></li>
   </ul> -->
   <h3 class="text-muted">NYC Crash Stats</h3>
+  <p style="margin: 0">(YTD: 2014)</p>
 </div>
 
 <div class="row">
+
   <div class="yearly-accident-totals" ng-class="setTotalsClass()">
     <h2 class="yearly-total">Total accidents in 2014: {{yearly.total_accidents}}</h2>
     <h2 class="yearly-total">Total persons injured in 2014: {{yearly.total_injured}}
@@ -42,6 +44,10 @@
       </ul>
     </h3>
   </div>
+</div>
+<div class="row">
+  <factor-graph dataset="crashStats.factors_vehicle1" heading="Vehicle 1 Contributing Factors"></factor-graph>
+  <factor-graph dataset="crashStats.factors_vehicle2" heading="Vehicle 2 Contributing Factors"></factor-graph>
 </div>
 <crash-data-view setaccident="setActiveAccident" dataset="crashStats.lastAccidents"></crash-data-view>
 <crash-data-view setaccident="setActiveAccident"  dataset="crashStats.lastDeaths"></crash-data-view>

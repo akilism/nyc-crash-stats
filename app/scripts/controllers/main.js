@@ -4,9 +4,9 @@ angular.module('nycCrashStatsApp')
   .controller('MainCtrl', ['$scope', 'crashStats', function ($scope, crashStats) {
     crashStats.lastAccidents.title = 'Last ' + crashStats.lastAccidents.length + ' Accidents';
     crashStats.lastAccidents.id = 'accident';
-    crashStats.lastInjuries.title = 'Last ' + crashStats.lastInjuries.length + ' Injuries';
+    crashStats.lastInjuries.title = (crashStats.lastInjuries.length >= 100) ? 'Last ' + crashStats.lastInjuries.length + ' Accidents Resulting In An Injury' : 'All Accidents Resulting In An Injury';
     crashStats.lastInjuries.id = 'injury';
-    crashStats.lastDeaths.title = 'Last ' + crashStats.lastDeaths.length + ' Deaths';
+    crashStats.lastDeaths.title = (crashStats.lastDeaths.length >= 100) ? 'Last ' + crashStats.lastDeaths.length + ' Accidents Resulting In A Death' : 'All Accidents Resulting In A Death';
     crashStats.lastDeaths.id = 'death';
 
     $scope.crashStats = crashStats;
