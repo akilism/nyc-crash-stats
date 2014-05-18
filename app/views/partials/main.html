@@ -7,43 +7,22 @@
   <h3 class="text-muted">NYC Crash Stats</h3>
   <p style="margin: 0">(YTD: 2014)</p>
 </div>
-
-<div class="row">
-
-  <div class="yearly-accident-totals" ng-class="setTotalsClass()">
-    <h2 class="yearly-total">Total accidents in 2014: {{yearly.total_accidents}}</h2>
-    <h2 class="yearly-total">Total persons injured in 2014: {{yearly.total_injured}}
-      <ul class="detail-list">
-        <li class="btn btn-default"><div class="glyphicon glyphicon-user">&nbsp;</div> {{yearly.pedestrians_injured}}</li>
-        <li class="btn btn-default"><div class="maki-icon bicycle">&nbsp;</div> {{yearly.cyclist_injured}}</li>
-        <li class="btn btn-default"><div class="maki-icon car">&nbsp;</div> {{yearly.motorist_injured}}</li>
-      </ul>
-    </h2>
-    <h2 class="yearly-total">Total persons killed in 2014: {{yearly.total_killed}}
-      <ul class="detail-list">
-        <li class="btn btn-default"><div class="glyphicon glyphicon-user">&nbsp;</div> {{yearly.pedestrians_killed}}</li>
-        <li class="btn btn-default"><div class="maki-icon bicycle">&nbsp;</div> {{yearly.cyclist_killed}}</li>
-        <li class="btn btn-default"><div class="maki-icon car">&nbsp;</div> {{yearly.motorist_killed}}</li>
-      </ul>
-    </h2>
-  </div>
-  <div class="new-accident-data" ng-class="setNewClass()">
-    <h3 class="yearly-total new" ng-if="newAccidents">Number of accidents since last visit: {{newAccidents}}</h3>
-    <h3 class="yearly-total new" ng-if="newKills">Number of persons killed since last visit: {{newKills}}
-      <ul class="detail-list">
-        <li class="btn btn-default"><div class="glyphicon glyphicon-user">&nbsp;</div> {{newPedestriansKilled}}</li>
-        <li class="btn btn-default"><div class="maki-icon bicycle">&nbsp;</div> {{newCyclistKilled}}</li>
-        <li class="btn btn-default"><div class="maki-icon car">&nbsp;</div> {{newMotoristKilled}}</li>
-      </ul>
-    </h3>
-    <h3 class="yearly-total new" ng-if="newInjuries">Number of persons injured since last visit: {{newInjuries}}
-      <ul class="detail-list">
-        <li class="btn btn-default"><div class="glyphicon glyphicon-user">&nbsp;</div> {{newPedestriansInjured}}</li>
-        <li class="btn btn-default"><div class="maki-icon bicycle">&nbsp;</div> {{newCyclistInjured}}</li>
-        <li class="btn btn-default"><div class="maki-icon car">&nbsp;</div> {{newMotoristInjured}}</li>
-      </ul>
-    </h3>
-  </div>
+<div class="row yearly-accident-totals" ng-class="setTotalsClass()">
+  <h2 class="yearly-total">Total accidents in 2014: {{yearly.total_accidents | number}}</h2>
+  <h3 class="yearly-total col-md-6">Total persons injured in 2014: {{yearly.total_injured | number}}
+    <ul class="detail-list">
+      <li class="btn btn-default m-r-20"><div class="glyphicon glyphicon-user">&nbsp;</div> {{yearly.pedestrians_injured | number}}</li>
+      <li class="btn btn-default m-r-20"><div class="maki-icon bicycle">&nbsp;</div> {{yearly.cyclist_injured | number}}</li>
+      <li class="btn btn-default m-r-20"><div class="maki-icon car">&nbsp;</div> {{yearly.motorist_injured | number}}</li>
+    </ul>
+  </h3>
+  <h3 class="yearly-total col-md-6">Total persons killed in 2014: {{yearly.total_killed | number}}
+    <ul class="detail-list">
+      <li class="btn btn-default m-r-20"><div class="glyphicon glyphicon-user">&nbsp;</div> {{yearly.pedestrians_killed | number}}</li>
+      <li class="btn btn-default m-r-20"><div class="maki-icon bicycle">&nbsp;</div> {{yearly.cyclist_killed | number}}</li>
+      <li class="btn btn-default m-r-20"><div class="maki-icon car">&nbsp;</div> {{yearly.motorist_killed | number}}</li>
+    </ul>
+  </h3>
 </div>
 <div class="row">
   <factor-graph dataset="crashStats.factors_vehicle1" heading="Vehicle 1 Contributing Factors"></factor-graph>

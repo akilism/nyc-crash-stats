@@ -1,0 +1,23 @@
+<!-- <div class="contrib-factors col-md-6">
+  <h3>{{heading}}</h3>
+  <p>{{unspecified()}}</p>
+  <ul class="factor-graph">
+    <li class="factor-graph-item" ng-repeat="factor in dataset">
+      <div class="factor-bar"> </div>{{factor.factor}} {{factor.total_accidents}}
+    </li>
+  </ul>
+  <span ng-click="showAll()" class="factor-graph-show-all btn btn-primary">Show All</span>
+</div> -->
+<div class="col-md-6" style="padding-left: 0">
+<ul class="factors col-md-12">
+  <h3>{{heading}}</h3>
+  <p>{{unspecified()}}</p>
+  <li ng-repeat="factor in factors" class="row">
+    <span class="factor-name col-xs-8">{{factor.factor | factorname}}</span>
+    <span class="factor-total col-xs-3">{{factor.total_accidents | number}}</span>
+  </li>
+  <li class="view-all-factors" ng-click="showAll($event)">View all Contributing Factors...</li>
+</ul>
+</div>
+
+

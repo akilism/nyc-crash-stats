@@ -37,18 +37,16 @@ $icon-font-path: "/bower_components/bootstrap-sass-official/vendor/assets/fonts/
 }
 
 
-.col-md-12 .yearly-total {
+.yearly-total {
   font-size: 32px;
   font-weight: bold;
   margin: 10px 0;
   color: #343444;
+  padding-left: 0;
 }
 
-.col-md-6 .yearly-total {
-  font-size: 22px;
-  font-weight: bold;
-  margin: 10px 0;
-  color: #343444;
+h2.yearly-total {
+  font-size: 48px;
 }
 
 .crash-data-view-map {
@@ -89,19 +87,12 @@ body {
   font-family: 'PT Sans', 'Futura', sans-serif;
 }
 
-.header,
-.marketing,
-.footer {
-  padding-left: 15px;
-  padding-right: 15px;
-}
-
 .header {
   padding-bottom: 15px;
   border-bottom: 1px solid #e5e5e5;
 
   h3 {
-    font-size: 3em;
+    font-size: 5em;
     padding: 0;
     margin: 0;
     font-weight: bold;
@@ -178,13 +169,21 @@ body {
 
 .detail-list {
   list-style: none;
-  padding: 0 0 10px 15px;
+  padding: 0 20px 10px 5px;
   font-size: 2rem;
-  margin-top: 5px;
+  margin-top: 10px;
 
   div.maki-icon {
     display: inline-block;
-    vertical-align: bottom;
+    vertical-align: middle;
+  }
+
+  li {
+    font-size: 1em;
+
+    .glyphicon {
+      font-size: 1.125rem;
+    }
   }
 }
 
@@ -220,11 +219,45 @@ body {
   padding: 4px 0;
 }
 
+.factors {
+  list-style: none;
+  // padding: 0;
+  // margin: 0;
+  font-size: 1.25em;
+  border: 1px solid #bbb;
+  margin-right: 20px;
+  padding: 10px;
+  box-shadow: 1px 1px 2px #E4DFDF;
+
+  h3 {
+    font-weight: bold;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #ddd;
+    margin-right: 30px;
+    margin-top: 5px;
+  }
+
+  .factor-name {
+    font-weight: bold;
+  }
+
+  .factor-total {
+    text-align: right;
+  }
+
+  .view-all-factors {
+    font-size: 1.25rem;
+    color: #999;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+}
+
 .factor-graph {
   list-style: none;
   padding: 0;
-  height: 440px;
-  overflow: hidden;
+  // height: 440px;
+  // overflow: hidden;
 
   .factor-graph-item {
     padding: 5px 0;
