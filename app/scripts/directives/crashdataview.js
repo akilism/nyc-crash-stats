@@ -222,7 +222,7 @@ directives.directive('crashDataView', ['GeoData', 'Socrata', function (GeoData, 
             scope.selected = null;
             removeAllLayers();
             console.log(result.length);
-            setMiniMap(scope.dataset, 12);
+            setMiniMap(scope.dataset, 13);
         };
 
         var formatBoundingBox = function (boundingBox) {
