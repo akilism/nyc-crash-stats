@@ -1,5 +1,6 @@
 <div class="accident-popup">
   <h4 class="accident-popup-location">{{popup.on_street_name | lowercase}} & {{popup.off_street_name | lowercase}}</h4>
+  <div class="btn btn-danger btn-xs">X Close</div>
   <p class="accident-popup-info">
     {{popup.borough | lowercase}} {{popup.zip_code}}<br>
     {{popup.date | dateDisplayFilter}} - {{popup.time}}<br>
@@ -25,13 +26,13 @@
   <div class="accident-popup-additional">
     <h4>Additional accidents at this location:</h4>
     <ul>
-      <li ng-repeat="accident in popup.additionalAccidents">Vehicle {{index + 1}} {{accident.unique_key}}</li>
+      <li ng-repeat="accident in popup.additionalAccidents">Accident {{$index + 1}} {{accident.unique_key}}</li>
     </ul>
   </div>
   <div class="accident-popup-factors">
     <h4>Contributing Factors:</h4>
     <ul>
-      <li ng-repeat="factor in popup.factors">Vehicle {{index + 1}} {{factor.factor}}</li>
+      <li ng-repeat="factor in popup.factors">Vehicle {{$index + 1}} {{factor.factor}}</li>
     </ul>
   </div>
 </div>

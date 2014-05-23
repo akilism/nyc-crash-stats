@@ -56,7 +56,8 @@ h2.yearly-total {
 
 .crash-data-view-map {
   border: 1px solid black;
-  height: 510px;
+  // height: 510px;
+  height: 690px;
 }
 
 
@@ -194,6 +195,22 @@ body {
 
 
 .accident-popup {
+  display: none;
+  border: 1px solid #d3d3d3;
+  padding: 10px 0 10px 20px;
+  width: 410px;
+  position: absolute;
+  z-index: 1000;
+  background: #fff;
+  margin-left: 35px;
+
+  .btn-danger {
+    display: inline-block;
+    margin-top: -25px;
+    cursor: pointer;
+  }
+
+
   div.maki-icon {
     display: inline-block;
     vertical-align: middle;
@@ -202,6 +219,8 @@ body {
   .accident-popup-location {
     text-transform: capitalize;
     margin-bottom: 5px;
+    width: 84%;
+    display: inline-block;
   }
 
   .accident-popup-info {

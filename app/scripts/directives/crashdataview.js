@@ -82,7 +82,8 @@ directives.directive('crashDataView', ['GeoData', 'Socrata', function (GeoData, 
         var onClick = function (event) {
           var accidentId = event.target.options.className.split(' ')[0].replace('accident-','');
           scope.setActiveAccident(accidentId);
-            // scope.showAccidentDetails(accidentId);
+          $('.accident-popup').css('top', (pageYOffset + 30) + 'px').show();
+
         };
 
         var getPopupContent = function (accidentData) {
