@@ -1,0 +1,73 @@
+<div class="accident-popup">
+  <h4 class="accident-popup-location">{{popup.on_street_name | lowercase}} & {{popup.off_street_name | lowercase}}</h4>
+  <p class="accident-popup-info">
+    {{popup.borough | lowercase}} {{popup.zip_code}}<br>
+    {{popup.date | dateDisplayFilter}} - {{popup.time}}<br>
+    {{popup.precinct}}<br>
+    {{popup.community_district}}<br>
+  </p>
+  <div class="accident-popup-injuries">
+    <h4>Persons Injured: {{popup.number_of_persons_injured}}</h4>
+    <ul>
+      <li class="btn btn-default m-r-20"><div class="glyphicon glyphicon-user">&nbsp;</div> {{popup.number_of_pedestrians_injured}}</li>
+      <li class="btn btn-default m-r-20"><div class="maki-icon bicycle">&nbsp;</div> {{popup.number_of_cyclist_injured}}</li>
+      <li class="btn btn-default m-r-20"><div class="maki-icon car">&nbsp;</div> {{popup.number_of_motorist_injured}}</li>
+    </ul>
+  </div>
+  <div class="accident-popup-killed">
+    <h4>Persons Killed: {{popup.number_of_persons_killed}}</h4>
+    <ul>
+      <li class="btn btn-default m-r-20"><div class="glyphicon glyphicon-user">&nbsp;</div> {{popup.number_of_pedestrians_killed}}</li>
+      <li class="btn btn-default m-r-20"><div class="maki-icon bicycle">&nbsp;</div> {{popup.number_of_cyclist_killed}}</li>
+      <li class="btn btn-default m-r-20"><div class="maki-icon car">&nbsp;</div> {{popup.number_of_motorist_killed}}</li>
+    </ul>
+  </div>
+  <div class="accident-popup-additional">
+    <h4>Additional accidents at this location:</h4>
+    <ul>
+      <li ng-repeat="accident in popup.additionalAccidents">Vehicle {{index + 1}} {{accident.unique_key}}</li>
+    </ul>
+  </div>
+  <div class="accident-popup-factors">
+    <h4>Contributing Factors:</h4>
+    <ul>
+      <li ng-repeat="factor in popup.factors">Vehicle {{index + 1}} {{factor.factor}}</li>
+    </ul>
+  </div>
+</div>
+
+
+<!--
+Brooklyn - 11236
+Occured on: 2014-05-04
+Remsen Avenue And Avenue N
+Total Persons injured: 7
+Total Persons killed: 1
+Motorists injured: 8
+Contributing Factor Vehicle 1: Driver Inattention/Distraction
+Contributing Factor Vehicle 2: Unspecified
+Contributing Factor Vehicle 3: Unspecified
+Contributing Factor Vehicle 4: Unspecified
+
+borough: "BRONX"
+contributing_factor_vehicle_1: "Driver Inexperience"
+contributing_factor_vehicle_2: "Unspecified"
+date: "2014-05-19T00:00:00"
+latitude: "40.8199948"
+location: Object
+longitude: "-73.9180076"
+number_of_cyclist_injured: "0"
+number_of_cyclist_killed: "0"
+number_of_motorist_injured: "0"
+number_of_motorist_killed: "0"
+number_of_pedestrians_injured: "0"
+number_of_pedestrians_killed: "0"
+number_of_persons_injured: "0"
+number_of_persons_killed: "0"
+off_street_name: "COURTLANDT AVENUE"
+on_street_name: "EAST 154 STREET"
+time: "19:34"
+unique_key: "338214"
+zip_code: "10451"
+-->
+

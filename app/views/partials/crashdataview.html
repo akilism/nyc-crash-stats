@@ -1,10 +1,16 @@
 <div class="row crash-data-view-wrapper">
   <h3>{{dataset.title}}</h3>
+  <ul class="nav nav-pills map-layers">
+    <li><a href="#" ng-click="showOverlay('precinct')">Show Precincts</a></li>
+    <li><a href="#" ng-click="showOverlay('community')">Show Community Boards</a></li>
+    <li><a href="#" ng-click="showOverlay('zipcode')">Show Zip Codes</a></li>
+  </ul>
   <!-- <ul class="crash-data-view col-md-5">
     <li class="crash-data-view-item" ng-repeat="data in dataset">
       <crash-accident-display setaccident="setActiveAccident" crashdata="data"></crash-accident-display>
     </li>
   </ul> -->
+
   <div class="crash-data-view-map col-xs-12" ng-class="dataset.id">
 
   </div>

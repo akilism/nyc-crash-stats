@@ -38,11 +38,16 @@ $icon-font-path: "/bower_components/bootstrap-sass-official/vendor/assets/fonts/
 
 
 .yearly-total {
-  font-size: 32px;
+  font-size: 30px;
   font-weight: bold;
   margin: 10px 0;
   color: #343444;
   padding-left: 0;
+
+  .total-label {
+    font-size: 28px;
+    font-weight: normal;
+  }
 }
 
 h2.yearly-total {
@@ -114,7 +119,7 @@ body {
   stroke-opacity: 0.5;
   stroke-width: 2px;
   fill: rgb(0, 51, 255);
-  fill-opacity: 0.2;
+  fill-opacity: 0.3;
 
   &:hover {
     fill: #EBFF00;
@@ -187,18 +192,44 @@ body {
   }
 }
 
-.accident-popup {
-  position: absolute;
-  padding: 0;
-  display: none;
-  z-index: 1000;
-  left: 30%;
 
-  .btn-popup-close {
-    float: right;
+.accident-popup {
+  div.maki-icon {
+    display: inline-block;
     vertical-align: middle;
   }
+
+  .accident-popup-location {
+    text-transform: capitalize;
+    margin-bottom: 5px;
+  }
+
+  .accident-popup-info {
+    text-transform: capitalize;
+    font-size: 1.15em;
+  }
+
+  .accident-popup-injuries,
+  .accident-popup-killed,
+  .accident-popup-factors {
+    ul {
+      padding: 0;
+      margin: 0;
+    }
+  }
 }
+// .accident-popup {
+//   position: absolute;
+//   padding: 0;
+//   display: none;
+//   z-index: 1000;
+//   left: 30%;
+
+//   .btn-popup-close {
+//     float: right;
+//     vertical-align: middle;
+//   }
+// }
 
 .accident-detail-panel {
   display: block;
@@ -275,6 +306,18 @@ body {
 
   &.full-height {
     height: auto;
+  }
+}
+
+.map-layers {
+  margin-bottom: 10px;
+}
+
+
+.map-feature-poly {
+  &:hover {
+    fill: #000;
+    fill-opacity: 0.4;
   }
 }
 

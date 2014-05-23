@@ -9,6 +9,7 @@ directives.directive('crashAccidentDisplay', function () {
         crashData: '=crashdata'
       },
       link: function postLink(scope, element, attrs) {
+
         scope.crashData.class = 'accident-' + scope.crashData.unique_key;
 
         scope.displayCount = function (value) {

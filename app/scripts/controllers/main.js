@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('nycCrashStatsApp')
-  .controller('MainCtrl', ['$scope', 'crashStats', function ($scope, crashStats) {
+  .controller('MainCtrl', ['$scope', 'crashStats', 'Socrata', function ($scope, crashStats, Socrata) {
     crashStats.lastAccidents.title = 'Last ' + crashStats.lastAccidents.length + ' Accidents';
     crashStats.lastAccidents.id = 'accident';
     crashStats.lastInjuries.title = (crashStats.lastInjuries.length >= 100) ? 'Last ' + crashStats.lastInjuries.length + ' Accidents Resulting In An Injury' : 'All Accidents Resulting In An Injury';
@@ -10,12 +10,13 @@ angular.module('nycCrashStatsApp')
     crashStats.lastDeaths.id = 'death';
 
     $scope.crashStats = crashStats;
-
     $scope.yearly = crashStats.yearly[0];
 
     $scope.setActiveAccident = function (accident, useApply) {
+      console.log(accident);
       if(useApply){
         $scope.$apply(function () {
+          $scope.popup = accident;
           $scope.activeAccident = accident;
         });
       } else {
@@ -23,7 +24,48 @@ angular.module('nycCrashStatsApp')
       }
 
       showDetailCrashPopup(event);
-   };
+    };
+
+    $scope.showAccidentDetails = function (accidentId) {
+      // console.log(accidentId);
+      var accident = getAccident(accidentId);
+
+      if(accident) {
+        accident.additionalAccidents = getAdditionalAccidents(accident.location);
+      }
+
+      $scope.$apply(function () {
+        $scope.popup = accident;
+      });
+    };
+
+
+    var getAdditionalAccidents = function (accidentLocation) {
+      var index = 'lastAccidents';
+
+      //make true socrata api call for this.
+
+      return _.filter($scope.crashStats[index], function (accident) {
+        if(accident.hasOwnProperty('location')) {
+          if((accident.location.latitude === accidentLocation.latitude) && (accident.location.longitude === accidentLocation.longitude)) {
+            return true;
+          }
+        }
+        return false;
+      });
+    };
+
+    //Fetch an accident by id.
+    var getAccident = function (accidentId) {
+        var index = 'lastAccidents';
+
+        return _.find($scope.crashStats[index], function (accident) {
+          if(accidentId === accident.unique_key) {
+            return true;
+          }
+          return false;
+        });
+    };
 
     var closeDetailPopup = function () {
       $('#accidentPopup').css('display', 'none');

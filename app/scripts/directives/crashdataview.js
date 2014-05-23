@@ -1,6 +1,6 @@
 'use strict';
 
-directives.directive('crashDataView', function () {
+directives.directive('crashDataView', ['GeoData', 'Socrata', function (GeoData, Socrata) {
     return {
       templateUrl: 'partials/crashdataview.html',
       restrict: 'E',
@@ -9,9 +9,55 @@ directives.directive('crashDataView', function () {
         setActiveAccident: '=setaccident'
       },
       link: function postLink(scope, element, attrs) {
+        // var gju = require('geojson-utils');
         var miniMapId = scope.dataset.id;
         var map = element.find('.crash-data-view-map');
         map.attr('id', miniMapId);
+        scope.crashMap = L.map(map[0]);
+        scope.selected = '';
+
+        scope.showOverlay = function (type) {
+          //Hide layer if already selected.
+          if(scope.selected === type) {
+                removeLayer(type);
+                scope.selected = '';
+                return;
+          }
+
+          scope.selected = type;
+          switch (type) {
+            case 'precinct':
+              if(!scope.precinct) {
+                GeoData('/precinct').then(function (data) {
+                  scope.precinct = data;
+                  displayLayer(scope.precinct, 'precinct');
+                });
+              } else {
+                displayLayer(scope.precinct, 'precinct');
+              }
+              break;
+            case 'community':
+              if(!scope.community) {
+                GeoData('/community').then(function (data) {
+                  scope.community = data;
+                  displayLayer(scope.community, 'community');
+                });
+              } else {
+                displayLayer(scope.community, 'community');
+              }
+              break;
+            case 'zipcode':
+              if(!scope.zipcode) {
+                GeoData('/zipcode').then(function (data) {
+                  scope.zipcode = data;
+                  displayLayer(scope.zipcode, 'zipcode');
+                });
+              } else {
+                displayLayer(scope.zipcode, 'zipcode');
+              }
+              break;
+          }
+        };
 
         scope.showAccidentDetails = function (unique_key) {
           var $$detailView = $('.accident-detail-' + unique_key);
@@ -34,12 +80,11 @@ directives.directive('crashDataView', function () {
         };
 
         var onClick = function (event) {
-            var accidentId = event.target.options.className.split(' ')[0].replace('accident-','');
-
-            scope.showAccidentDetails(accidentId);
+          var accidentId = event.target.options.className.split(' ')[0].replace('accident-','');
+          scope.setActiveAccident(accidentId);
+            // scope.showAccidentDetails(accidentId);
         };
 
-        // // TODO Move popup to an angular directive to show data for crashes with no geolocation data.
         var getPopupContent = function (accidentData) {
             var popupContent = [];
             popupContent.unshift('<ul class="accident-details">');
@@ -97,30 +142,124 @@ directives.directive('crashDataView', function () {
             return popupContent.join('');
         };
 
+        var displayLayer = function (geoJsonData, type) {
+          removeAllLayers();
+          scope.layers = scope.layers || {};
+          if(!scope.layers[type]) {
+            scope.layers[type] = L.featureGroup();
+            buildMapFeatures(geoJsonData, scope.layers[type]);
+          }
 
-        var setMiniMap = function (mapElement) {
-          //setup a leafletmap.
-          var crashMap = L.map(mapElement);
+          scope.layers[type].addTo(scope.crashMap);
+        };
+
+        var buildMapFeatures = function (geoJsonData, layer) {
+          _.forEach(geoJsonData.features, function (feature) {
+            var geo = L.geoJson(feature, {
+              onEachFeature: setFeature
+            });
+            layer.addLayer(geo);
+          });
+        };
+
+        var removeLayer = function (type) {
+          if(scope.layers && scope.layers[type]) {
+            scope.crashMap.removeLayer(scope.layers[type]);
+          }
+        };
+
+        var removeAllLayers = function () {
+          removeLayer('precinct');
+          removeLayer('community');
+          removeLayer('zipcode');
+        };
+
+        var setFeature = function (feature, layer) {
+          layer.setStyle({
+            'color': '#000',
+            'stroke': true,
+            'fill': true,
+            'fillColor': '#000',
+            'fillOpacity': 0,
+            'weight': '2',
+            'clickable': true
+          });
+
+          layer.on('mouseover', function (e) {
+            e.target.setStyle({
+              'fillOpacity': 0.25
+            });
+          });
+
+          layer.on('mouseout', function (e) {
+            e.target.setStyle({
+              'fillOpacity': 0
+            });
+          });
+
+          layer.on('click', filterMap);
+        };
+
+        var filterMap = function (event) {
+          var boundingBox = gju.polyBounding(event.target.feature.geometry.coordinates);
+
+          var options = {
+            boundingBox: formatBoundingBox(boundingBox),
+            type: scope.selected,
+            properties: event.target.feature.properties
+          };
+
+          Socrata(options, 'feature').then(function (result) {
+            //zoom map to shape.
+            //load in all accidents.
+            resetMap(result);
+          });
+
+        };
+
+        var resetMap = function (result) {
+            scope.dataset = result;
+            scope.selected = null;
+            removeAllLayers();
+            console.log(result.length);
+            setMiniMap(scope.dataset, 12);
+        };
+
+        var formatBoundingBox = function (boundingBox) {
+          return {
+            leftLat: boundingBox[0][0],
+            leftLon: boundingBox[0][1],
+            rightLat: boundingBox[1][0],
+            rightLon: boundingBox[1][1],
+          };
+        };
+
+        var setMiniMap = function (dataset, initialZoom) {
+          if(scope.accidentLayer) {
+            scope.crashMap.removeLayer(scope.accidentLayer);
+          }
 
           var accidents = L.featureGroup();
 
-          _.forEach(scope.dataset, function (accident) {
+          _.forEach(dataset, function (accident) {
               if(accident.latitude && accident.longitude) {
                 var marker = L.circleMarker([accident.latitude, accident.longitude], {
                   className: ['accident-' + accident.unique_key, 'accident_path'].join(' '),
                   stroke: false,
                   fill: false
-                });
+                }).setRadius(5);
                 marker.on('mouseover', onMouseOver);
-                // marker.on('click', onClick);
-                marker.bindPopup(getPopupContent(accident));
+                marker.on('click', onClick);
+
+                // marker.bindPopup(getPopupContent(accident));
                 accidents.addLayer(marker);
               }
           });
 
+          scope.accidentLayer = accidents;
           var bounds = accidents.getBounds();
-          accidents.addTo(crashMap);
-          crashMap.setView(bounds.getCenter(), 11);
+          accidents.addTo(scope.crashMap);
+          scope.crashMap.setView(bounds.getCenter(), initialZoom);
 
           var tiles = L.tileLayer('http://{s}.{base}.maps.cit.api.here.com/maptile/2.1/maptile/{mapID}/pedestrian.day/{z}/{x}/{y}/256/png8?app_id={app_id}&app_code={app_code}', {
             attribution: 'Map &copy; 1987-2014 <a href="http://developer.here.com">HERE</a>',
@@ -130,16 +269,16 @@ directives.directive('crashDataView', function () {
             app_code: 'dWMkYcqlYDi2p3YFmez3pA',
             base: 'base',
             minZoom: 11,
-            maxZoom: 15
+            maxZoom: 17
           });
 
-          tiles.addTo(crashMap);
+          tiles.addTo(scope.crashMap);
         };
 
-        setMiniMap(map[0]);
+        setMiniMap(scope.dataset, 11);
       }
     };
-  });
+  }]);
 
 // directives.crashData = function ($scope, $element, $attrs, $http) {
 
