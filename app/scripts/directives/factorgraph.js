@@ -12,7 +12,7 @@ angular.module('nycCrashStatsApp')
       link: function postLink(scope, element, attrs) {
 
         // scope.dataset = scope.dataset.slice(0, 11);
-        scope.factors = scope.dataset.slice(1, 11);
+        scope.factors = scope.dataset.slice(1, 6);
 
         scope.unspecified = function () {
           var factor = _.find(scope.dataset, function (factor) {
@@ -73,7 +73,7 @@ angular.module('nycCrashStatsApp')
 
         scope.showAll = function ($event) {
           if (scope.factors.length > 10) {
-            scope.factors = scope.dataset.slice(1, 11);
+            scope.factors = scope.dataset.slice(1, 6);
             element.find('.view-all-factors').text('View all Contributing Factors...');
           } else {
             scope.factors = scope.dataset.slice(1, scope.dataset.length);

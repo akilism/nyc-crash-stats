@@ -8,6 +8,7 @@
   <p style="margin: 0">(YTD: 2014)</p>
 </div>
 <div class="row yearly-accident-totals" ng-class="setTotalsClass()">
+  <h2 class="yearly-featured">{{featuredArea}}</h2>
   <h2 class="yearly-total">Total accidents in 2014: {{yearly.total_accidents | number}}</h2>
   <h3 class="yearly-total col-md-6"><span class="total-label">Total persons injured in 2014:</span> {{yearly.total_injured | number}}
     <ul class="detail-list">
@@ -29,10 +30,11 @@
   <factor-graph dataset="crashStats.factors_vehicle2" heading="Vehicle 2 Contributing Factors"></factor-graph>
 </div>
 <crash-popup></crash-popup>
-<crash-data-view setaccident="showAccidentDetails" dataset="crashStats.lastAccidents"></crash-data-view>
+<div class="map-tooltip">&nbsp;</div>
+<crash-data-view setaccident="showAccidentDetails" statcalc="calculateYearlyStats" dataset="crashStats.lastAccidents" area="featuredArea"></crash-data-view>
 <!-- <crash-data-view setaccident="showAccidentDetails"  dataset="crashStats.lastDeaths"></crash-data-view>
 <crash-data-view setaccident="showAccidentDetails"  dataset="crashStats.lastInjuries"></crash-data-view> -->
-
+<div id="loader"><i class="fa fa-car fa-5x"></i></div>
 <div class="footer">
   <p><a href="http://www.wolvesintheserverroom.com/" target="_blank" title="wolvesintheserverroom.com" class='text-muted'>wolvesintheserverroom.com</a></p>
 </div>

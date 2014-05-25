@@ -1,17 +1,33 @@
 <div class="row crash-data-view-wrapper">
   <h3>{{dataset.title}}</h3>
-  <ul class="nav nav-pills map-layers">
-    <li><a href="#" ng-click="showOverlay('precinct')">Show Precincts</a></li>
-    <li><a href="#" ng-click="showOverlay('community')">Show Community Boards</a></li>
-    <li><a href="#" ng-click="showOverlay('zipcode')">Show Zip Codes</a></li>
-  </ul>
-  <!-- <ul class="crash-data-view col-md-5">
-    <li class="crash-data-view-item" ng-repeat="data in dataset">
-      <crash-accident-display setaccident="setActiveAccident" crashdata="data"></crash-accident-display>
-    </li>
-  </ul> -->
+  <div class="row">
+    <div class="col-sm-3">
+      <h4>Highlight:</h4>
+      <ul class="nav nav-pills map-highlight">
+          <li class="active"><a href="#" ng-click="highlight($event, 'death')">Injury / Death</a></li>
+          <li><a href="#" ng-click="highlight($event, 'factors')">Factors</a></li>
+      </ul>
+    </div>
+    <div class="col-sm-6">
+      <h4>Filter By:</h4>
+      <ul class="nav nav-pills map-layers">
+        <li class="nav-boroughs"><a href="#" ng-click="showOverlay('borough')">Boroughs</a></li>
+        <li><a href="#" ng-click="showOverlay('community')">Community Boards</a></li>
+        <li><a href="#" ng-click="showOverlay('neighborhood')">Neighborhoods</a></li>
+        <li><a href="#" ng-click="showOverlay('precinct')">Police Precincts</a></li>
+        <li><a href="#" ng-click="showOverlay('zipcode')">Zip Codes</a></li>
+      </ul>
+    </div>
+    <div class="col-sm-3">
+      <h4>Show only accidents with:</h4>
+      <ul class="nav nav-pills map-accident-type">
+          <li><a href="#" ng-click="displayAccidentType($event, 'death')">Deaths</a></li>
+          <li><a href="#" ng-click="displayAccidentType($event, 'injury')">Injuries</a></li>
+      </ul>
+    </div>
+  </div>
 
-  <div class="crash-data-view-map col-xs-12" ng-class="dataset.id">
+  <div class="crash-data-view-map col-xs-12 death-injury-highlight" ng-class="dataset.id">
 
   </div>
 </div>

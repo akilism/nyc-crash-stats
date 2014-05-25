@@ -13,7 +13,7 @@ angular.module('nycCrashStatsApp')
     $scope.yearly = crashStats.yearly[0];
 
     $scope.setActiveAccident = function (accident, useApply) {
-      console.log(accident);
+      // console.log(accident);
       if(useApply){
         $scope.$apply(function () {
           $scope.popup = accident;
@@ -91,6 +91,49 @@ angular.module('nycCrashStatsApp')
         return 'hide';
       }
     };
+
+    $scope.calculateYearlyStats = function (dataset) {
+
+      var yearlyKeys = _.keys($scope.yearly),
+      newYearly = {},
+      factorsV1 = [],
+      factorsV2 = [];
+
+      yearlyKeys.push('persons_killed');
+      yearlyKeys.push('persons_injured');
+
+
+      _.forEach(yearlyKeys, function (key) {
+        if (!newYearly.hasOwnProperty(key)) {
+          newYearly[key] = 0;
+        }
+
+        newYearly[key] = _.reduce(dataset, function (sum, accident) {
+          return sum += parseInt(accident['number_of_' + key], 10);
+        }, 0);
+      });
+
+      newYearly.total_injured = newYearly.persons_injured;
+      newYearly.total_killed = newYearly.persons_killed;
+      newYearly.total_accidents = dataset.length;
+      $scope.yearly = newYearly;
+    };
+
+    var calculateFactorTotals = function (dataset) {
+
+    };
+
+//factor object;
+//     cyclist_injured: "510"
+// cyclist_killed: "1"
+// factor: "Unspecified"
+// motorist_injured: "5521"
+// motorist_killed: "9"
+// pedestrians_injured: "2502"
+// pedestrians_killed: "20"
+// total_accidents: "38977"
+// total_injured: "8414"
+// total_killed: "30"
 
     var setLocalStorage = function (crashData) {
       localStorage['nycCrashStatsApp'] = JSON.stringify(crashData);

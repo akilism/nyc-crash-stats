@@ -7,8 +7,6 @@ directives.directive('crashPopup', function () {
       restrict: 'E',
       // controller: directives.crashPopup,
       link: function postLink(scope, element, attrs) {
-        console.log(scope);
-
         element.find('.btn-danger').on('click', function () {
           $('.accident-popup').hide();
         });
