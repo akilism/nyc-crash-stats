@@ -10,8 +10,6 @@ angular.module('nycCrashStatsApp')
     crashStats.lastDeaths.id = 'death';
 
     $scope.crashStats = crashStats;
-    $scope.factorsVehicle1 = crashStats.factors_vehicle1;
-    $scope.factorsVehicle2 = crashStats.factors_vehicle2;
     $scope.yearly = crashStats.yearly[0];
     $scope.factorListSize = 5;
 
@@ -333,82 +331,6 @@ angular.module('nycCrashStatsApp')
       return factors;
     };
 
-    // var setLocalStorage = function (crashData) {
-    //   localStorage['nycCrashStatsApp'] = JSON.stringify(crashData);
-    // };
-
-    // var loadFromLocalStorage = function (crashData, storedData) {
-    //   storedData = JSON.parse(storedData);
-    //   var newData = {};
-
-    //   //newAccidents newKills newInjuries dummy data.
-    //   // crashData.total_killed = 100;
-    //   // crashData.total_injured = 100000;
-    //   // crashData.total_accidents = 1000000;
-
-    //   if(crashData.total_accidents > storedData.total_accidents) {
-    //     $scope.newAccidents = crashData.total_accidents - storedData.total_accidents;
-    //   }
-
-    //   if(crashData.total_killed > storedData.total_killed) {
-    //     $scope.newKills = crashData.total_killed - storedData.total_killed;
-    //   }
-
-    //   if(crashData.total_injured > storedData.total_injured) {
-    //     $scope.newInjuries = crashData.total_injured - storedData.total_injured;
-    //   }
-
-    //   if(crashData.total_injured > storedData.total_injured) {
-    //     $scope.newInjuries = crashData.total_injured - storedData.total_injured;
-    //   }
-
-    //   if(crashData.pedestrians_killed > storedData.pedestrians_killed) {
-    //     $scope.newPedestriansKilled = crashData.pedestrians_killed - storedData.pedestrians_killed;
-    //   } else {
-    //     $scope.newPedestriansKilled = 0;
-    //   }
-
-    //   if(crashData.cyclist_killed > storedData.cyclist_killed) {
-    //     $scope.newCyclistKilled = crashData.cyclist_killed - storedData.cyclist_killed;
-    //   } else {
-    //     $scope.newCyclistKilled = 0;
-    //   }
-
-    //   if(crashData.motorist_killed > storedData.motorist_killed) {
-    //     $scope.newMotoristKilled = crashData.motorist_killed - storedData.motorist_killed;
-    //   } else {
-    //     $scope.newMotoristKilled = 0;
-    //   }
-
-    //   if(crashData.pedestrians_injured > storedData.pedestrians_injured) {
-    //     $scope.newPedestriansInjured = crashData.pedestrians_injured - storedData.pedestrians_injured;
-    //   } else {
-    //     $scope.newPedestriansInjured = 0;
-    //   }
-
-    //   if(crashData.cyclist_injured > storedData.cyclist_injured) {
-    //     $scope.newCyclistInjured = crashData.cyclist_injured - storedData.cyclist_injured;
-    //   } else {
-    //     $scope.newCyclistInjured = 0;
-    //   }
-
-    //   if(crashData.motorist_injured > storedData.motorist_injured) {
-    //     $scope.newMotoristInjured = crashData.motorist_injured - storedData.motorist_injured;
-    //   } else {
-    //     $scope.newMotoristInjured = 0;
-    //   }
-
-    //   localStorage['nycCrashStatsApp'] = JSON.stringify(crashData);
-    // };
-
-    // // clear local storage: localStorage.removeItem('nycCrashStatsApp');
-    // var storedData = localStorage['nycCrashStatsApp'];
-
-    // if(storedData) {
-    //   loadFromLocalStorage(crashStats.yearly[0], storedData);
-    // } else {
-    //   setLocalStorage(crashStats.yearly[0]);
-    // }
-
     $scope.activeAccident = crashStats.lastAccidents[0];
+    $scope.factorsVehicle1 = calculateFactorTotals(crashStats.lastAccidents);
   }]);
