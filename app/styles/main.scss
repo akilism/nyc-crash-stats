@@ -1,33 +1,33 @@
 $icon-font-path: "/bower_components/bootstrap-sass-official/vendor/assets/fonts/bootstrap/";
-$factor-unspecf-color: SlateGray;
-$factor-inattn-color: Navy;
-$factor-fail-yield-color: RoyalBlue;
-$factor-drowsy-color: LawnGreen;
-$factor-backing-color: Bisque;
-$factor-other-color: DarkSlateBlue;
-$factor-lost-con-color: MidnightBlue;
-$factor-slippy-color: DarkGray;
-$factor-pres-meds-color: SlateBlue;
-$factor-turn-imp-color: PeachPuff;
-$factor-blank-color: BlanchedAlmond;
-$factor-inexp-color: Orange;
-$factor-disable-color: CornFlowerBlue;
-$factor-disregard-color: Cornsilk;
-$factor-distract-color: DarkOliveGreen;
-$factor-booze-color: Gold;
-$factor-wideload-color: OliveDrab;
-$factor-pass-distract-color: Lime;
-$factor-view-obstruct-color: PaleGoldenRod;
-$factor-electronic-device-color: ForestGreen;
-$factor-road-rage-color: IndianRed;
-$factor-ill-color: OrangeRed;
-$factor-glare-color: GreenYellow;
+$factor-unspecf-color: #a6cee3;
+$factor-inattn-color: #1f78b4;
+$factor-fail-yield-color: #b2df8a;
+$factor-drowsy-color: #33a02c;
+$factor-backing-color: #fb9a99;
+$factor-other-color: #e31a1c;
+$factor-lost-con-color: #fdbf6f;
+$factor-slippy-color: #ff7f00;
+$factor-pres-meds-color: #cab2d6;
+$factor-turn-imp-color: #6a3d9a;
+$factor-blank-color: #ffff99;
+$factor-inexp-color: #b15928;
+$factor-disable-color: #8dd3c7;
+$factor-disregard-color: #bebada;
+$factor-distract-color: #fb8072;
+$factor-booze-color: #80b1d3;
+$factor-wideload-color: #fdb462;
+$factor-pass-distract-color: #b3de69;
+$factor-view-obstruct-color: #fccde5;
+$factor-electronic-device-color: #d9d9d9;
+$factor-road-rage-color: #bc80bd;
+$factor-ill-color: #ccebc5;
+$factor-glare-color: #ffed6f;
 $factor-brake-defect-color: Wheat;
 $factor-react-vehicle-color: Peru;
 $factor-debris-color: Thistle;
 $factor-fail-right-color: Maroon;
 $factor-pavement-defect-color: DarkGreen;
-$factor-snooze-color: HoneyDew;
+$factor-snooze-color: #ffffb3;
 $factor-steer-color: MediumBlue;
 $factor-unsafe-speed-color: MediumOrchid;
 $factor-drugs-color: MediumAquaMarine;
@@ -72,6 +72,7 @@ $injury-color: Yellow;
 
   h3 {
     border-bottom: 1px solid #C4CACA;
+    margin-top: 0;
   }
 }
 
@@ -89,6 +90,11 @@ $injury-color: Yellow;
   }
 }
 
+.btn-map-controls {
+  float: right;
+  position: relative;
+  top: -6px;
+}
 
 .yearly-total {
   font-size: 30px;
@@ -108,11 +114,50 @@ h2.yearly-total {
 }
 
 .crash-data-view-map {
-  border: 1px solid black;
+  // border: 1px solid black;
   // height: 510px;
-  height: 690px;
+  height: 800px;
 }
 
+.crash-data-map-controls {
+  width: 450px;
+  display: none;
+  position: absolute;
+  z-index: 100;
+  background: #E3FFF7;
+  right: 20px;
+  top: -20px;
+  box-shadow: -2px 2px 4px #ADADAD;
+
+  .btn-close {
+    float: right;
+    margin: 5px -9px 0 0;
+    z-index: 2000;
+    position: relative;
+  }
+
+  h4 {
+    border-bottom: 1px solid #d3d3d3;
+  }
+}
+
+.jumbotron-wrapper {
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  z-index: 2000;
+  background-color: rgba(5, 5, 5, 0.298039);
+  padding-top: 100px;
+  display: none;
+}
+
+.jumbotron {
+  margin: 0 auto;
+  width: 70%;
+  box-shadow: -2px 2px 4px #ADADAD;
+}
 
 .accident-display {
   padding: 5px;
@@ -165,21 +210,27 @@ body {
 }
 
 
-.accident_path {
+.accident-path {
   stroke-linejoin: round;
   stroke-linecap: round;
   fill-rule: evenodd;
   stroke: rgb(0, 51, 255);
-  stroke-opacity: 0.5;
   stroke-width: 2px;
   fill: rgb(0, 51, 255);
-  fill-opacity: 0.5;
+  // stroke-opacity: 0.5;
+  // fill-opacity: 0.5;
+  stroke-opacity: 1;
+  fill-opacity: 1;
 
   &:hover {
     // fill: #EBFF00;
     // stroke: #F7A954;
     stroke-opacity: 1;
     fill-opacity: 1;
+  }
+
+  &.hidden {
+    display: none;
   }
 }
 
@@ -234,6 +285,10 @@ body {
   font-size: 2rem;
   margin-top: 10px;
 
+  .btn {
+    cursor: default;
+  }
+
   div.maki-icon {
     display: inline-block;
     vertical-align: middle;
@@ -251,18 +306,43 @@ body {
 
 .accident-popup {
   display: none;
-  border: 1px solid #d3d3d3;
+  box-shadow: -2px 2px 4px #ADADAD;
   padding: 10px 0 10px 20px;
   width: 410px;
   position: absolute;
-  z-index: 1000;
-  background: #fff;
+  z-index: 1001;
+  background: #E3FFF7;
   margin-left: 35px;
+  transition: all 2ms ease;
 
   .btn-danger {
     display: inline-block;
-    margin-top: -25px;
     cursor: pointer;
+    position: absolute;
+    right: 5px;
+    top: 5px;
+  }
+
+  h4 {
+    border-bottom: 1px solid #d3d3d3;
+    margin-right: 20px;
+    padding-bottom: 2px;
+    padding-top: 10px;
+  }
+
+  li.btn {
+    cursor: default;
+  }
+
+  .accident-popup-link {
+    cursor: pointer;
+    color: #428bca;
+    transition: all 2ms ease;
+
+    &:hover {
+      color: #2a6496;
+      text-decoration: underline;
+    }
   }
 
 
@@ -289,7 +369,21 @@ body {
     ul {
       padding: 0;
       margin: 0;
+      list-style-type: none;
     }
+
+    .accident-popup-factor-item {
+      line-height: 2;
+
+      .factor {
+        font-weight: bold;
+        font-size: 1.125em;
+      }
+    }
+  }
+
+  ol {
+    padding-left: 20px;
   }
 }
 
@@ -389,14 +483,15 @@ body {
 
 .map-tooltip {
   position: absolute;
-  border: 1px solid #d3d3d3;
+  background: #E3FFF7;
+  box-shadow: -2px 2px 4px #ADADAD;
   padding: 5px;
   text-align: left;
-  min-width: 120px;
+  min-width: 250px;
   font-size: 1.25em;
-  background-color: #fff;
-  z-index: 1000;
+  z-index: 1001;
   display: none;
+  transition: all 2ms ease;
 
   .tooltip-filter {
     font-size: 0.75em;
@@ -416,6 +511,36 @@ body {
   margin-bottom: 10px;
 }
 
+.factor-selector {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+
+  .factor-key {
+    display: inline-block;
+    // border-radius: 100%;
+    height: 12px;
+    width: 10px;
+    overflow: hidden;
+    background-color: #dd44ff;
+  }
+
+  .factor-selector-item {
+    cursor: pointer;
+    padding: 5px 5px 4px 6px;
+    border-radius: 5px;
+    transition: all 2ms ease;
+
+    &:hover {
+      background-color: #A3FEFF;
+    }
+
+    &.active {
+      background-color: #dafeff;
+    }
+  }
+}
+
 #loader {
   display: none;
   padding: 50px;
@@ -427,6 +552,7 @@ body {
   position: fixed;
   top: 30%;
   left: 25%;
+  z-index: 1000;
 
   .fa-car {
     animation-duration: 2s;
@@ -501,7 +627,8 @@ body {
 }
 
 
-.factor-highlight {
+.factor-highlight,
+.factor-selector-item {
   .factor-unspecf {
     fill: $factor-unspecf-color;
     stroke: $factor-unspecf-color;

@@ -5,10 +5,11 @@ directives.directive('crashDataView', ['GeoData', 'Socrata', function (GeoData, 
       templateUrl: 'partials/crashdataview.html',
       restrict: 'E',
       scope: {
-        dataset: '=dataset',
-        setActiveAccident: '=setaccident',
-        calculateYearlyStats: '=statcalc',
-        featuredArea: '=area'
+        'dataset': '=dataset',
+        'setActiveAccident': '=setaccident',
+        'calculateYearlyStats': '=statcalc',
+        'featuredArea': '=area',
+        'getFactorClass': '=classer'
       },
       link: function postLink(scope, element, attrs) {
         var mapId = scope.dataset.id;
@@ -89,12 +90,6 @@ directives.directive('crashDataView', ['GeoData', 'Socrata', function (GeoData, 
           }
         };
 
-        // Not sure this is anylonger in use.
-        scope.showAccidentDetails = function (unique_key) {
-          var $$detailView = $('.accident-detail-' + unique_key);
-          $$detailView.toggleClass('vanish');
-        };
-
         // Handles the highlight toggle between Injury / Death and Factors.
         scope.highlight = function ($event, type) {
 
@@ -111,6 +106,7 @@ directives.directive('crashDataView', ['GeoData', 'Socrata', function (GeoData, 
           }
         };
 
+        // Handle the toggle for accidents / deaths / both.
         scope.displayAccidentType = function ($event, type) {
 
           $('.map-accident-type li').removeClass('active');
@@ -135,6 +131,14 @@ directives.directive('crashDataView', ['GeoData', 'Socrata', function (GeoData, 
           }
         };
 
+        scope.closeControls = function () {
+          $('.crash-data-map-controls').hide();
+        };
+
+        scope.showControls = function () {
+          $('.crash-data-map-controls').show();
+        };
+
         // Accident hover mouse out event.
         var onMouseOut = function (event) {
             var className = event.target.options.className.split(' ')[0];
@@ -154,8 +158,9 @@ directives.directive('crashDataView', ['GeoData', 'Socrata', function (GeoData, 
         // Accident onclick event.
         var onClick = function (event) {
           var accidentId = event.target.options.className.split(' ')[0].replace('accident-','');
-          scope.setActiveAccident(accidentId);
+          scope.setActiveAccident(accidentId, true);
           $('.accident-popup').css('top', (pageYOffset + 30) + 'px').show();
+          ga('send', 'event', 'accidentPopup', scope.selected, accidentId);
         };
 
         // Displays a geojson layer (Community Board, Neighborhood, etc)
@@ -331,6 +336,7 @@ directives.directive('crashDataView', ['GeoData', 'Socrata', function (GeoData, 
               removeAllLayers();
             }
           });
+          ga('send', 'event', 'filterMap', scope.selected, scope.activeFeature.properties['@id']);
         };
 
         // Highlight the path of the active feature.
@@ -363,113 +369,6 @@ directives.directive('crashDataView', ['GeoData', 'Socrata', function (GeoData, 
             setMap(scope.dataset, 13);
             setActiveFeatureLayer(scope.activeFeature);
             scope.calculateYearlyStats(scope.dataset);
-
-        };
-
-        // Maps the contributing factor text to a css class.
-        var factorMap = function (factor) {
-          switch(factor) {
-            case 'Uspecified':
-              return 'unspecf';
-            case 'Driver Inattention/Distraction':
-              return 'inattn';
-            case 'Failure to Yield Right-of-Way':
-              return 'fail-yield';
-            case 'Fatigued/Drowsy':
-              return 'drowsy';
-            case 'Backing Unsafely':
-              return 'backing';
-            case 'Other Vehicular':
-              return 'other';
-            case 'Lost Consciousness':
-              return 'lost-con';
-            case 'Pavement Slippery':
-              return 'slippy';
-            case 'Prescription Medication':
-              return 'pres-meds';
-            case 'Turning Improperly':
-              return 'turn-imp';
-            case 'blank':
-              return '';
-            case 'Blank':
-              return 'blank';
-            case 'Driver Inexperience':
-              return 'inexp';
-            case 'Physical Disability':
-              return 'disable';
-            case 'Traffic Control Disregarded':
-              return 'disregard';
-            case 'Outside Car Distraction':
-              return 'distract';
-            case 'Alcohol Involvement':
-              return 'booze';
-            case 'Oversized Vehicle':
-              return 'wideload';
-            case 'Passenger Distraction':
-              return 'pass-distract';
-            case 'View Obstructed/Limited':
-              return 'view-obstruct';
-            case 'Other Electronic Device':
-              return 'electronic-device';
-            case 'Aggressive Driving/Road Rage':
-              return 'road-rage';
-            case 'Illness':
-              return 'ill';
-            case 'Glare':
-              return 'glare';
-            case 'Brakes Defective':
-              return 'brake-defect';
-            case 'Reaction to Other Uninvolved Vehicle':
-              return 'react-vehicle';
-            case 'Obstruction/Debris':
-              return 'debris';
-            case 'Failure to Keep Right':
-              return 'fail-right';
-            case 'Pavement Defective':
-              return 'pavement-defect';
-            case 'Fell Asleep':
-              return 'snooze';
-            case 'Steering Failure':
-              return 'steer';
-            case 'Unsafe Speed':
-              return 'unsafe-speed';
-            case 'Drugs (Illegal)':
-              return 'drugs';
-            case 'Following Too Closely':
-              return 'tailgate';
-            case 'Tire Failure/Inadequate':
-              return 'tire-fail';
-            case 'Lane Marking Improper/Inadequate':
-              return 'lane-marking';
-            case 'Accelerator Defective':
-              return 'accel-defect';
-            case 'Traffic Control Device Improper/Non-Working':
-              return 'bad-traffic-device';
-            case 'Animals Action':
-              return 'animal';
-            case 'Unsafe Lane Changing':
-              return 'unsafe-change';
-            case 'Passing or Lane Usage Improper':
-              return 'passing';
-            case 'Cell Phone (hands-free)':
-              return 'cell-free';
-            case 'Pedestrian/Bicyclist/Other Pedestrian Error/Confusion':
-              return 'ped-bike';
-            case 'Windshield Inadequate':
-              return 'bad-windshield';
-            case 'Headlights Defective':
-              return 'headlight-defect';
-            case 'Cell Phone (hand-held)':
-              return 'cell-hand';
-            case 'Shoulders Defective/Improper':
-              return 'shoulder-defect';
-            case 'Other Lighting Defects':
-              return 'lighting-defect';
-            case 'Tow Hitch Defective':
-              return 'hitch-defect';
-            default:
-              return 'none';
-          }
         };
 
         // Format the bounding box so it's easier to deal with on the backend.
@@ -482,14 +381,10 @@ directives.directive('crashDataView', ['GeoData', 'Socrata', function (GeoData, 
           };
         };
 
-        var getFactorClass = function (factor) {
-            return 'factor-' + factorMap(factor);
-        };
-
         // Set the css classes on an accident.
         // default classes, injury or death, vehicle 1 contributing factor
         var setAccidentClassName = function (accident) {
-          var classNames = ['accident-' + accident.unique_key, 'accident_path'];
+          var classNames = ['accident-' + accident.unique_key, 'accident-path'];
 
           if(accident.number_of_persons_killed > 0) {
             classNames.push('death');
@@ -504,7 +399,7 @@ directives.directive('crashDataView', ['GeoData', 'Socrata', function (GeoData, 
           }
 
           if(accident.hasOwnProperty('contributing_factor_vehicle_1')) {
-            classNames.push(getFactorClass(accident.contributing_factor_vehicle_1, 1));
+            classNames.push(scope.getFactorClass(accident.contributing_factor_vehicle_1, 1));
           }
 
           return classNames.join(' ');
@@ -537,20 +432,32 @@ directives.directive('crashDataView', ['GeoData', 'Socrata', function (GeoData, 
           var bounds = accidents.getBounds();
           accidents.addTo(scope.crashMap);
           scope.crashMap.setView(bounds.getCenter(), zoom);
-
         };
 
         var setMapTiles = function () {
-          var tiles = L.tileLayer('http://{s}.{base}.maps.cit.api.here.com/maptile/2.1/maptile/{mapID}/pedestrian.day/{z}/{x}/{y}/256/png8?app_id={app_id}&app_code={app_code}', {
-            attribution: 'Map &copy; 1987-2014 <a href="http://developer.here.com">HERE</a>',
-            subdomains: '1234',
-            mapID: 'newest',
-            app_id: 'TalFdVVqSwdoOWYLFZzk',
-            app_code: 'dWMkYcqlYDi2p3YFmez3pA',
-            base: 'base',
-            minZoom: 11,
-            maxZoom: 17
+
+          // var tiles = L.tileLayer('http://{s}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png',
+          // { attribution: '&copy; <a href="http://www.opencyclemap.org">OpenCycleMap</a>, &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>' });
+
+          // var tiles = L.tileLayer('http://openmapsurfer.uni-hd.de/tiles/roadsg/x={x}&y={y}&z={z}', {
+          //     attribution: 'Imagery from <a href="http://giscience.uni-hd.de/">GIScience Research Group @ University of Heidelberg</a> &mdash; Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'
+          // });
+
+          var tiles = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+            attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
+            maxZoom: 16,
+            minZoom: 11
           });
+          // var tiles = L.tileLayer('http://{s}.{base}.maps.cit.api.here.com/maptile/2.1/maptile/{mapID}/normal.night.mobile/{z}/{x}/{y}/256/png8?app_id={app_id}&app_code={app_code}', {
+          //   attribution: 'Map &copy; 1987-2014 <a href="http://developer.here.com">HERE</a>',
+          //   subdomains: '1234',
+          //   mapID: 'newest',
+          //   app_id: 'TalFdVVqSwdoOWYLFZzk',
+          //   app_code: 'dWMkYcqlYDi2p3YFmez3pA',
+          //   base: 'base',
+          //   minZoom: 11,
+          //   maxZoom: 17
+          // });
 
           tiles.addTo(scope.crashMap);
         };

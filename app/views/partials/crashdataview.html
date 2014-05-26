@@ -1,14 +1,17 @@
 <div class="row crash-data-view-wrapper">
-  <h3>{{dataset.title}}</h3>
-  <div class="row">
-    <div class="col-sm-3">
+  <h3>{{dataset.title}} <span ng-click="showControls()" class="btn btn-sm btn-success btn-map-controls">Map Controls</span></h3>
+  <div class="row crash-data-map-controls">
+    <div class="col-xs-12">
+      <div ng-click="closeControls()" class="btn btn-danger btn-xs btn-close">X Close</div>
+    </div>
+    <div class="col-sm-4">
       <h4>Highlight:</h4>
       <ul class="nav nav-pills map-highlight">
           <li class="active"><a href="#" ng-click="highlight($event, 'death')">Injury / Death</a></li>
           <li><a href="#" ng-click="highlight($event, 'factors')">Factors</a></li>
       </ul>
     </div>
-    <div class="col-sm-6">
+    <div class="col-sm-5">
       <h4>Filter By:</h4>
       <ul class="nav nav-pills map-layers">
         <li class="nav-boroughs"><a href="#" ng-click="showOverlay('borough')">Boroughs</a></li>
@@ -19,7 +22,7 @@
       </ul>
     </div>
     <div class="col-sm-3">
-      <h4>Show only accidents with:</h4>
+      <h4>Show:</h4>
       <ul class="nav nav-pills map-accident-type">
           <li><a href="#" ng-click="displayAccidentType($event, 'death')">Deaths</a></li>
           <li><a href="#" ng-click="displayAccidentType($event, 'injury')">Injuries</a></li>

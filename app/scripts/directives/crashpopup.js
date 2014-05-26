@@ -10,13 +10,10 @@ directives.directive('crashPopup', function () {
         element.find('.btn-danger').on('click', function () {
           $('.accident-popup').hide();
         });
+
+        scope.swapAccident = function (accidentId) {
+          scope.showAccidentDetails(accidentId, false);
+        };
       }
     };
   });
-
-
-// directives.crashPopup = function ($scope, $element, $attrs, $http) {
-//   console.log($scope.popup);
-// };
-
-// directives.crashPopup.$inject = ['$scope', '$element', '$attrs', '$http'];

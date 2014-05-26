@@ -4,8 +4,8 @@
   <p class="accident-popup-info">
     {{popup.borough | lowercase}} {{popup.zip_code}}<br>
     {{popup.date | dateDisplayFilter}} - {{popup.time}}<br>
-    {{popup.precinct}}<br>
-    {{popup.community_district}}<br>
+<!--     {{popup.precinct}}<br>
+    {{popup.community_district}}<br> -->
   </p>
   <div class="accident-popup-injuries">
     <h4>Persons Injured: {{popup.number_of_persons_injured}}</h4>
@@ -24,15 +24,19 @@
     </ul>
   </div>
   <div class="accident-popup-additional">
-    <h4>Additional accidents at this location:</h4>
-    <ul>
-      <li ng-repeat="accident in popup.additionalAccidents">Accident {{$index + 1}} {{accident.unique_key}}</li>
-    </ul>
+    <h4>All accidents at this location:</h4>
+    <ol>
+      <li ng-repeat="accident in popup.additionalAccidents" ng-click="swapAccident(accident.unique_key)" class="accident-popup-link">
+        {{accident.date | dateDisplayFilter}} Injured: {{accident.number_of_persons_injured}}  Killed: {{accident.number_of_persons_killed}}
+      </li>
+    </ol>
   </div>
   <div class="accident-popup-factors">
     <h4>Contributing Factors:</h4>
     <ul>
-      <li ng-repeat="factor in popup.factors">Vehicle {{$index + 1}} {{factor.factor}}</li>
+      <li class="accident-popup-factor-item" ng-repeat="factor in popup.factors">
+        Vehicle {{$index + 1}} <span class="factor">{{factor.factor}}</span>
+      </li>
     </ul>
   </div>
 </div>
