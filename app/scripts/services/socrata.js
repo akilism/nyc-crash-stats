@@ -6,23 +6,31 @@ var host = 'nycCrashStatsApp';
 
 var getPath = function (path) {
   if (path === '/') { return '/api/base/'; }
-  return '/api' + path;
+  return '/api/' + path + '/';
 };
 
 
-// var getStoredDataset = function () {
-//   return (localStorage[host]) ? JSON.parse(localStorage[host]) : null;
-// };
+var getFeatureUrl = function (options, type) {
 
-
-var getDataWithOptions = function (options) {
-  var url = SOCRATA_API_URL + '?';
-
-  _.forEach(options, function (option) {
-    //add in options
-  });
 };
 
+
+var getDataWithOptions = function (options, type, $http, $q) {
+  var deferred = $q.defer();
+
+  var config = {
+    method: 'GET',
+    url: getPath(type),
+    params: options
+  };
+
+  $http(config).success(function (data) {
+      deferred.resolve(data);
+    }
+  );
+
+  return deferred.promise;
+};
 
 var getBaseData = function (path, $http, $q) {
   var deferred = $q.defer();
@@ -43,7 +51,7 @@ var getBaseData = function (path, $http, $q) {
 services.factory('Socrata', ['$http', '$q', function ($http, $q) {
   return function (options, path) {
     if (options) {
-      return getDataWithOptions(options, $http);
+      return getDataWithOptions(options, path, $http, $q);
     }
 
     return getBaseData(path, $http, $q);

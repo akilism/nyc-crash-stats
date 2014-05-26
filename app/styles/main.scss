@@ -1,7 +1,60 @@
 $icon-font-path: "/bower_components/bootstrap-sass-official/vendor/assets/fonts/bootstrap/";
+$factor-unspecf-color: #a6cee3;
+$factor-inattn-color: #1f78b4;
+$factor-fail-yield-color: #b2df8a;
+$factor-drowsy-color: #33a02c;
+$factor-backing-color: #fb9a99;
+$factor-other-color: #e31a1c;
+$factor-lost-con-color: #fdbf6f;
+$factor-slippy-color: #ff7f00;
+$factor-pres-meds-color: #cab2d6;
+$factor-turn-imp-color: #6a3d9a;
+$factor-blank-color: #ffff99;
+$factor-inexp-color: #b15928;
+$factor-disable-color: #8dd3c7;
+$factor-disregard-color: #bebada;
+$factor-distract-color: #fb8072;
+$factor-booze-color: #80b1d3;
+$factor-wideload-color: #fdb462;
+$factor-pass-distract-color: #b3de69;
+$factor-view-obstruct-color: #fccde5;
+$factor-electronic-device-color: #d9d9d9;
+$factor-road-rage-color: #bc80bd;
+$factor-ill-color: #ccebc5;
+$factor-glare-color: #ffed6f;
+$factor-brake-defect-color: Wheat;
+$factor-react-vehicle-color: Peru;
+$factor-debris-color: Thistle;
+$factor-fail-right-color: Maroon;
+$factor-pavement-defect-color: DarkGreen;
+$factor-snooze-color: #ffffb3;
+$factor-steer-color: MediumBlue;
+$factor-unsafe-speed-color: MediumOrchid;
+$factor-drugs-color: MediumAquaMarine;
+$factor-tailgate-color: MediumAquaMarine;
+$factor-tire-fail-color: DarkKhaki;
+$factor-lane-marking-color: MediumSeaGreen;
+$factor-accel-defect-color: PowderBlue;
+$factor-bad-traffic-device-color: YellowGreen;
+$factor-animal-color: PapayaWhip;
+$factor-unsafe-change-color: Aqua;
+$factor-passing-color: AquaMarine;
+$factor-cell-free-color: DarkRed;
+$factor-ped-bike-color: MediumSpringGreen;
+$factor-bad-windshield-color: White;
+$factor-headlight-defect-color: Plum;
+$factor-cell-hand-color: HotPink;
+$factor-shoulder-defect-color: SkyBlue;
+$factor-lighting-defect-color: Tomato;
+$factor-hitch-defect-color: BlueViolet;
+
+$death-color: IndianRed;
+$injury-color: Yellow;
 
 @import 'bootstrap-sass-official/vendor/assets/stylesheets/bootstrap';
 @import url(http://fonts.googleapis.com/css?family=PT+Sans:400,700,700italic);
+
+
 
 .browsehappy {
   margin: 0.2em 0;
@@ -19,6 +72,7 @@ $icon-font-path: "/bower_components/bootstrap-sass-official/vendor/assets/fonts/
 
   h3 {
     border-bottom: 1px solid #C4CACA;
+    margin-top: 0;
   }
 }
 
@@ -36,13 +90,23 @@ $icon-font-path: "/bower_components/bootstrap-sass-official/vendor/assets/fonts/
   }
 }
 
+.btn-map-controls {
+  float: right;
+  position: relative;
+  top: -6px;
+}
 
 .yearly-total {
-  font-size: 32px;
+  font-size: 30px;
   font-weight: bold;
   margin: 10px 0;
   color: #343444;
   padding-left: 0;
+
+  .total-label {
+    font-size: 28px;
+    font-weight: normal;
+  }
 }
 
 h2.yearly-total {
@@ -50,10 +114,50 @@ h2.yearly-total {
 }
 
 .crash-data-view-map {
-  border: 1px solid black;
-  height: 510px;
+  // border: 1px solid black;
+  // height: 510px;
+  height: 800px;
 }
 
+.crash-data-map-controls {
+  width: 450px;
+  display: none;
+  position: absolute;
+  z-index: 100;
+  background: #E3FFF7;
+  right: 20px;
+  top: -20px;
+  box-shadow: -2px 2px 4px #ADADAD;
+
+  .btn-close {
+    float: right;
+    margin: 5px -9px 0 0;
+    z-index: 2000;
+    position: relative;
+  }
+
+  h4 {
+    border-bottom: 1px solid #d3d3d3;
+  }
+}
+
+.jumbotron-wrapper {
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  z-index: 2000;
+  background-color: rgba(5, 5, 5, 0.298039);
+  padding-top: 100px;
+  display: none;
+}
+
+.jumbotron {
+  margin: 0 auto;
+  width: 70%;
+  box-shadow: -2px 2px 4px #ADADAD;
+}
 
 .accident-display {
   padding: 5px;
@@ -106,21 +210,27 @@ body {
 }
 
 
-.accident_path {
+.accident-path {
   stroke-linejoin: round;
   stroke-linecap: round;
   fill-rule: evenodd;
   stroke: rgb(0, 51, 255);
-  stroke-opacity: 0.5;
   stroke-width: 2px;
   fill: rgb(0, 51, 255);
-  fill-opacity: 0.2;
+  // stroke-opacity: 0.5;
+  // fill-opacity: 0.5;
+  stroke-opacity: 1;
+  fill-opacity: 1;
 
   &:hover {
-    fill: #EBFF00;
-    stroke: #F7A954;
-    stroke-opacity: 0.7;
-    fill-opacity: 0.4;
+    // fill: #EBFF00;
+    // stroke: #F7A954;
+    stroke-opacity: 1;
+    fill-opacity: 1;
+  }
+
+  &.hidden {
+    display: none;
   }
 }
 
@@ -128,8 +238,10 @@ body {
   background-color: #F3E0CB;
   fill: #EBFF00;
   stroke: #F7A954;
-  stroke-opacity: 0.7;
-  fill-opacity: 0.4;
+  // stroke-opacity: 0.7;
+  // fill-opacity: 0.4;
+  stroke-opacity: 1;
+  fill-opacity: 1;
 }
 
 /* This is the map popup */
@@ -173,6 +285,10 @@ body {
   font-size: 2rem;
   margin-top: 10px;
 
+  .btn {
+    cursor: default;
+  }
+
   div.maki-icon {
     display: inline-block;
     vertical-align: middle;
@@ -187,16 +303,87 @@ body {
   }
 }
 
-.accident-popup {
-  position: absolute;
-  padding: 0;
-  display: none;
-  z-index: 1000;
-  left: 30%;
 
-  .btn-popup-close {
-    float: right;
+.accident-popup {
+  display: none;
+  box-shadow: -2px 2px 4px #ADADAD;
+  padding: 10px 0 10px 20px;
+  width: 410px;
+  position: absolute;
+  z-index: 1001;
+  background: #E3FFF7;
+  margin-left: 35px;
+  transition: all 2ms ease;
+
+  .btn-danger {
+    display: inline-block;
+    cursor: pointer;
+    position: absolute;
+    right: 5px;
+    top: 5px;
+  }
+
+  h4 {
+    border-bottom: 1px solid #d3d3d3;
+    margin-right: 20px;
+    padding-bottom: 2px;
+    padding-top: 10px;
+  }
+
+  li.btn {
+    cursor: default;
+  }
+
+  .accident-popup-link {
+    cursor: pointer;
+    color: #428bca;
+    transition: all 2ms ease;
+
+    &:hover {
+      color: #2a6496;
+      text-decoration: underline;
+    }
+  }
+
+
+  div.maki-icon {
+    display: inline-block;
     vertical-align: middle;
+  }
+
+  .accident-popup-location {
+    text-transform: capitalize;
+    margin-bottom: 5px;
+    width: 84%;
+    display: inline-block;
+  }
+
+  .accident-popup-info {
+    text-transform: capitalize;
+    font-size: 1.15em;
+  }
+
+  .accident-popup-injuries,
+  .accident-popup-killed,
+  .accident-popup-factors {
+    ul {
+      padding: 0;
+      margin: 0;
+      list-style-type: none;
+    }
+
+    .accident-popup-factor-item {
+      line-height: 2;
+
+      .factor {
+        font-weight: bold;
+        font-size: 1.125em;
+      }
+    }
+  }
+
+  ol {
+    padding-left: 20px;
   }
 }
 
@@ -278,7 +465,519 @@ body {
   }
 }
 
+.nav .nav-boroughs {
+  display: none;
+}
+
+.map-layers {
+  margin-bottom: 10px;
+}
+
+
+.map-feature-poly {
+  &:hover {
+    fill: #000;
+    fill-opacity: 0.4;
+  }
+}
+
+.map-tooltip {
+  position: absolute;
+  background: #E3FFF7;
+  box-shadow: -2px 2px 4px #ADADAD;
+  padding: 5px;
+  text-align: left;
+  min-width: 250px;
+  font-size: 1.25em;
+  z-index: 1001;
+  display: none;
+  transition: all 2ms ease;
+
+  .tooltip-filter {
+    font-size: 0.75em;
+    color: #0b7f7f;
+  }
+}
+
+.yearly-featured {
+  display: none;
+}
+
+.map-highlight {
+  margin-bottom: 10px;
+}
+
+.map-accident-type {
+  margin-bottom: 10px;
+}
+
+.factor-selector {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+
+  .factor-key {
+    display: inline-block;
+    // border-radius: 100%;
+    height: 12px;
+    width: 10px;
+    overflow: hidden;
+    background-color: #dd44ff;
+  }
+
+  .factor-selector-item {
+    cursor: pointer;
+    padding: 5px 5px 4px 6px;
+    border-radius: 5px;
+    transition: all 2ms ease;
+
+    &:hover {
+      background-color: #A3FEFF;
+    }
+
+    &.active {
+      background-color: #dafeff;
+    }
+  }
+}
+
+#loader {
+  display: none;
+  padding: 50px;
+  width: 50%;
+  text-align: center;
+  vertical-align: middle;
+  margin: 0 auto;
+  font-size: 4em;
+  position: fixed;
+  top: 30%;
+  left: 25%;
+  z-index: 1000;
+
+  .fa-car {
+    animation-duration: 2s;
+    animation-name: load;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    animation-timing-function: ease-in-out;
+  }
+}
+
+@keyframes load {
+  from {
+    opacity: 0;
+  }
+
+  to {
+   opacity: 1;
+  }
+}
+
 /* Responsive: Portrait tablets and up */
 @media screen and (min-width: 768px) {
 
+}
+
+.only-death {
+  .injury {
+    display: none;
+  }
+
+  .none-hurt {
+    display: none;
+  }
+
+  .death {
+    opacity: 1;
+    stroke-opacity: 1;
+    fill-opacity: 1;
+
+    &.injury {
+      display: block;
+    }
+
+    &.none-hurt {
+      display: block;
+    }
+  }
+}
+
+.only-injury {
+  .death {
+    display: none;
+  }
+
+  .none-hurt {
+    display: none;
+  }
+
+  .injury {
+    opacity: 1;
+    stroke-opacity: 1;
+    fill-opacity: 1;
+
+    &.death {
+      display: block;
+    }
+
+    &.none-hurt {
+      display: block;
+    }
+  }
+}
+
+
+.factor-highlight,
+.factor-selector-item {
+  .factor-unspecf {
+    fill: $factor-unspecf-color;
+    stroke: $factor-unspecf-color;
+    color: $factor-unspecf-color;
+    background-color: $factor-unspecf-color;
+  }
+
+  .factor-inattn {
+    fill: $factor-inattn-color;
+    stroke: $factor-inattn-color;
+    color: $factor-inattn-color;
+    background-color: $factor-inattn-color;
+  }
+
+  .factor-fail-yield {
+    fill: $factor-fail-yield-color;
+    stroke: $factor-fail-yield-color;
+    color: $factor-fail-yield-color;
+    background-color: $factor-fail-yield-color;
+  }
+
+  .factor-drowsy {
+    fill: $factor-drowsy-color;
+    stroke: $factor-drowsy-color;
+    color: $factor-drowsy-color;
+    background-color: $factor-drowsy-color;
+  }
+
+  .factor-backing {
+    fill: $factor-backing-color;
+    stroke: $factor-backing-color;
+    color: $factor-backing-color;
+    background-color: $factor-backing-color;
+  }
+
+  .factor-other {
+    fill: $factor-other-color;
+    stroke: $factor-other-color;
+    color: $factor-other-color;
+    background-color: $factor-other-color;
+  }
+
+  .factor-lost-con {
+    fill: $factor-lost-con-color;
+    stroke: $factor-lost-con-color;
+    color: $factor-lost-con-color;
+    background-color: $factor-lost-con-color;
+  }
+
+  .factor-slippy {
+    fill: $factor-slippy-color;
+    stroke: $factor-slippy-color;
+    color: $factor-slippy-color;
+    background-color: $factor-slippy-color;
+  }
+
+  .factor-pres-meds {
+    fill: $factor-pres-meds-color;
+    stroke: $factor-pres-meds-color;
+    color: $factor-pres-meds-color;
+    background-color: $factor-pres-meds-color;
+  }
+
+  .factor-turn-imp {
+    fill: $factor-turn-imp-color;
+    stroke: $factor-turn-imp-color;
+    color: $factor-turn-imp-color;
+    background-color: $factor-turn-imp-color;
+  }
+
+  .factor-blank {
+    fill: $factor-blank-color;
+    stroke: $factor-blank-color;
+    color: $factor-blank-color;
+    background-color: $factor-blank-color;
+  }
+
+  .factor-inexp {
+    fill: $factor-inexp-color;
+    stroke: $factor-inexp-color;
+    color: $factor-inexp-color;
+    background-color: $factor-inexp-color;
+  }
+
+  .factor-disable {
+    fill: $factor-disable-color;
+    stroke: $factor-disable-color;
+    color: $factor-disable-color;
+    background-color: $factor-disable-color;
+  }
+
+  .factor-disregard {
+    fill: $factor-disregard-color;
+    stroke: $factor-disregard-color;
+    color: $factor-disregard-color;
+    background-color: $factor-disregard-color;
+  }
+
+  .factor-distract {
+    fill: $factor-distract-color;
+    stroke: $factor-distract-color;
+    color: $factor-distract-color;
+    background-color: $factor-distract-color;
+  }
+
+  .factor-booze {
+    fill: $factor-booze-color;
+    stroke: $factor-booze-color;
+    color: $factor-booze-color;
+    background-color: $factor-booze-color;
+  }
+
+  .factor-wideload {
+    fill: $factor-wideload-color;
+    stroke: $factor-wideload-color;
+    color: $factor-wideload-color;
+    background-color: $factor-wideload-color;
+  }
+
+  .factor-pass-distract {
+    fill: $factor-pass-distract-color;
+    stroke: $factor-pass-distract-color;
+    color: $factor-pass-distract-color;
+    background-color: $factor-pass-distract-color;
+  }
+
+  .factor-view-obstruct {
+    fill: $factor-view-obstruct-color;
+    stroke: $factor-view-obstruct-color;
+    color: $factor-view-obstruct-color;
+    background-color: $factor-view-obstruct-color;
+  }
+
+  .factor-electronic-device {
+    fill: $factor-electronic-device-color;
+    stroke: $factor-electronic-device-color;
+    color: $factor-electronic-device-color;
+    background-color: $factor-electronic-device-color;
+  }
+
+  .factor-road-rage {
+    fill: $factor-road-rage-color;
+    stroke: $factor-road-rage-color;
+    color: $factor-road-rage-color;
+    background-color: $factor-road-rage-color;
+  }
+
+  .factor-ill {
+    fill: $factor-ill-color;
+    stroke: $factor-ill-color;
+    color: $factor-ill-color;
+    background-color: $factor-ill-color;
+  }
+
+  .factor-glare {
+    fill: $factor-glare-color;
+    stroke: $factor-glare-color;
+    color: $factor-glare-color;
+    background-color: $factor-glare-color;
+  }
+
+  .factor-brake-defect {
+    fill: $factor-brake-defect-color;
+    stroke: $factor-brake-defect-color;
+    color: $factor-brake-defect-color;
+    background-color: $factor-brake-defect-color;
+  }
+
+  .factor-react-vehicle {
+    fill: $factor-react-vehicle-color;
+    stroke: $factor-react-vehicle-color;
+    color: $factor-react-vehicle-color;
+    background-color: $factor-react-vehicle-color;
+  }
+
+  .factor-debris {
+    fill: $factor-debris-color;
+    stroke: $factor-debris-color;
+    color: $factor-debris-color;
+    background-color: $factor-debris-color;
+  }
+
+  .factor-fail-right {
+    fill: $factor-fail-right-color;
+    stroke: $factor-fail-right-color;
+    color: $factor-fail-right-color;
+    background-color: $factor-fail-right-color;
+  }
+
+  .factor-pavement-defect {
+    fill: $factor-pavement-defect-color;
+    stroke: $factor-pavement-defect-color;
+    color: $factor-pavement-defect-color;
+    background-color: $factor-pavement-defect-color;
+  }
+
+  .factor-snooze {
+    fill: $factor-snooze-color;
+    stroke: $factor-snooze-color;
+    color: $factor-snooze-color;
+    background-color: $factor-snooze-color;
+  }
+
+  .factor-steer {
+    fill: $factor-steer-color;
+    stroke: $factor-steer-color;
+    color: $factor-steer-color;
+    background-color: $factor-steer-color;
+  }
+
+  .factor-unsafe-speed {
+    fill: $factor-unsafe-speed-color;
+    stroke: $factor-unsafe-speed-color;
+    color: $factor-unsafe-speed-color;
+    background-color: $factor-unsafe-speed-color;
+  }
+
+  .factor-drugs {
+    fill: $factor-drugs-color;
+    stroke: $factor-drugs-color;
+    color: $factor-drugs-color;
+    background-color: $factor-drugs-color;
+  }
+
+  .factor-tailgate {
+    fill: $factor-tailgate-color;
+    stroke: $factor-tailgate-color;
+    color: $factor-tailgate-color;
+    background-color: $factor-tailgate-color;
+  }
+
+  .factor-tire-fail {
+    fill: $factor-tire-fail-color;
+    stroke: $factor-tire-fail-color;
+    color: $factor-tire-fail-color;
+    background-color: $factor-tire-fail-color;
+  }
+
+  .factor-lane-marking {
+    fill: $factor-lane-marking-color;
+    stroke: $factor-lane-marking-color;
+    color: $factor-lane-marking-color;
+    background-color: $factor-lane-marking-color;
+  }
+
+  .factor-accel-defect {
+    fill: $factor-accel-defect-color;
+    stroke: $factor-accel-defect-color;
+    color: $factor-accel-defect-color;
+    background-color: $factor-accel-defect-color;
+  }
+
+  .factor-bad-traffic-device {
+    fill: $factor-bad-traffic-device-color;
+    stroke: $factor-bad-traffic-device-color;
+    color: $factor-bad-traffic-device-color;
+    background-color: $factor-bad-traffic-device-color;
+  }
+
+  .factor-animal {
+    fill: $factor-animal-color;
+    stroke: $factor-animal-color;
+    color: $factor-animal-color;
+    background-color: $factor-animal-color;
+  }
+
+  .factor-unsafe-change {
+    fill: $factor-unsafe-change-color;
+    stroke: $factor-unsafe-change-color;
+    color: $factor-unsafe-change-color;
+    background-color: $factor-unsafe-change-color;
+  }
+
+  .factor-passing {
+    fill: $factor-passing-color;
+    stroke: $factor-passing-color;
+    color: $factor-passing-color;
+    background-color: $factor-passing-color;
+  }
+
+  .factor-cell-free {
+    fill: $factor-cell-free-color;
+    stroke: $factor-cell-free-color;
+    color: $factor-cell-free-color;
+    background-color: $factor-cell-free-color;
+  }
+
+  .factor-ped-bike {
+    fill: $factor-ped-bike-color;
+    stroke: $factor-ped-bike-color;
+    color: $factor-ped-bike-color;
+    background-color: $factor-ped-bike-color;
+  }
+
+  .factor-bad-windshield {
+    fill: $factor-bad-windshield-color;
+    stroke: $factor-bad-windshield-color;
+    color: $factor-bad-windshield-color;
+    background-color: $factor-bad-windshield-color;
+  }
+
+  .factor-headlight-defect {
+    fill: $factor-headlight-defect-color;
+    stroke: $factor-headlight-defect-color;
+    color: $factor-headlight-defect-color;
+    background-color: $factor-headlight-defect-color;
+  }
+
+  .factor-cell-hand {
+    fill: $factor-cell-hand-color;
+    stroke: $factor-cell-hand-color;
+    color: $factor-cell-hand-color;
+    background-color: $factor-cell-hand-color;
+  }
+
+  .factor-shoulder-defect {
+    fill: $factor-shoulder-defect-color;
+    stroke: $factor-shoulder-defect-color;
+    color: $factor-shoulder-defect-color;
+    background-color: $factor-shoulder-defect-color;
+  }
+
+  .factor-lighting-defect {
+    fill: $factor-lighting-defect-color;
+    stroke: $factor-lighting-defect-color;
+    color: $factor-lighting-defect-color;
+    background-color: $factor-lighting-defect-color;
+  }
+
+  .factor-hitch-defect {
+    fill: $factor-hitch-defect-color;
+    stroke: $factor-hitch-defect-color;
+    color: $factor-hitch-defect-color;
+    background-color: $factor-hitch-defect-color;
+  }
+}
+
+.death-injury-highlight {
+  .injury {
+    fill: $injury-color;
+    stroke: $injury-color;
+    color: $injury-color;
+    background-color: $injury-color;
+  }
+
+  .death {
+    fill: $death-color;
+    stroke: $death-color;
+    color: $death-color;
+    background-color: $death-color;
+  }
 }

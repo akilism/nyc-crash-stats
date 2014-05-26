@@ -1,22 +1,29 @@
 <div class="header">
-  <!-- <ul class="nav nav-pills pull-right">
-    <li class="active"><a ng-href="#">Home</a></li>
-    <li><a ng-href="#">About</a></li>
-    <li><a ng-href="#">Contact</a></li>
-  </ul> -->
+  <ul class="nav nav-pills pull-right">
+    <li><a ng-click="showJumbo()" ng-href="#">About</a></li>
+  </ul>
   <h3 class="text-muted">NYC Crash Stats</h3>
   <p style="margin: 0">(YTD: 2014)</p>
+  <div class="jumbotron-wrapper" ng-click="hideJumbo()">
+    <div class="jumbotron">
+      <h1>About</h1>
+      <p>A tool to visualize car accidents in New York City.</p>
+      <p>The data comes from the <a href="https://data.cityofnewyork.us/" title="NYC OpenData" target="_blank">NYC OpenData Portal</a>: <a href="https://data.cityofnewyork.us/NYC-BigApps/NYPD-Motor-Vehicle-Collisions/h9gi-nx95" target="_blank" title="NYPD Collisions Dataset">NYPD Motor Vehicle Collisions Dataset.</a></p>
+      <p>You can view the code on <a href="https://github.com/akilism/nyc-crash-stats" title="Github:Akilism" target="_blank">github</a>.</p>
+    </div>
+  </div>
 </div>
 <div class="row yearly-accident-totals" ng-class="setTotalsClass()">
+  <h2 class="yearly-featured">{{featuredArea}}</h2>
   <h2 class="yearly-total">Total accidents in 2014: {{yearly.total_accidents | number}}</h2>
-  <h3 class="yearly-total col-md-6">Total persons injured in 2014: {{yearly.total_injured | number}}
+  <h3 class="yearly-total col-md-6"><span class="total-label">Total persons injured in 2014:</span> {{yearly.total_injured | number}}
     <ul class="detail-list">
       <li class="btn btn-default m-r-20"><div class="glyphicon glyphicon-user">&nbsp;</div> {{yearly.pedestrians_injured | number}}</li>
       <li class="btn btn-default m-r-20"><div class="maki-icon bicycle">&nbsp;</div> {{yearly.cyclist_injured | number}}</li>
       <li class="btn btn-default m-r-20"><div class="maki-icon car">&nbsp;</div> {{yearly.motorist_injured | number}}</li>
     </ul>
   </h3>
-  <h3 class="yearly-total col-md-6">Total persons killed in 2014: {{yearly.total_killed | number}}
+  <h3 class="yearly-total col-md-6"><span class="total-label">Total persons killed in 2014:</span> {{yearly.total_killed | number}}
     <ul class="detail-list">
       <li class="btn btn-default m-r-20"><div class="glyphicon glyphicon-user">&nbsp;</div> {{yearly.pedestrians_killed | number}}</li>
       <li class="btn btn-default m-r-20"><div class="maki-icon bicycle">&nbsp;</div> {{yearly.cyclist_killed | number}}</li>
@@ -24,13 +31,18 @@
     </ul>
   </h3>
 </div>
+
 <div class="row">
-  <factor-graph dataset="crashStats.factors_vehicle1" heading="Vehicle 1 Contributing Factors"></factor-graph>
-  <factor-graph dataset="crashStats.factors_vehicle2" heading="Vehicle 2 Contributing Factors"></factor-graph>
+  <crash-popup></crash-popup>
+  <div class="map-tooltip">&nbsp;</div>
+  <div id="loader"><i class="fa fa-car fa-5x"></i></div>
+  <div class="col-sm-3" style="padding-left: 0;">
+    <factor-graph size="factorListSize" classer="getFactorClass" dataset="factorsVehicle1" heading="Vehicle 1 Contributing Factors"></factor-graph>
+  </div>
+  <div class="col-sm-9 map-pane">
+    <crash-data-view setaccident="showAccidentDetails" classer="getFactorClass" statcalc="calculateYearlyStats" dataset="crashStats.lastAccidents" area="featuredArea"></crash-data-view>
+  </div>
 </div>
-<crash-data-view setaccident="setActiveAccident" dataset="crashStats.lastAccidents"></crash-data-view>
-<crash-data-view setaccident="setActiveAccident"  dataset="crashStats.lastDeaths"></crash-data-view>
-<crash-data-view setaccident="setActiveAccident"  dataset="crashStats.lastInjuries"></crash-data-view>
 
 <div class="footer">
   <p><a href="http://www.wolvesintheserverroom.com/" target="_blank" title="wolvesintheserverroom.com" class='text-muted'>wolvesintheserverroom.com</a></p>
