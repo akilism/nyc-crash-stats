@@ -366,7 +366,7 @@ directives.directive('crashDataView', ['GeoData', 'Socrata', function (GeoData, 
             scope.dataset.title = title;
             scope.selected = null;
             removeAllLayers();
-            setMap(scope.dataset, 13);
+            setMap(scope.dataset, 14);
             setActiveFeatureLayer(scope.activeFeature);
             scope.calculateYearlyStats(scope.dataset);
         };

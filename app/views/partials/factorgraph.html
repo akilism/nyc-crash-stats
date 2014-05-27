@@ -1,5 +1,6 @@
+<h3 class="factor-header">Contributing Factors</h3>
 <ul class="row factor-selector">
-  <li ng-mouseout="factorOut()" ng-mouseover="factorHover($event)" ng-click="lockFactor($event)" class="factor-selector-item col-xs-4 col-sm-12" ng-repeat="factor in dataset">
-    <div class="{{factorClass(factor.factor)}} factor-key">&nbsp;</div> {{factor.factor | factorname}}
+  <li ng-mouseout="factorOut()" ng-mouseover="factorHover($event)" ng-click="lockFactor($event)" class="factor-selector-item col-xs-5 col-sm-12" ng-repeat="factor in dataset">
+    <div class="{{factorClass(factor.factor)}} factor-key">&nbsp;</div> {{factor.factor | factorname}}<span class="factor-count">: {{factor.total_accidents}}</span>
   </li>
 </ul>

@@ -2,10 +2,9 @@
   <h4 class="accident-popup-location">{{popup.on_street_name | lowercase}} & {{popup.off_street_name | lowercase}}</h4>
   <div class="btn btn-danger btn-xs">X Close</div>
   <p class="accident-popup-info">
-    {{popup.borough | lowercase}} {{popup.zip_code}}<br>
     {{popup.date | dateDisplayFilter}} - {{popup.time}}<br>
-<!--     {{popup.precinct}}<br>
-    {{popup.community_district}}<br> -->
+    {{popup.borough | lowercase}}<br>
+    {{popup.zip_code}}
   </p>
   <div class="accident-popup-injuries">
     <h4>Persons Injured: {{popup.number_of_persons_injured}}</h4>
