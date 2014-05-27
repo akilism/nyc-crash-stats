@@ -97,7 +97,7 @@ $injury-stroke-color: rgb(94, 107, 77);
 .btn-map-controls {
   float: right;
   position: relative;
-  top: -6px;
+  top: -10px;
 }
 
 .yearly-total {
@@ -169,6 +169,10 @@ h2.yearly-total {
   margin: 0 auto;
   width: 70%;
   box-shadow: -2px 2px 4px #ADADAD;
+
+  .small {
+    font-size: 75%;
+  }
 }
 
 .accident-display {
