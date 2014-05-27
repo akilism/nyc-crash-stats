@@ -13,6 +13,7 @@ angular.module('nycCrashStatsApp')
       },
       link: function postLink(scope, element, attrs) {
         scope.lockedFactors = [];
+        scope.timeoutId;
 
         // Get the css class for the factor.
         scope.factorClass = function (factor) {
@@ -30,7 +31,7 @@ angular.module('nycCrashStatsApp')
           //console.log(scope.dataset);
 
           if(scope.lockedFactors.length === 0) {
-            var $$factorKey = $($event.target).find('.factor-key');
+            var $$factorKey = $($event.currentTarget).find('.factor-key');
             if($$factorKey.length > 0) {
               var factor = $$factorKey[0].classList[0];
 
@@ -61,9 +62,9 @@ angular.module('nycCrashStatsApp')
 
         // Lock this factor to show on the map.
         scope.lockFactor = function ($event) {
-          var $$target = $(event.target);
+          var $$target = $($event.currentTarget);
           var $$paths = $('.accident-path');
-          var $$factorKey = $(event.target).find('.factor-key');
+          var $$factorKey = $($event.currentTarget).find('.factor-key');
           var factor = '';
 
           if($$factorKey.length > 0) {
@@ -76,7 +77,7 @@ angular.module('nycCrashStatsApp')
 
             dropFactor(factor);
 
-            if(scope.lockedFactors === 0) {
+            if(scope.lockedFactors.length === 0) {
               $$paths.css({'display': ''});
             }
 
@@ -101,7 +102,14 @@ angular.module('nycCrashStatsApp')
             'left': (pos.x + 10) + 'px',
             'top': (pos.y - 5) + 'px'
           }).show();
+
+          if (scope.timeoutId) {
+            window.clearTimeout(scope.timeoutId);
+          }
+
+          scope.timeoutId = window.setTimeout(hideToolTip, 1500);
         };
+
 
         var hideToolTip = function () {
           $('.map-tooltip').hide();
