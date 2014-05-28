@@ -76,7 +76,7 @@ $injury-stroke-color: rgb(94, 107, 77);
 
   h3 {
     border-bottom: 1px solid #C4CACA;
-    margin-top: 0;
+    margin-top: -3px;
   }
 }
 
@@ -94,10 +94,23 @@ $injury-stroke-color: rgb(94, 107, 77);
   }
 }
 
+.map-wrapper {
+  border-top: 1px solid #d3d3d3;
+  padding-top: 20px;
+}
+
 .btn-map-controls {
   float: right;
   position: relative;
-  top: -10px;
+  top: -12px;
+  padding: 5px 40px;
+}
+
+
+.yearly-accident-totals {
+  background-color: #F3EEEE;
+  margin: 10px auto 20px auto;
+  padding: 0 20px;
 }
 
 .yearly-total {
@@ -161,7 +174,7 @@ h2.yearly-total {
   right: 0px;
   z-index: 2000;
   background-color: rgba(5, 5, 5, 0.298039);
-  padding-top: 100px;
+  padding-top: 20px;
   display: none;
 }
 
@@ -170,8 +183,16 @@ h2.yearly-total {
   width: 70%;
   box-shadow: -2px 2px 4px #ADADAD;
 
+  div {
+    font-size: 21px;
+  }
+
   .small {
-    font-size: 75%;
+    font-size: 65%;
+  }
+
+  .text-muted {
+    color: #3C3A3A;
   }
 }
 
@@ -223,6 +244,14 @@ body {
 .footer {
   border-top: 1px solid #e5e5e5;
   padding-top: 15px;
+}
+
+.crash-map-view-toggle {
+  font-size: 1.2rem;
+
+  .view-toggle-header {
+    border-bottom: 1px solid #d3d3d3;
+  }
 }
 
 
@@ -293,6 +322,10 @@ body {
   }
 }
 
+.filter-instruction {
+  transition: all 3ms ease;
+}
+
 .detail-list {
   list-style: none;
   padding: 0 20px 10px 5px;
@@ -301,6 +334,10 @@ body {
 
   .btn {
     cursor: default;
+
+    &:hover {
+      background-color: #fff;
+    }
   }
 
   div.maki-icon {
@@ -431,7 +468,10 @@ body {
 .factor-header {
   border-bottom: 1px solid #C4CACA;
   margin-top: 0;
+  padding-left: 5px;
   font-size: 1.5em;
+  padding-top: 5px;
+  padding-bottom: 5px;
 }
 
 .factors {
@@ -544,21 +584,43 @@ body {
   margin-bottom: 10px;
 }
 
-.factor-selector {
+.key-type,
+.key-factor {
+  background-color: #fff;
+  border-radius: 5px;
+  margin: 0 0 10px 0;
+  // padding: 10px 0 5px 0;
+  border: 1px solid #fff;
+  transition: all 2ms ease;
+
+  &.active {
+    border: 1px solid #d3d3d3;
+
+    .factor-header {
+      background-color: #dfdfdf;
+    }
+  }
+}
+
+.factor-selector,
+.type-selector {
   list-style-type: none;
   padding: 0;
   margin: 0;
 
-  .factor-key {
+  .factor-key,
+  .type-key {
     display: inline-block;
-    // border-radius: 100%;
     height: 12px;
-    width: 10px;
+    width: 12px;
     overflow: hidden;
     background-color: #dd44ff;
+    border-radius: 100%;
+    border: 2px solid;
   }
 
-  .factor-selector-item {
+  .factor-selector-item,
+  .type-selector-item {
     cursor: pointer;
     padding: 7px 10px 7px 10px;
     border-radius: 5px;
@@ -667,13 +729,13 @@ body {
   }
 }
 
-
 .factor-highlight,
 .factor-selector-item {
   .factor-unspecf,
   .factor-none {
     fill: $factor-unspecf-color;
     stroke: shade($factor-unspecf-color, 30%);
+    border-color: shade($factor-unspecf-color, 30%);
     color: $factor-unspecf-color;
     background-color: $factor-unspecf-color;
   }
@@ -681,6 +743,7 @@ body {
   .factor-inattn {
     fill: $factor-inattn-color;
     stroke: shade($factor-inattn-color, 30%);
+    border-color: shade($factor-inattn-color, 30%);
     color: $factor-inattn-color;
     background-color: $factor-inattn-color;
   }
@@ -688,6 +751,7 @@ body {
   .factor-fail-yield {
     fill: $factor-fail-yield-color;
     stroke: shade($factor-fail-yield-color, 30%);
+    border-color: shade($factor-fail-yield-color, 30%);
     color: $factor-fail-yield-color;
     background-color: $factor-fail-yield-color;
   }
@@ -695,6 +759,7 @@ body {
   .factor-drowsy {
     fill: $factor-drowsy-color;
     stroke: shade($factor-drowsy-color, 30%);
+    border-color: shade($factor-drowsy-color, 30%);
     color: $factor-drowsy-color;
     background-color: $factor-drowsy-color;
   }
@@ -702,6 +767,7 @@ body {
   .factor-backing {
     fill: $factor-backing-color;
     stroke: shade($factor-backing-color, 30%);
+    border-color: shade($factor-backing-color, 30%);
     color: $factor-backing-color;
     background-color: $factor-backing-color;
   }
@@ -709,6 +775,7 @@ body {
   .factor-other {
     fill: $factor-other-color;
     stroke: shade($factor-other-color, 30%);
+    border-color: shade($factor-other-color, 30%);
     color: $factor-other-color;
     background-color: $factor-other-color;
   }
@@ -716,6 +783,7 @@ body {
   .factor-lost-con {
     fill: $factor-lost-con-color;
     stroke: shade($factor-lost-con-color, 30%);
+    border-color: shade($factor-lost-con-color, 30%);
     color: $factor-lost-con-color;
     background-color: $factor-lost-con-color;
   }
@@ -723,6 +791,7 @@ body {
   .factor-slippy {
     fill: $factor-slippy-color;
     stroke: shade($factor-slippy-color, 30%);
+    border-color: shade($factor-slippy-color, 30%);
     color: $factor-slippy-color;
     background-color: $factor-slippy-color;
   }
@@ -730,6 +799,7 @@ body {
   .factor-pres-meds {
     fill: $factor-pres-meds-color;
     stroke: shade($factor-pres-meds-color, 30%);
+    border-color: shade($factor-pres-meds-color, 30%);
     color: $factor-pres-meds-color;
     background-color: $factor-pres-meds-color;
   }
@@ -737,6 +807,7 @@ body {
   .factor-turn-imp {
     fill: $factor-turn-imp-color;
     stroke: shade($factor-turn-imp-color, 30%);
+    border-color: shade($factor-turn-imp-color, 30%);
     color: $factor-turn-imp-color;
     background-color: $factor-turn-imp-color;
   }
@@ -744,6 +815,7 @@ body {
   .factor-blank {
     fill: $factor-blank-color;
     stroke: shade($factor-blank-color, 30%);
+    border-color: shade($factor-blank-color, 30%);
     color: $factor-blank-color;
     background-color: $factor-blank-color;
   }
@@ -751,6 +823,7 @@ body {
   .factor-inexp {
     fill: $factor-inexp-color;
     stroke: shade($factor-inexp-color, 30%);
+    border-color: shade($factor-inexp-color, 30%);
     color: $factor-inexp-color;
     background-color: $factor-inexp-color;
   }
@@ -758,6 +831,7 @@ body {
   .factor-disable {
     fill: $factor-disable-color;
     stroke: shade($factor-disable-color, 30%);
+    border-color: shade($factor-disable-color, 30%);
     color: $factor-disable-color;
     background-color: $factor-disable-color;
   }
@@ -765,6 +839,7 @@ body {
   .factor-disregard {
     fill: $factor-disregard-color;
     stroke: shade($factor-disregard-color, 30%);
+    border-color: shade($factor-disregard-color, 30%);
     color: $factor-disregard-color;
     background-color: $factor-disregard-color;
   }
@@ -772,6 +847,7 @@ body {
   .factor-distract {
     fill: $factor-distract-color;
     stroke: shade($factor-distract-color, 30%);
+    border-color: shade($factor-distract-color, 30%);
     color: $factor-distract-color;
     background-color: $factor-distract-color;
   }
@@ -779,6 +855,7 @@ body {
   .factor-booze {
     fill: $factor-booze-color;
     stroke: shade($factor-booze-color, 30%);
+    border-color: shade($factor-booze-color, 30%);
     color: $factor-booze-color;
     background-color: $factor-booze-color;
   }
@@ -786,6 +863,7 @@ body {
   .factor-wideload {
     fill: $factor-wideload-color;
     stroke: shade($factor-wideload-color, 30%);
+    border-color: shade($factor-wideload-color, 30%);
     color: $factor-wideload-color;
     background-color: $factor-wideload-color;
   }
@@ -793,6 +871,7 @@ body {
   .factor-pass-distract {
     fill: $factor-pass-distract-color;
     stroke: shade($factor-pass-distract-color, 30%);
+    border-color: shade($factor-pass-distract-color, 30%);
     color: $factor-pass-distract-color;
     background-color: $factor-pass-distract-color;
   }
@@ -800,6 +879,7 @@ body {
   .factor-view-obstruct {
     fill: $factor-view-obstruct-color;
     stroke: shade($factor-view-obstruct-color, 30%);
+    border-color: shade($factor-view-obstruct-color, 30%);
     color: $factor-view-obstruct-color;
     background-color: $factor-view-obstruct-color;
   }
@@ -807,6 +887,7 @@ body {
   .factor-electronic-device {
     fill: $factor-electronic-device-color;
     stroke: shade($factor-electronic-device-color, 30%);
+    border-color: shade($factor-electronic-device-color, 30%);
     color: $factor-electronic-device-color;
     background-color: $factor-electronic-device-color;
   }
@@ -814,6 +895,7 @@ body {
   .factor-road-rage {
     fill: $factor-road-rage-color;
     stroke: shade($factor-road-rage-color, 30%);
+    border-color: shade($factor-road-rage-color, 30%);
     color: $factor-road-rage-color;
     background-color: $factor-road-rage-color;
   }
@@ -821,6 +903,7 @@ body {
   .factor-ill {
     fill: $factor-ill-color;
     stroke: shade($factor-ill-color, 30%);
+    border-color: shade($factor-ill-color, 30%);
     color: $factor-ill-color;
     background-color: $factor-ill-color;
   }
@@ -828,6 +911,7 @@ body {
   .factor-glare {
     fill: $factor-glare-color;
     stroke: shade($factor-glare-color, 30%);
+    border-color: shade($factor-glare-color, 30%);
     color: $factor-glare-color;
     background-color: $factor-glare-color;
   }
@@ -835,6 +919,7 @@ body {
   .factor-brake-defect {
     fill: $factor-brake-defect-color;
     stroke: shade($factor-brake-defect-color, 30%);
+    border-color: shade($factor-brake-defect-color, 30%);
     color: $factor-brake-defect-color;
     background-color: $factor-brake-defect-color;
   }
@@ -842,6 +927,7 @@ body {
   .factor-react-vehicle {
     fill: $factor-react-vehicle-color;
     stroke: shade($factor-react-vehicle-color, 30%);
+    border-color: shade($factor-react-vehicle-color, 30%);
     color: $factor-react-vehicle-color;
     background-color: $factor-react-vehicle-color;
   }
@@ -849,6 +935,7 @@ body {
   .factor-debris {
     fill: $factor-debris-color;
     stroke: shade($factor-debris-color, 30%);
+    border-color: shade($factor-debris-color, 30%);
     color: $factor-debris-color;
     background-color: $factor-debris-color;
   }
@@ -856,6 +943,7 @@ body {
   .factor-fail-right {
     fill: $factor-fail-right-color;
     stroke: shade($factor-fail-right-color, 30%);
+    border-color: shade($factor-fail-right-color, 30%);
     color: $factor-fail-right-color;
     background-color: $factor-fail-right-color;
   }
@@ -863,6 +951,7 @@ body {
   .factor-pavement-defect {
     fill: $factor-pavement-defect-color;
     stroke: shade($factor-pavement-defect-color, 30%);
+    border-color: shade($factor-pavement-defect-color, 30%);
     color: $factor-pavement-defect-color;
     background-color: $factor-pavement-defect-color;
   }
@@ -870,6 +959,7 @@ body {
   .factor-snooze {
     fill: $factor-snooze-color;
     stroke: shade($factor-snooze-color, 30%);
+    border-color: shade($factor-snooze-color, 30%);
     color: $factor-snooze-color;
     background-color: $factor-snooze-color;
   }
@@ -877,6 +967,7 @@ body {
   .factor-steer {
     fill: $factor-steer-color;
     stroke: shade($factor-steer-color, 30%);
+    border-color: shade($factor-steer-color, 30%);
     color: $factor-steer-color;
     background-color: $factor-steer-color;
   }
@@ -884,6 +975,7 @@ body {
   .factor-unsafe-speed {
     fill: $factor-unsafe-speed-color;
     stroke: shade($factor-unsafe-speed-color, 30%);
+    border-color: shade($factor-unsafe-speed-color, 30%);
     color: $factor-unsafe-speed-color;
     background-color: $factor-unsafe-speed-color;
   }
@@ -891,6 +983,7 @@ body {
   .factor-drugs {
     fill: $factor-drugs-color;
     stroke: shade($factor-drugs-color, 30%);
+    border-color: shade($factor-drugs-color, 30%);
     color: $factor-drugs-color;
     background-color: $factor-drugs-color;
   }
@@ -898,6 +991,7 @@ body {
   .factor-tailgate {
     fill: $factor-tailgate-color;
     stroke: shade($factor-tailgate-color, 30%);
+    border-color: shade($factor-tailgate-color, 30%);
     color: $factor-tailgate-color;
     background-color: $factor-tailgate-color;
   }
@@ -905,6 +999,7 @@ body {
   .factor-tire-fail {
     fill: $factor-tire-fail-color;
     stroke: shade($factor-tire-fail-color, 30%);
+    border-color: shade($factor-tire-fail-color, 30%);
     color: $factor-tire-fail-color;
     background-color: $factor-tire-fail-color;
   }
@@ -912,6 +1007,7 @@ body {
   .factor-lane-marking {
     fill: $factor-lane-marking-color;
     stroke: shade($factor-lane-marking-color, 30%);
+    border-color: shade($factor-lane-marking-color, 30%);
     color: $factor-lane-marking-color;
     background-color: $factor-lane-marking-color;
   }
@@ -919,6 +1015,7 @@ body {
   .factor-accel-defect {
     fill: $factor-accel-defect-color;
     stroke: shade($factor-accel-defect-color, 30%);
+    border-color: shade($factor-accel-defect-color, 30%);
     color: $factor-accel-defect-color;
     background-color: $factor-accel-defect-color;
   }
@@ -926,6 +1023,7 @@ body {
   .factor-bad-traffic-device {
     fill: $factor-bad-traffic-device-color;
     stroke: shade($factor-bad-traffic-device-color, 30%);
+    border-color: shade($factor-bad-traffic-device-color, 30%);
     color: $factor-bad-traffic-device-color;
     background-color: $factor-bad-traffic-device-color;
   }
@@ -933,6 +1031,7 @@ body {
   .factor-animal {
     fill: $factor-animal-color;
     stroke: shade($factor-animal-color, 30%);
+    border-color: shade($factor-animal-color, 30%);
     color: $factor-animal-color;
     background-color: $factor-animal-color;
   }
@@ -940,6 +1039,7 @@ body {
   .factor-unsafe-change {
     fill: $factor-unsafe-change-color;
     stroke: shade($factor-unsafe-change-color, 30%);
+    border-color: shade($factor-unsafe-change-color, 30%);
     color: $factor-unsafe-change-color;
     background-color: $factor-unsafe-change-color;
   }
@@ -947,6 +1047,7 @@ body {
   .factor-passing {
     fill: $factor-passing-color;
     stroke: shade($factor-passing-color, 30%);
+    border-color: shade($factor-passing-color, 30%);
     color: $factor-passing-color;
     background-color: $factor-passing-color;
   }
@@ -954,6 +1055,7 @@ body {
   .factor-cell-free {
     fill: $factor-cell-free-color;
     stroke: shade($factor-cell-free-color, 30%);
+    border-color: shade($factor-cell-free-color, 30%);
     color: $factor-cell-free-color;
     background-color: $factor-cell-free-color;
   }
@@ -961,6 +1063,7 @@ body {
   .factor-ped-bike {
     fill: $factor-ped-bike-color;
     stroke: shade($factor-ped-bike-color, 30%);
+    border-color: shade($factor-ped-bike-color, 30%);
     color: $factor-ped-bike-color;
     background-color: $factor-ped-bike-color;
   }
@@ -968,6 +1071,7 @@ body {
   .factor-bad-windshield {
     fill: $factor-bad-windshield-color;
     stroke: shade($factor-bad-windshield-color, 30%);
+    border-color: shade($factor-bad-windshield-color, 30%);
     color: $factor-bad-windshield-color;
     background-color: $factor-bad-windshield-color;
   }
@@ -975,6 +1079,7 @@ body {
   .factor-headlight-defect {
     fill: $factor-headlight-defect-color;
     stroke: shade($factor-headlight-defect-color, 30%);
+    border-color: shade($factor-headlight-defect-color, 30%);
     color: $factor-headlight-defect-color;
     background-color: $factor-headlight-defect-color;
   }
@@ -982,6 +1087,7 @@ body {
   .factor-cell-hand {
     fill: $factor-cell-hand-color;
     stroke: shade($factor-cell-hand-color, 30%);
+    border-color: shade($factor-cell-hand-color, 30%);
     color: $factor-cell-hand-color;
     background-color: $factor-cell-hand-color;
   }
@@ -989,6 +1095,7 @@ body {
   .factor-shoulder-defect {
     fill: $factor-shoulder-defect-color;
     stroke: shade($factor-shoulder-defect-color, 30%);
+    border-color: shade($factor-shoulder-defect-color, 30%);
     color: $factor-shoulder-defect-color;
     background-color: $factor-shoulder-defect-color;
   }
@@ -996,6 +1103,7 @@ body {
   .factor-lighting-defect {
     fill: $factor-lighting-defect-color;
     stroke: shade($factor-lighting-defect-color, 30%);
+    border-color: shade($factor-lighting-defect-color, 30%);
     color: $factor-lighting-defect-color;
     background-color: $factor-lighting-defect-color;
   }
@@ -1003,15 +1111,18 @@ body {
   .factor-hitch-defect {
     fill: $factor-hitch-defect-color;
     stroke: shade($factor-hitch-defect-color, 30%);
+    border-color: shade($factor-hitch-defect-color, 30%);
     color: $factor-hitch-defect-color;
     background-color: $factor-hitch-defect-color;
   }
 }
 
+.type-selector-item,
 .death-injury-highlight {
   .injury {
     fill: $injury-color;
     stroke: shade($injury-stroke-color, 30%);
+    border-color: shade($injury-stroke-color, 30%);
     color: $injury-color;
     background-color: $injury-color;
   }
@@ -1019,6 +1130,7 @@ body {
   .death {
     fill: $death-color;
     stroke: shade($death-stroke-color, 30%);
+    border-color: shade($death-stroke-color, 30%);
     color: $death-color;
     background-color: $death-color;
   }

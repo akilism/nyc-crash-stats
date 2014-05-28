@@ -17,12 +17,13 @@ directives.directive('crashDataView', ['GeoData', 'Socrata', function (GeoData, 
         map.attr('id', mapId);
         scope.crashMap = L.map(map[0]);
         scope.selected = '';
+        scope.hideInstruction = true;
 
         // Handle the click event for the overlay display
         // Community Boards, Neighborhoods, Zip codes etc.
         // Makes the service call to get the correct shape file
         // Calls the display layer function to show the shapes
-        scope.showOverlay = function (type) {
+        scope.showOverlay = function (type, $event) {
 
           $('.map-layers li').removeClass('active');
 
@@ -30,9 +31,13 @@ directives.directive('crashDataView', ['GeoData', 'Socrata', function (GeoData, 
           if(scope.selected === type) {
                 removeLayer(type);
                 scope.selected = '';
+                scope.activeType = '';
+                scope.hideInstruction = true;
                 return;
           } else {
-            $(event.target.parentElement).addClass('active');
+            $($event.target.parentElement).addClass('active');
+            scope.activeType = getActiveType(type);
+            scope.hideInstruction = false;
           }
 
           scope.selected = type;
@@ -94,39 +99,18 @@ directives.directive('crashDataView', ['GeoData', 'Socrata', function (GeoData, 
         scope.highlight = function ($event, type) {
 
           $('.map-highlight li').removeClass('active');
-          $(event.target.parentElement).addClass('active');
+          $('.map-key div').removeClass('active');
+          // console.log($event);
+          $($event.currentTarget.parentElement).addClass('active');
 
           switch(type) {
             case 'factors':
               $('.crash-data-view-map').removeClass('death-injury-highlight').addClass('factor-highlight');
+              $('.key-factor').addClass('active');
               break;
             case 'death':
               $('.crash-data-view-map').removeClass('factor-highlight').addClass('death-injury-highlight');
-              break;
-          }
-        };
-
-        // Handle the toggle for accidents / deaths / both.
-        scope.displayAccidentType = function ($event, type) {
-
-          $('.map-accident-type li').removeClass('active');
-
-          //Unfilter.
-          if(scope.accidentFilterType === type) {
-                $('.crash-data-view-map').removeClass('only-injury').removeClass('only-death');
-                scope.accidentFilterType = '';
-                return;
-          } else {
-            scope.accidentFilterType = type;
-            $(event.target.parentElement).addClass('active');
-          }
-
-          switch(type) {
-            case 'death':
-              $('.crash-data-view-map').removeClass('only-injury').addClass('only-death');
-              break;
-            case 'injury':
-              $('.crash-data-view-map').removeClass('only-death').addClass('only-injury');
+              $('.key-type').addClass('active');
               break;
           }
         };
@@ -137,6 +121,20 @@ directives.directive('crashDataView', ['GeoData', 'Socrata', function (GeoData, 
 
         scope.showControls = function () {
           $('.crash-data-map-controls').show();
+        };
+
+        var getActiveType = function (type) {
+          switch (type) {
+            case 'community':
+              return 'Community Board District';
+            case 'neighborhood':
+              return 'neighborhood';
+            case 'precinct':
+              return 'Police Precinct';
+            case 'zipcode':
+              return 'zip code';
+          }
+          return '';
         };
 
         // Accident hover mouse out event.
@@ -286,17 +284,16 @@ directives.directive('crashDataView', ['GeoData', 'Socrata', function (GeoData, 
             'clickable': true
           });
 
-          layer.on('mousemove', function (e) {
-            // console.log(e.target.feature.properties, scope.selected);
-            showTooltip(e.target.feature.properties, scope.selected, { 'x': event.pageX, 'y': event.pageY });
-            e.target.setStyle({
+          layer.on('mousemove', function (event) {
+            showTooltip(event.target.feature.properties, scope.selected, { 'x': event.originalEvent.pageX, 'y': event.originalEvent.pageY });
+            event.target.setStyle({
               'fillOpacity': 0.25
             });
           });
 
-          layer.on('mouseout', function (e) {
+          layer.on('mouseout', function (event) {
             hideToolTip();
-            e.target.setStyle({
+            event.target.setStyle({
               'fillOpacity': 0
             });
           });
@@ -369,6 +366,7 @@ directives.directive('crashDataView', ['GeoData', 'Socrata', function (GeoData, 
             setMap(scope.dataset, 14);
             setActiveFeatureLayer(scope.activeFeature);
             scope.calculateYearlyStats(scope.dataset);
+            scope.hideInstruction = true;
         };
 
         // Format the bounding box so it's easier to deal with on the backend.

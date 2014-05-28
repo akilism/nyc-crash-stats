@@ -40,7 +40,10 @@ angular.module('nycCrashStatsApp')
             }
           }
 
-          var factorText = $event.target.innerText.trim();
+          var factorText = $($event.target).attr('factor');
+
+          if (factorText) { factorText = factorText.trim(); }
+
           if (factorText === 'Blank') { factorText = undefined; }
 
           var currFactor = _.find(scope.dataset, function (facObj) {
@@ -97,10 +100,10 @@ angular.module('nycCrashStatsApp')
 
         // Show the factor accident count tooltip.
         var showToolTip = function (total, pos) {
-          var content = total + ' Total Accidents';
+          var content = (total > 1) ? total + ' Accidents': total + ' Accident';
           $('.map-tooltip').html(content).css({
-            'left': (pos.x + 10) + 'px',
-            'top': (pos.y - 5) + 'px'
+            'left': (pos.x + 15) + 'px',
+            'top': (pos.y - 10) + 'px'
           }).show();
 
           if (scope.timeoutId) {
@@ -110,6 +113,30 @@ angular.module('nycCrashStatsApp')
           scope.timeoutId = window.setTimeout(hideToolTip, 1500);
         };
 
+        // Handle the toggle for accidents / deaths / both.
+        scope.displayAccidentType = function ($event, type) {
+
+          $('.type-selector li').removeClass('active');
+
+          //Unfilter.
+          if(scope.accidentFilterType === type) {
+                $('.crash-data-view-map').removeClass('only-injury').removeClass('only-death');
+                scope.accidentFilterType = '';
+                return;
+          } else {
+            scope.accidentFilterType = type;
+            $($event.target).addClass('active');
+          }
+
+          switch(type) {
+            case 'death':
+              $('.crash-data-view-map').removeClass('only-injury').addClass('only-death');
+              break;
+            case 'injury':
+              $('.crash-data-view-map').removeClass('only-death').addClass('only-injury');
+              break;
+          }
+        };
 
         var hideToolTip = function () {
           $('.map-tooltip').hide();

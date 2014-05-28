@@ -1,6 +1,21 @@
-<h3 class="factor-header">Contributing Factors</h3>
-<ul class="row factor-selector">
-  <li ng-mouseout="factorOut()" ng-mouseover="factorHover($event)" ng-click="lockFactor($event)" class="factor-selector-item col-xs-5 col-sm-12" ng-repeat="factor in dataset">
-    <div class="{{factorClass(factor.factor)}} factor-key">&nbsp;</div> {{factor.factor | factorname}}<span class="factor-count">: {{factor.total_accidents}}</span>
-  </li>
-</ul>
+<div class="map-key">
+<div class="key-type active">
+  <h3 class="factor-header">Accidents resulting in:</h3>
+  <ul class="row type-selector">
+    <li ng-click="displayAccidentType($event, 'injury')" class="type-selector-item col-xs-5 col-sm-12">
+      <div class="injury type-key">&nbsp;</div> Injury
+    </li>
+    <li ng-click="displayAccidentType($event, 'death')" class="type-selector-item col-xs-5 col-sm-12">
+      <div class="death type-key">&nbsp;</div> Death
+    </li>
+  </ul>
+</div>
+<div class="key-factor">
+  <h3 class="factor-header">Contributing Factors</h3>
+  <ul class="row factor-selector">
+    <li ng-mouseout="factorOut()" factor="{{factor.factor}}" ng-mousemove="factorHover($event)" ng-click="lockFactor($event)" class="factor-selector-item col-xs-5 col-sm-12" ng-repeat="factor in dataset">
+      <div class="{{factorClass(factor.factor)}} factor-key">&nbsp;</div> {{factor.factor | factorname}}<span class="factor-count">: {{factor.total_accidents}}</span>
+    </li>
+  </ul>
+</div>
+</div>

@@ -6,11 +6,19 @@
   <div class="jumbotron-wrapper" ng-click="hideJumbo()">
     <div class="jumbotron">
       <h1>About</h1>
-      <p>A tool to visualize car accidents in New York City.</p>
+      <p>A tool to visualize car crashes in New York City.</p>
       <hr>
-      <p>The data is from the <a href="https://data.cityofnewyork.us/" title="NYC OpenData" target="_blank">NYC OpenData Portal</a>: <a href="https://data.cityofnewyork.us/NYC-BigApps/NYPD-Motor-Vehicle-Collisions/h9gi-nx95" target="_blank" title="NYPD Collisions Dataset">NYPD Motor Vehicle Collisions Dataset.</a><br>
-        <span class="small text-muted">It consists of details of Motor Vehicle Collisions in New York City provided by the Police Department (NYPD).</span>
-      </p>
+      <div>The data is from the <a href="https://data.cityofnewyork.us/" title="NYC OpenData" target="_blank">NYC OpenData Portal</a>: <a href="https://data.cityofnewyork.us/NYC-BigApps/NYPD-Motor-Vehicle-Collisions/h9gi-nx95" target="_blank" title="NYPD Collisions Dataset">NYPD Motor Vehicle Collisions Dataset.</a><br>
+        <span class="small text-muted">
+          It consists of details of Motor Vehicle Collisions in New York City provided by the Police Department (NYPD).<br>
+          There are a few caveats with the data:
+          <ol>
+            <li>The location is not always recorded, sometimes the latitude and longitude are missing, sometimes the streets are missing and sometimes both are missing. The map is only displaying crashes that have a latitude and longitude specified.</li>
+            <li>There are a large amount of crashes with "Unspecified", "Blank", or simply not recorded contributing factors for vehicle 1.</li>
+            <li>The data stays as up to date as it can, but this is dependent on how often the city updates it's Vision Zero dataset. You will always see this latest data available.</li>
+          </ol>
+        </span>
+      </div>
       <p>Also checkout <a href="http://visionzero.herokuapp.com/" target="_blank">New York City's Vision Zero Map</a> and contribute additional dangerous intersections and issues.
       <hr>
       <p>The code for this site is available on <a href="https://github.com/akilism/nyc-crash-stats" title="Github:Akilism" target="_blank">Github</a>.</p>
@@ -19,6 +27,7 @@
   </div>
 </div>
 <div class="row yearly-accident-totals" ng-class="setTotalsClass()">
+  <h4 class="text-muted">Current year to date breakdown:</h4>
   <h2 class="yearly-featured">{{featuredArea}}</h2>
   <h2 class="yearly-total">Total accidents in 2014: {{yearly.total_accidents | number}}</h2>
   <h3 class="yearly-total col-md-6"><span class="total-label">Total persons injured in 2014:</span> {{yearly.total_injured | number}}
@@ -37,7 +46,7 @@
   </h3>
 </div>
 
-<div class="row">
+<div class="row map-wrapper">
   <crash-popup></crash-popup>
   <div class="map-tooltip">&nbsp;</div>
   <div id="loader"><i class="fa fa-car fa-5x"></i></div>
