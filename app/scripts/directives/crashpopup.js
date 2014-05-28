@@ -14,6 +14,16 @@ directives.directive('crashPopup', function () {
         scope.swapAccident = function (accidentId) {
           scope.showAccidentDetails(accidentId, false);
         };
+
+        scope.showExtraInfo = function (count) {
+          var intCount = parseInt(count, 10);
+          if (intCount > 0) {
+            return '';
+          }
+
+          return 'hidden';
+        };
       }
+
     };
   });

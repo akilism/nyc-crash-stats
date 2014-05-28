@@ -52,6 +52,16 @@ directives.directive('crashDataView', ['GeoData', 'Socrata', function (GeoData, 
                 displayLayer(scope.borough, 'borough');
               }
               break;
+            case 'citycouncil':
+              if(!scope.citycouncil) {
+                GeoData('/citycouncil').then(function (data) {
+                  scope.citycouncil = data;
+                  displayLayer(scope.citycouncil, 'citycouncil');
+                });
+              } else {
+                displayLayer(scope.citycouncil, 'citycouncil');
+              }
+              break;
             case 'community':
               if(!scope.community) {
                 GeoData('/community').then(function (data) {
@@ -125,6 +135,8 @@ directives.directive('crashDataView', ['GeoData', 'Socrata', function (GeoData, 
 
         var getActiveType = function (type) {
           switch (type) {
+            case 'citycouncil':
+              return 'City Council District';
             case 'community':
               return 'Community Board District';
             case 'neighborhood':
@@ -138,20 +150,20 @@ directives.directive('crashDataView', ['GeoData', 'Socrata', function (GeoData, 
         };
 
         // Accident hover mouse out event.
-        var onMouseOut = function (event) {
-            var className = event.target.options.className.split(' ')[0];
-            $('.' + className).removeClass('hover-accident');
-            event.target.off('mouseout', onMouseOut);
-            event.target.on('mouseover', onMouseOver);
-        };
+        // var onMouseOut = function (event) {
+        //     var className = event.target.options.className.split(' ')[0];
+        //     $('.' + className).removeClass('hover-accident');
+        //     event.target.off('mouseout', onMouseOut);
+        //     event.target.on('mouseover', onMouseOver);
+        // };
 
         // Accident hover mouse over event.
-        var onMouseOver = function (event) {
-            var className = event.target.options.className.split(' ')[0];
-            $('.' + className).addClass('hover-accident');
-            event.target.on('mouseout', onMouseOut);
-            event.target.off('mouseover', onMouseOver);
-        };
+        // var onMouseOver = function (event) {
+        //     var className = event.target.options.className.split(' ')[0];
+        //     $('.' + className).addClass('hover-accident');
+        //     event.target.on('mouseout', onMouseOut);
+        //     event.target.off('mouseover', onMouseOver);
+        // };
 
         // Accident onclick event.
         var onClick = function (event) {
@@ -196,6 +208,7 @@ directives.directive('crashDataView', ['GeoData', 'Socrata', function (GeoData, 
         // Removes all layers from the map.
         var removeAllLayers = function () {
           removeLayer('borough');
+          removeLayer('citycouncil');
           removeLayer('community');
           removeLayer('neighborhood');
           removeLayer('precinct');
@@ -240,6 +253,8 @@ directives.directive('crashDataView', ['GeoData', 'Socrata', function (GeoData, 
           switch (selected) {
             case 'borough':
               return properties.borough;
+            case 'citycouncil':
+              return 'City Council District ' + properties.cityCouncilDistrict;
             case 'community':
               return translateCommunityBoardDistrict(properties.communityDistrict);
             case 'neighborhood':
@@ -392,7 +407,7 @@ directives.directive('crashDataView', ['GeoData', 'Socrata', function (GeoData, 
             classNames.push('injury');
           }
 
-          if(accident.number_of_persons_killed == 0 && accident.number_of_persons_injured == 0) {
+          if(accident.number_of_persons_killed === '0' && accident.number_of_persons_injured === '0') {
             classNames.push('none-hurt');
           }
 
@@ -418,7 +433,7 @@ directives.directive('crashDataView', ['GeoData', 'Socrata', function (GeoData, 
                   stroke: false,
                   fill: false
                 }).setRadius(5);
-                marker.on('mouseover', onMouseOver);
+                // marker.on('mouseover', onMouseOver);
                 marker.on('click', onClick);
 
                 // marker.bindPopup(getPopupContent(accident));

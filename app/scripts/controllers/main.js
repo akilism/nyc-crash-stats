@@ -88,12 +88,12 @@ angular.module('nycCrashStatsApp')
     };
 
     $scope.showJumbo = function () {
-      $('.jumbotron-wrapper').show();
+      $('.jumbotron-wrapper').fadeIn();
       ga('send', 'event', 'click', 'about');
     };
 
     $scope.hideJumbo = function () {
-      $('.jumbotron-wrapper').hide();
+      $('.jumbotron-wrapper').fadeOut();
     };
 
     // Maps the contributing factor text to a css class.

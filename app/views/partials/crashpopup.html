@@ -26,7 +26,7 @@
     <h4>All accidents at this location:</h4>
     <ol>
       <li ng-repeat="accident in popup.additionalAccidents" ng-click="swapAccident(accident.unique_key)" class="accident-popup-link">
-        {{accident.date | dateDisplayFilter}} Injured: {{accident.number_of_persons_injured}}  Killed: {{accident.number_of_persons_killed}}
+        {{accident.date | dateDisplayFilter}} <span ng-class="showExtraInfo(accident.number_of_persons_injured)">Injured: {{accident.number_of_persons_injured}}</span>  <span ng-class="showExtraInfo(accident.number_of_persons_killed)">Killed: {{accident.number_of_persons_killed}}</span>
       </li>
     </ol>
   </div>

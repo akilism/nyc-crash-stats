@@ -169,13 +169,27 @@ h2.yearly-total {
 .jumbotron-wrapper {
   position: absolute;
   top: 0px;
-  bottom: 0px;
+  // bottom: 0px;
   left: 0px;
   right: 0px;
+  height: 245vh;
   z-index: 2000;
   background-color: rgba(5, 5, 5, 0.298039);
   padding-top: 20px;
   display: none;
+
+
+  @media screen and (min-width: 768px) {
+    height: 195vh;
+  }
+
+  @media screen and (min-width: 960px) {
+    height: 185vh;
+  }
+
+  @media screen and (min-width: 1024px) {
+    height: 155vh;
+  }
 }
 
 .jumbotron {
