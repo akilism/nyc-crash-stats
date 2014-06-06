@@ -1,0 +1,10 @@
+<div class="dropdown">
+  <button class="btn dropdown-toggle" type="button" id="dropdownMenu1" ng-click="toggleDropDown()">
+    Filter<span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu">
+    <li ng-repeat="area in areas">
+      <a ng-click="loadArea(area, $event)">{{area.name}}</a>
+    </li>
+  </ul>
+</div>

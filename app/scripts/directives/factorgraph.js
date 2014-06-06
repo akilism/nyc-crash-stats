@@ -1,7 +1,6 @@
 'use strict';
 
-angular.module('nycCrashStatsApp')
-  .directive('factorGraph', ['numberFilter', function (numberFilter) {
+directives.directive('factorGraph', ['numberFilter', function (numberFilter) {
     return {
       templateUrl: 'partials/factorgraph.html',
       restrict: 'E',

@@ -67,6 +67,9 @@ $injury-stroke-color: rgb(94, 107, 77);
   padding: 0.2em 0;
 }
 
+.capitalize {
+  text-transform: capitalize;
+}
 
 .crash-data-view-wrapper {
   border-bottom: 1px solid #C4CACA;
@@ -743,6 +746,139 @@ body {
   }
 }
 
+.month-graph {
+  svg {
+    // background: #ddd;
+  }
+}
+
+.drill-down-graph {
+  border-bottom: 1px solid #aaa;
+  padding-bottom: 20px;
+}
+
+.drill-down-graph .crash-month-line {
+  stroke-width: 2px;
+  fill: transparent;
+
+  &.flat {
+    stroke: #000;
+  }
+}
+
+.crash-month-hover-line {
+  stroke: transparent;
+  stroke-width: 20px;
+  fill: none;
+  cursor: pointer;
+}
+
+.drill-down-graph .crash-month-hover-point {
+  stroke: transparent;
+  fill: transparent;
+  cursor: pointer;
+}
+
+.crash-month-inner-line {
+    shape-rendering: crispEdges;
+    stroke-width: 1px;
+    stroke: #311bd3;
+}
+
+.crash-graph-hover {
+  border: solid 1px #000;
+  box-shadow: -2px 2px 4px #ADADAD;
+  // padding: 10px;
+  border-radius: 5px;
+  position: fixed;
+  z-index: 1001;
+  background: #E3FFF7;
+  color: #000;
+
+  .hover-value {
+    font-size: 1.125em;
+    font-weight: bold;
+  }
+
+  .hover-label {
+    font-weight: normal;
+  }
+
+  p{
+    padding: 10px;
+    margin: 0;
+
+    &:first-child {
+      border-bottom: 1px solid #D8F5D6;
+    }
+  }
+
+}
+
+
+.axis {
+  shape-rendering: crispEdges;
+
+  &.x {
+
+    path,
+    line {
+      stroke: #aaa;
+      fill: none;
+    }
+
+    text {
+      font-size: .75em;
+    }
+
+    .domain {
+      fill: #FAFAFA;
+    }
+  }
+
+  &.y {
+
+    path,
+    line {
+      stroke: #aaa;
+      fill: none;
+    }
+
+    text {
+      font-size: 14px;
+    }
+
+
+  }
+}
+
+.drill-down-key {
+  width: 150px;
+  border: 1px solid #aaa;
+  border-radius: 3px;
+  padding: 0 5px;
+
+  .key-item {
+    background-color: transparent;
+    color: #000;
+    border-bottom: 1px solid #aaa;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  hr {
+    margin: 0;
+    display: inline-block;
+    width: 75px;
+    margin-right: 20px;
+    border-color: inherit;
+    border-top-width: 3px;
+    padding-bottom: 3px;
+  }
+}
+
 .factor-highlight,
 .factor-selector-item {
   .factor-unspecf,
@@ -1148,4 +1284,28 @@ body {
     color: $death-color;
     background-color: $death-color;
   }
+}
+
+.year-2012 {
+  fill: #ffb128;
+  stroke: #ffb128;
+  border-color: #ffb128;
+  background-color: #ffb128;
+  color: #ffb128;
+}
+
+.year-2013 {
+  fill: #1485cc;
+  stroke: #1485cc;
+  border-color: #1485cc;
+  background-color: #1485cc;
+  color: #1485cc;
+}
+
+.year-2014 {
+  fill: #31ae1d;
+  stroke: #31ae1d;
+  border-color: #31ae1d;
+  background-color: #31ae1d;
+  color: #31ae1d;
 }

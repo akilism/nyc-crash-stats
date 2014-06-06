@@ -13,6 +13,7 @@
     <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
     <!-- build:css(app) styles/vendor.css -->
     <!-- bower:css -->
+    <link rel="stylesheet" href="bower_components/leaflet/dist/leaflet.css" />
     <!-- endbower -->
     <link rel="stylesheet" href="bower_components/leaflet/dist/leaflet.css">
     <link rel="stylesheet" href="styles/maki-sprite.css">
@@ -52,6 +53,7 @@
     <script src="bower_components/angular-route/angular-route.js"></script>
     <script src="bower_components/d3/d3.js"></script>
     <script src="bower_components/lodash/dist/lodash.compat.js"></script>
+    <script src="bower_components/leaflet/dist/leaflet-src.js"></script>
     <!-- endbower -->
     <script src="bower_components/leaflet/dist/leaflet.js"></script>
     <script src="scripts/geojson-utils.js"></script>
@@ -60,6 +62,7 @@
     <!-- build:js({.tmp,app}) scripts/scripts.js -->
     <script src="scripts/app.js"></script>
     <script src="scripts/controllers/main.js"></script>
+    <script src="scripts/controllers/trend.js"></script>
     <script src="scripts/controllers/navbar.js"></script>
     <script src="scripts/services/Socrata.js"></script>
     <script src="scripts/directives/crashDataView.js"></script>
@@ -69,6 +72,10 @@
     <script src="scripts/directives/factorGraph.js"></script>
     <script src="scripts/filters/factorname.js"></script>
     <script src="scripts/services/GeoData.js"></script>
+    <script src="scripts/filters/month.js"></script>
+    <script src="scripts/directives/monthgraph.js"></script>
+    <script src="scripts/directives/drilldowngraph.js"></script>
+    <script src="scripts/directives/dropdown.js"></script>
     <!-- endbuild -->
 
 </body>
