@@ -1,48 +1,20 @@
-<div class="header">
-  <ul class="nav nav-pills pull-right">
-    <li><a ng-click="showJumbo()" ng-href="#">About</a></li>
-  </ul>
-  <h3 class="text-muted">NYC Crash Stats</h3>
-</div>
-<div class="jumbotron-wrapper" ng-click="hideJumbo()">
-  <div class="jumbotron">
-    <h1>About</h1>
-    <p>A tool to visualize car crashes in New York City.</p>
-    <hr>
-    <div>The data is from the <a href="https://data.cityofnewyork.us/" title="NYC OpenData" target="_blank">NYC OpenData Portal</a>: <a href="https://data.cityofnewyork.us/NYC-BigApps/NYPD-Motor-Vehicle-Collisions/h9gi-nx95" target="_blank" title="NYPD Collisions Dataset">NYPD Motor Vehicle Collisions Dataset.</a><br>
-      <span class="small text-muted">
-        It consists of details of Motor Vehicle Collisions in New York City provided by the Police Department (NYPD).<br>
-        There are a few caveats with the data:
-        <ol>
-          <li>The location is not always recorded, sometimes the latitude and longitude are missing, sometimes the streets are missing and sometimes both are missing. The map is only displaying crashes that have a latitude and longitude specified.</li>
-          <li>There are a large amount of crashes with "Unspecified", "Blank", or simply not recorded contributing factors for vehicle 1.</li>
-          <li>The data stays as up to date as it can, but this is dependent on how often the city updates it's Vision Zero dataset. You will always see this latest data available.</li>
-        </ol>
-      </span>
-    </div>
-    <p>Also checkout <a href="http://visionzero.herokuapp.com/" target="_blank">New York City's Vision Zero Map</a> and contribute additional dangerous intersections and issues.
-    <p>The precinct, community district, neighborhood, city council and zipcode shapefiles are from the generous folks at <a href="http://nyc.pediacities.com/Nycpedia" target="_blank">Pediacities</a>.</p>
-    <hr>
-    <p>The code for this site is available on <a href="https://github.com/akilism/nyc-crash-stats" title="Github:Akilism" target="_blank">Github</a>.</p>
-    <p>You can also get in touch with me about suggestions / issues @ <a href="mailto:akilism@wolvesintheserverroom.com">akilism@wolvesintheserverroom.com</a>
-  </div>
-</div>
+<header></header>
 <div class="row yearly-accident-totals" ng-class="setTotalsClass()">
   <h4 class="text-muted">Current year to date breakdown:</h4>
   <h2 class="yearly-featured">{{featuredArea}}</h2>
-  <h2 class="yearly-total">Total accidents in 2014: {{yearly.total_accidents | number}}</h2>
-  <h3 class="yearly-total col-md-6"><span class="total-label">Total persons injured in 2014:</span> {{yearly.total_injured | number}}
+  <h2 class="yearly-total">Total crashes in 2014: {{yearly.total_accidents | number}}</h2>
+  <h3 class="yearly-total col-md-6"><span class="total-label">Total persons injured in 2014:</span> {{yearly.number_of_persons_injured | number}}
     <ul class="detail-list">
-      <li class="btn btn-default m-r-20"><div class="glyphicon glyphicon-user">&nbsp;</div> {{yearly.pedestrians_injured | number}}</li>
-      <li class="btn btn-default m-r-20"><div class="maki-icon bicycle">&nbsp;</div> {{yearly.cyclist_injured | number}}</li>
-      <li class="btn btn-default m-r-20"><div class="maki-icon car">&nbsp;</div> {{yearly.motorist_injured | number}}</li>
+      <li class="btn btn-default m-r-20"><div class="glyphicon glyphicon-user">&nbsp;</div> {{yearly.number_of_pedestrians_injured | number}}</li>
+      <li class="btn btn-default m-r-20"><div class="maki-icon bicycle">&nbsp;</div> {{yearly.number_of_cyclist_injured | number}}</li>
+      <li class="btn btn-default m-r-20"><div class="maki-icon car">&nbsp;</div> {{yearly.number_of_motorist_injured | number}}</li>
     </ul>
   </h3>
-  <h3 class="yearly-total col-md-6"><span class="total-label">Total persons killed in 2014:</span> {{yearly.total_killed | number}}
+  <h3 class="yearly-total col-md-6"><span class="total-label">Total persons killed in 2014:</span> {{yearly.number_of_persons_killed | number}}
     <ul class="detail-list">
-      <li class="btn btn-default m-r-20"><div class="glyphicon glyphicon-user">&nbsp;</div> {{yearly.pedestrians_killed | number}}</li>
-      <li class="btn btn-default m-r-20"><div class="maki-icon bicycle">&nbsp;</div> {{yearly.cyclist_killed | number}}</li>
-      <li class="btn btn-default m-r-20"><div class="maki-icon car">&nbsp;</div> {{yearly.motorist_killed | number}}</li>
+      <li class="btn btn-default m-r-20"><div class="glyphicon glyphicon-user">&nbsp;</div> {{yearly.number_of_pedestrians_killed | number}}</li>
+      <li class="btn btn-default m-r-20"><div class="maki-icon bicycle">&nbsp;</div> {{yearly.number_of_cyclist_killed | number}}</li>
+      <li class="btn btn-default m-r-20"><div class="maki-icon car">&nbsp;</div> {{yearly.number_of_motorist_killed | number}}</li>
     </ul>
   </h3>
 </div>
@@ -55,7 +27,18 @@
     <factor-graph size="factorListSize" classer="getFactorClass" dataset="factorsVehicle1" heading="Vehicle 1 Contributing Factors"></factor-graph>
   </div>
   <div class="col-sm-9 map-pane">
-    <crash-data-view setaccident="showAccidentDetails" classer="getFactorClass" statcalc="calculateYearlyStats" dataset="crashStats.lastAccidents" area="featuredArea"></crash-data-view>
+    <div>
+      <ul class="nav nav-pills map-layers">
+        <li class="nav-boroughs"><a href="#" ng-click="showOverlay('borough', $event)">Boroughs</a></li>
+        <li><a href="#" ng-click="showOverlay('citycouncil', $event)">City Council</a></li>
+        <li><a href="#" ng-click="showOverlay('community', $event)">Community Boards</a></li>
+        <li><a href="#" ng-click="showOverlay('neighborhood', $event)">Neighborhoods</a></li>
+        <li><a href="#" ng-click="showOverlay('precinct', $event)">Police Precincts</a></li>
+        <li><a href="#" ng-click="showOverlay('zipcode', $event)">Zip Codes</a></li>
+      </ul>
+      <span class="filter-instruction text-muted" ng-class="{hidden: hideInstruction}">Select a {{activeType}} from the map to filter.</span>
+    </div>
+    <crash-data-view setaccident="showAccidentDetails" defaultzoom="11" classer="getFactorClass" statcalc="calculateYearlyStats" dataset="crashStats.lastAccidents" area="featuredArea"></crash-data-view>
   </div>
 </div>
 <div class="footer">

@@ -49,12 +49,13 @@ $factor-lighting-defect-color: Tomato;
 $factor-hitch-defect-color: BlueViolet;
 
 $accident-color: #999BA2;
-$accident-stroke-color: #727379;
+$accident-stroke-color: #000; //#727379;
 $death-color: rgb(157, 161, 241);
 $death-stroke-color: rgb(92, 83, 121);
 $injury-color: rgb(165, 229, 83);
 $injury-stroke-color: rgb(94, 107, 77);
 
+$bcolor: #C4CACA;
 @import 'bootstrap-sass-official/vendor/assets/stylesheets/bootstrap';
 @import url(http://fonts.googleapis.com/css?family=PT+Sans:400,700,700italic);
 
@@ -72,16 +73,43 @@ $injury-stroke-color: rgb(94, 107, 77);
 }
 
 .crash-data-view-wrapper {
-  border-bottom: 1px solid #C4CACA;
+  border-bottom: 1px solid $bcolor;
   // border-bottom: 1px solid #C4CACA;
   padding-bottom: 10px;
   margin-bottom: 15px;
 
   h3 {
-    border-bottom: 1px solid #C4CACA;
-    margin-top: -3px;
+    border-right: 1px solid $bcolor;
+    margin-top: 10px;
+    padding: 0;
+
+    .more-info {
+      font-size: 0.5em;
+      display: none;
+      margin-left: 5px;
+    }
+
+    &.linked {
+      color: #428bca;
+      cursor: pointer;
+
+      .more-info {
+        display: inline-block;
+      }
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
   }
 }
+
+.detail-map {
+  .crash-data-view-map {
+    height : 500px;
+  }
+}
+
 
 .crash-data-view {
   list-style-type: none;
@@ -98,7 +126,7 @@ $injury-stroke-color: rgb(94, 107, 77);
 }
 
 .map-wrapper {
-  border-top: 1px solid #d3d3d3;
+  border-top: 1px solid $bcolor;
   padding-top: 20px;
 }
 
@@ -165,7 +193,7 @@ h2.yearly-total {
   }
 
   h4 {
-    border-bottom: 1px solid #d3d3d3;
+    border-bottom: 1px solid $bcolor;
   }
 }
 
@@ -246,8 +274,8 @@ body {
 }
 
 .header {
-  padding-bottom: 15px;
-  border-bottom: 1px solid #e5e5e5;
+  padding-bottom: 5px;
+  border-bottom: 1px solid $bcolor;
 
   h3 {
     font-size: 5em;
@@ -259,28 +287,32 @@ body {
 }
 
 .footer {
-  border-top: 1px solid #e5e5e5;
+  border-top: 1px solid $bcolor;
   padding-top: 15px;
 }
 
 .crash-map-view-toggle {
   font-size: 1.2rem;
+  border-top: 1px solid $bcolor;
+  padding-top: 5px;
+
 
   .view-toggle-header {
-    border-bottom: 1px solid #d3d3d3;
+    border-bottom: 1px solid $bcolor;
   }
 }
 
 
-.accident-path {
+.accident-path,
+.location-path {
   stroke-linejoin: round;
   stroke-linecap: round;
   fill-rule: evenodd;
   stroke: $accident-stroke-color;
   stroke-width: 2px;
   fill: $accident-color;
-  stroke-opacity: 1;
-  fill-opacity: 1;
+  stroke-opacity: 0.5;
+  fill-opacity: 0.5;
 
   &:hover {
     // fill: #EBFF00;
@@ -292,6 +324,10 @@ body {
   &.hidden {
     display: none;
   }
+}
+
+.hidden {
+  display: none;
 }
 
 .hover-accident {
@@ -379,6 +415,10 @@ body {
   }
 }
 
+.filter-buttons {
+  z-index: 1999;
+  position: relative;
+}
 
 .accident-popup {
   display: none;
@@ -400,7 +440,7 @@ body {
   }
 
   h4 {
-    border-bottom: 1px solid #d3d3d3;
+    border-bottom: 1px solid $bcolor;
     margin-right: 20px;
     padding-bottom: 2px;
     padding-top: 10px;
@@ -466,7 +506,7 @@ body {
 .accident-detail-panel {
   display: block;
   transition: all 0.2s ease;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid $bcolor;
   padding: 5px;
   margin: 5px 0;
 
@@ -483,7 +523,7 @@ body {
 }
 
 .factor-header {
-  border-bottom: 1px solid #C4CACA;
+  border-bottom: 1px solid $bcolor;
   margin-top: 0;
   padding-left: 5px;
   font-size: 1.5em;
@@ -496,7 +536,7 @@ body {
   // padding: 0;
   // margin: 0;
   font-size: 1.25em;
-  border: 1px solid #bbb;
+  border: 1px solid $bcolor;
   margin-right: 20px;
   padding: 10px;
   box-shadow: 1px 1px 2px #E4DFDF;
@@ -504,7 +544,7 @@ body {
   h3 {
     font-weight: bold;
     padding-bottom: 4px;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid $bcolor;
     margin-right: 30px;
     margin-top: 5px;
   }
@@ -611,7 +651,7 @@ body {
   transition: all 2ms ease;
 
   &.active {
-    border: 1px solid #d3d3d3;
+    border: 1px solid $bcolor;
 
     .factor-header {
       background-color: #dfdfdf;
@@ -753,7 +793,7 @@ body {
 }
 
 .drill-down-graph {
-  border-bottom: 1px solid #aaa;
+  border-bottom: 1px solid $bcolor;
   padding-bottom: 20px;
 }
 
@@ -786,7 +826,7 @@ body {
 }
 
 .crash-graph-hover {
-  border: solid 1px #000;
+  border: solid 1px $bcolor;
   box-shadow: -2px 2px 4px #ADADAD;
   // padding: 10px;
   border-radius: 5px;
@@ -794,6 +834,7 @@ body {
   z-index: 1001;
   background: #E3FFF7;
   color: #000;
+  display: none;
 
   .hover-value {
     font-size: 1.125em;
@@ -809,7 +850,7 @@ body {
     margin: 0;
 
     &:first-child {
-      border-bottom: 1px solid #D8F5D6;
+      border-bottom: 1px solid $bcolor;
     }
   }
 
@@ -1269,7 +1310,7 @@ body {
 
 .type-selector-item,
 .death-injury-highlight {
-  .injury {
+  .injury, .injured {
     fill: $injury-color;
     stroke: shade($injury-stroke-color, 30%);
     border-color: shade($injury-stroke-color, 30%);
@@ -1277,7 +1318,7 @@ body {
     background-color: $injury-color;
   }
 
-  .death {
+  .death, .killed {
     fill: $death-color;
     stroke: shade($death-stroke-color, 30%);
     border-color: shade($death-stroke-color, 30%);
@@ -1308,4 +1349,255 @@ body {
   border-color: #31ae1d;
   background-color: #31ae1d;
   color: #31ae1d;
+}
+
+.btn-dropdown-wrapper {
+  padding-right: 5px;
+  display: inline-block;
+
+  .active {
+    background-color: #e6e6e6;
+  }
+  .child.dropdown-menu {
+    left: auto;
+
+    &.flip {
+      left: -100%;
+    }
+  }
+
+  .grandchild.dropdown-menu {
+    left: 100%;
+    top: auto;
+    margin-top: -32px;
+
+    &.flip {
+      left: -100%;
+    }
+  }
+}
+
+.graph-btn {
+  margin: 4px;
+  text-transform: capitalize;
+  padding: 4px;
+}
+
+.year-selector {
+  // margin-top: 10px;
+  font-size: 1.15em;
+  // padding: 10px 0 5px 0;
+  border-width: 1px 0;
+  vertical-align: top;
+  // height: 20px;
+
+  ul {
+    margin-left: 5px;
+    padding: 0;
+    display: inline-block;
+    margin-bottom: 0;
+    width: 300px;
+  }
+
+  li {
+    display: inline-block;
+    margin: 0 5px;
+    height: 23px;
+    vertical-align: bottom;
+  }
+}
+
+.keys {
+  max-width: 510px;
+  padding: 0;
+  margin: 10px 0;
+
+  li {
+    border: 1px solid #000;
+    display: inline-block;
+
+    &:nth-child(even) {
+      border-width: 0 1px;
+    }
+
+    &:last-child {
+      border-width: 0 1px 1px 1px;
+    }
+
+    &:hover {
+      background-color: #dfdfdf;
+      cursor: pointer;
+    }
+
+    &.active {
+      background-color: #dfdfdf;
+    }
+  }
+
+  li.keys-header {
+
+    .key-value {
+      text-align: center;
+    }
+
+    &:hover {
+      cursor: default;
+      background-color: #fff;
+    }
+  }
+
+  .key-value {
+    font-weight: bold;
+    width: 50px;
+    display: inline-block;
+    padding: 4px;
+    text-align: right;
+    border: 1px solid #000;
+    border-width: 0 0 0 1px;
+
+    // &:last-child {
+    //   border-width: 0;
+    // }
+  }
+
+  .key-label {
+    width: 193px;
+    display: inline-block;
+    padding: 4px 4px 4px 10px;
+    text-transform: capitalize;
+  }
+}
+
+.trend-header {
+  font-size: 32px;
+  margin: 0;
+  padding: 0;
+}
+
+.trend-head {
+  margin-bottom: 5px;
+  padding: 5px 0;
+  border-bottom: 1px solid $bcolor;
+}
+
+.trend-map {
+  height: 500px;
+}
+
+.disabler {
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  opacity: 0.75;
+  cursor: none;
+}
+
+.trend-left {
+  margin: 0;
+  padding: 0 0 0 2px;
+}
+
+.crash-map-hover {
+  width: 250px;
+  border: 1px solid black;
+  padding: 3px;
+  border-radius: 5px;
+  position: fixed;
+  display: none;
+  z-index: 2000;
+  background-color: rgba(248, 250, 234, 0.94);
+
+  p {
+    margin: 0;
+    padding: 0;
+  }
+
+  .crash-location {
+    text-transform: capitalize;
+    border-bottom: 1px solid #fff;
+  }
+
+  .crash-year {
+    font-size: 1.125em;
+    font-weight: bold;
+  }
+}
+
+
+//Loader
+#floatingCirclesG{
+  position:relative;
+  width: 128px;
+  height: 128px;
+  transform:scale(0.6);
+  margin: 20px auto;
+}
+
+.f_circleG{
+position:absolute;
+background-color:#FFFFFF;
+height:23px;
+width:23px;
+border-radius:12px;
+animation-name:f_fadeG;
+animation-duration:1.2s;
+animation-iteration-count:infinite;
+animation-direction:linear;
+}
+
+#frotateG_01{
+left:0;
+top:52px;
+animation-delay:0.45s;
+}
+
+#frotateG_02{
+left:15px;
+top:15px;
+animation-delay:0.6s;
+}
+
+#frotateG_03{
+left:52px;
+top:0;
+animation-delay:0.75s;
+}
+
+#frotateG_04{
+right:15px;
+top:15px;
+animation-delay:0.9s;
+}
+
+#frotateG_05{
+right:0;
+top:52px;
+animation-delay:1.05s;
+}
+
+#frotateG_06{
+right:15px;
+bottom:15px;
+animation-delay:1.2s;
+}
+
+#frotateG_07{
+left:52px;
+bottom:0;
+animation-delay:1.35s;
+}
+
+#frotateG_08{
+left:15px;
+bottom:15px;
+animation-delay:1.5s;
+}
+
+@keyframes f_fadeG{
+0%{
+background-color:#CF9B4C}
+
+100%{
+background-color:#FFFFFF}
+
 }

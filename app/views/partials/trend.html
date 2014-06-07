@@ -1,15 +1,86 @@
-<area-dropdown dataset="shapes"></area-dropdown>
-<drilldowngraph key="total_accidents" dataset="trendStats" timescale="monthly" header="{{'Total crashes ' + title}}"></drilldowngraph>
-<br>
-<drilldowngraph key="total_injured" dataset="trendStats" timescale="monthly" header="{{'Total injuries ' + title}}"></drilldowngraph>
-<br>
-<drilldowngraph key="total_killed" dataset="trendStats" timescale="monthly" header="{{'Total deaths ' + title}}"></drilldowngraph>
-<!-- <br>
-<month-graph key="total_accidents" dataset="monthly" compress="false" header="Total Crashes Citywide"></month-graph>
-<br>
-<month-graph key="total_injured" dataset="monthly" compress="false" header="Total Injured Citywide"></month-graph>
-<br>
-<month-graph key="total_killed" dataset="monthly" compress="false" header="Total Killed Citywide"></month-graph> -->
+<header></header>
+<div class="trend-head clearfix">
+  <div class="col-md-5" style="padding-left:2px;">
+    <h1 class="trend-header">{{title}}</h1>
+  </div>
+  <div class="col-md-7 filter-buttons">
+    <button-dropdown dataset="menuData"></button-dropdown>
+  </div>
+</div>
+<div class="clearfix">
+  <div class="loader col-md-5" style="display: none;">
+      <div id="floatingCirclesG">
+        <div class="f_circleG" id="frotateG_01"> </div>
+        <div class="f_circleG" id="frotateG_02"> </div>
+        <div class="f_circleG" id="frotateG_03"> </div>
+        <div class="f_circleG" id="frotateG_04"> </div>
+        <div class="f_circleG" id="frotateG_05"> </div>
+        <div class="f_circleG" id="frotateG_06"> </div>
+        <div class="f_circleG" id="frotateG_07"> </div>
+        <div class="f_circleG" id="frotateG_08"> </div>
+      </div>
+  </div>
+  <div class="trend-left col-md-5">
+    <div class="year-selector">Years:
+      <ul>
+        <li class="checkbox">
+          <label>
+            <input type="checkbox" ng-model="selectedYears.2012" ng-change="setYear()"> 2012
+          </label>
+        </li>
+        <li class="checkbox">
+          <label>
+            <input type="checkbox" ng-model="selectedYears.2013" ng-change="setYear()"> 2013
+          </label>
+        </li>
+        <li class="checkbox">
+          <label>
+            <input type="checkbox" ng-model="selectedYears.2014" ng-change="setYear()"> 2014
+          </label>
+        </li>
+      </ul>
+
+    </div>
+    <ul class="keys col-xs-12">
+    <li class="keys-header">
+      <span class="key-label"></span>
+      <span ng-repeat="(year, visible) in selectedYears" class="key-value" ng-hide="!visible">{{year}}</span>
+      <span class="key-value">Total</span>
+    </li>
+    <li ng-repeat="key in keys" ng-click="switchGraph(key, $event)" ng-class="key" class="key-item">
+      <span class="key-label">{{key | keyFilter}}</span>
+      <span ng-repeat="(year, visible) in selectedYears" class="key-value" ng-hide="!visible">
+        {{getButtonVal(key, year, visible)}}
+      </span>
+      <span class="key-value">{{getButtonVal(key)}}</span>
+    </li>
+  </ul>
+  <ul class="col-xs-12" style="padding-left: 0;">
+    <li class="checkbox" style="margin-top: 0; white-space: nowrap;">
+      <label>
+        <input type="checkbox" ng-model="fitDates" ng-change="setDates(true)"> Constrain to Matching Dates
+      </label>
+       <span>{{dateRange | rangeDisplayFilter}}</span>
+    </li>
+  </ul>
+  </div>
+  <div class="trend-right col-md-7">
+    <div id="trendMap" class="trend-map col-xs-12 death-injury-highlight"></div>
+  </div>
+</div>
+<div class="crash-map-hover">
+  <div class="clearfix">
+    <p class="crash-location col-xs-12">{{hoverCrash.on_street_name | lowercase}} & {{hoverCrash.off_street_name | lowercase}}</p>
+    <div ng-repeat="(key, value) in hoverCrash.crashes">
+      <p class="crash-year">{{key}}</p>
+      <p class="crash-count">{{value.totals.total_accidents}} Crashes</p>
+      <p class="crash-injured col-xs-6">{{value.totals.number_of_persons_injured}} Injured</p>
+      <p class="crash-killed col-xs-6">{{value.totals.number_of_persons_killed}} Killed</p>
+    </div>
+  </div>
+</div>
+<drilldowngraph key="graphKey" dataset="unConstrainedStats" timescale="monthly" header="graphHeader"></drilldowngraph>
+
 <div class="crash-graph-hover">
   <p class="date"><span class="hover-label">Date:</span> <span class="hover-value"></span></p>
   <p class="amount"><span class="hover-label">Total:</span> <span class="hover-value"></span></p>

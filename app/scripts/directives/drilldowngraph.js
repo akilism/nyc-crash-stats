@@ -6,15 +6,16 @@ directives.directive('drilldowngraph',['monthFilter', function (monthFilter) {
       restrict: 'E',
       scope: {
         'dataset': '=dataset',
-        'key': '@key',
-        'title': '@header',
+        'key': '=key',
+        'title': '=header',
         'timeScale': '@timescale'
       },
       link: function postLink(scope, element, attrs) {
         var d = new Date();
-        scope.month = 4;//d.getMonth();
+        scope.month = d.getMonth();
         scope.year = d.getFullYear();
         scope.flatten = false;
+        scope.years = [d.getFullYear()];
 
         var setGraph = function (data, key, flatten, scale, el) {
           var flatData = _.flatten(data);
@@ -22,18 +23,25 @@ directives.directive('drilldowngraph',['monthFilter', function (monthFilter) {
           scale = scale.toLowerCase();
 
           var domainMax = d3.max(flatData, function(d) {
-            return parseInt(d[key], 10);
+            return parseInt(d.totals[key], 10);
           });
 
            var domainMin = d3.min(flatData, function(d) {
-            return parseInt(d[key], 10);
+            return parseInt(d.totals[key], 10);
           });
 
-          var dateMax = d3.max(flatData, function(d) { return d.date; });
-          var dateMin = d3.min(flatData, function(d) { return d.date; });
-          var lengthMax = d3.max(data, function (d) {
-            return d.length;
-          });
+          var dateMax = d3.max(flatData, function(d) { return d.date.getMonth(); });
+          var dateMin = d3.min(flatData, function(d) { return d.date.getMonth(); });
+          var lengthMax;
+
+          if(scope.timeScale === 'monthly') {
+            lengthMax = 12;
+          } else if (scope.timeScale === 'daily') {
+            lengthMax = d3.max(data, function (d) {
+              return d.length;
+            });
+          }
+
           var margin = {top: 50, right: 0, bottom: 0, left: (domainMax > 999) ? 50 : 40};
           var width = 960 - margin.left - margin.right;
           var height = 350 - margin.top - margin.bottom;
@@ -80,7 +88,6 @@ directives.directive('drilldowngraph',['monthFilter', function (monthFilter) {
           var xTickCount = (flatten) ? 8 : 12;
 
           var xAxis = (flatten) ? d3.svg.axis()
-          .scale(timeScale)
           .orient('top')
           .tickSize(height)
           .tickFormat(d3.time.format('%m/%y'))
@@ -107,7 +114,7 @@ directives.directive('drilldowngraph',['monthFilter', function (monthFilter) {
 
           var pathSegment = d3.svg.line()
           .x(xPos)
-          .y(function(d) { return totalScale(d[key]); })
+          .y(function(d) { return totalScale(d.totals[key]); })
           .interpolate('linear');
 
           var customAxis = function (g) {
@@ -135,11 +142,11 @@ directives.directive('drilldowngraph',['monthFilter', function (monthFilter) {
             var dateOptions = (scale === 'daily') ? {month: 'long', day: 'numeric', year: 'numeric'} : {month: 'long', year: 'numeric'};
 
             innerHorizLine.attr('x1', 0)
-            .attr('y1', totalScale(d[key]))
+            .attr('y1', totalScale(d.totals[key]))
             .attr('x2', width)
-            .attr('y2', totalScale(d[key]))
+            .attr('y2', totalScale(d.totals[key]))
             .attr('class','crash-month-inner-line');
-            $$graphHover.find('.amount .hover-value').text(numberFormatter(d[key]));
+            $$graphHover.find('.amount .hover-value').text(numberFormatter(d.totals[key]));
             $$graphHover.find('.date .hover-value').text(d.date.toLocaleDateString('en-us', dateOptions));
             $$graphHover.css({
               'top':  (d3.event.y + 20) + 'px',
@@ -185,6 +192,7 @@ directives.directive('drilldowngraph',['monthFilter', function (monthFilter) {
           } else {
             scope.paths = {};
             _.forEach(data, function (months) {
+              // console.log(months);
               var year = months[0].date.getFullYear();
               scope.paths[year] = scope.paths[year] || g.append('path');
               scope.paths[year].attr('d', pathSegment(months))
@@ -197,7 +205,7 @@ directives.directive('drilldowngraph',['monthFilter', function (monthFilter) {
 
           lineGraphEnter.append('svg:circle')
           .attr('cx', xPos)
-          .attr('cy', function (d) { return totalScale(d[key]); })
+          .attr('cy', function (d) { return totalScale(d.totals[key]); })
           .attr('r', 3)
           .attr('class', function (d) {
            return 'crash-month-point year-' + d.date.getFullYear();
@@ -205,21 +213,21 @@ directives.directive('drilldowngraph',['monthFilter', function (monthFilter) {
 
           lineGraphEnter.append('svg:circle')
           .attr('cx', xPos)
-          .attr('cy', function (d) { return totalScale(d[key]); })
+          .attr('cy', function (d) { return totalScale(d.totals[key]); })
           .attr('r', 8)
           .attr('class', function (d) {
             return 'crash-month-hover-point year-' + d.date.getFullYear();
           })
-          .on('mousemove', showHover)
-          .on('click', filterGraph);
+          .on('mousemove', showHover);
+          //.on('click', filterGraph);
 
 
-          var lineGraphUpdate = lineGraph.transition();
+          // var lineGraphUpdate = lineGraph.transition();
 
-          // lineGraphUpdate.attr('cx', function (d) { return timeScale(d.date); })
-          // .attr('cy', function (d) { return totalScale(d[key]); });
+          // lineGraphUpdate.attr('cx', xPos)
+          // .attr('cy', function (d) { return totalScale(d.totals[key]); });
 
-          //lineGraphUpdate.selectAll('.violation-month-line').attr('d', pathSegment(data));
+          // lineGraphUpdate.selectAll('.violation-month-line').attr('d', pathSegment(data));
 
           lineGraph.exit().remove();
 
@@ -232,70 +240,67 @@ directives.directive('drilldowngraph',['monthFilter', function (monthFilter) {
         };
 
         var addKeyItem = function(month, year) {
-          element.find('.drill-down-key').append('<div class="key-item year-' + year + '"><hr>' + year + '</div>');
+          var $$key = element.find('.drill-down-key');
+          var $$keyForYear = $$key.children('[year="' + year + '"]');
+          if ($$keyForYear.length === 0) {
+            $$key.append('<div year="' + year + '" class="key-item year-' + year + '"><hr>' + year + '</div>');
+          }
         };
 
-        var getMonthlyTotals = function (data) {
-          var newData = _.cloneDeep(data);
-          var totaledData = _.map(newData, function (months) {
-            return _.map(months, function (days) {
-              return calculateMonthlyTotal(days);
-            });
-          });
-          // console.log(totaledData);
-          return totaledData;
-        };
-
-        var calculateMonthlyTotal = function (data) {
-          var totals = _.reduce(data, function (sum, day) {
-            if(!sum) {
-              sum = day;
-            } else {
-              _.forOwn(day, function (val, key) {
-                if(key !== 'date' && key !== 'year') {
-                  sum[key] = parseInt(val, 10) + parseInt(sum[key], 10);
-                }
-              });
-            }
-
-             return sum;
-          });
-
-          return totals;
-        };
-
-        var calculateYearlyTotals = function (data) {
-
-        };
-
-        var flattenMonth = function (data, month, year) {
+        var getMonthlyTotals = function (data, years) {
           var newData = [];
-          _.forOwn(data, function (year) {
-            _.forOwn(year, function (month) {
-              if (month[0].date.getMonth() === scope.month) {
-                newData.push(month);
-              }
-            });
+          // console.log(data, years);
+          _.forEach(years, function (year) {
+            if (data.hasOwnProperty(year)) {
+              var yearData = [];
+              _.forOwn(data[year].months, function (val, key) {
+                // console.log(val.totals, val.date);
+                yearData.push({'date': val.date, 'totals': val.totals});
+              });
+              newData.push(yearData);
+            }
+          });
+
+          // console.log(totaledData);
+          return newData;
+        };
+
+        var getDailyTotals = function (data, month, years) {
+          var newData = [];
+          _.forEach(years, function(year) {
+            if (data.hasOwnProperty(year) && data[year].months.hasOwnProperty(month)) {
+              var monthData = [];
+              _.forOwn(data[year].months[month].days, function (val, key) {
+                monthData.push({'date': val.date, 'totals': val.totals});
+              });
+              newData.push(monthData);
+            }
           });
 
           return newData;
         };
 
+        var getYearlyTotals = function (data) {
+
+        };
+
         var setGraphData = function (data, scale) {
           scale = scale.toLowerCase();
-
           switch (scale) {
             case 'monthly':
-              return getMonthlyTotals(data);
+              return getMonthlyTotals(data, scope.years);
             case 'yearly':
-              return calculateYearlyTotals(data);
+              return getYearlyTotals(data);
             case 'daily':
-              return flattenMonth(data, scope.month, scope.year);
+              return getDailyTotals(data, scope.month, scope.years);
           }
         };
 
         var graphData = setGraphData(scope.dataset, scope.timeScale);
 
+        // console.log(scope.years);
+        // console.log(scope.dataset);
+        // console.log(scope.timeScale);
         var clearKey = function () {
           element.find('.drill-down-key').html('');
         };
@@ -308,10 +313,23 @@ directives.directive('drilldowngraph',['monthFilter', function (monthFilter) {
           setGraph(graphData, scope.key, scope.flatten, scope.timeScale, $(element).find('.drill-down-graph')[0]);
         };
 
-        // console.log('graphData:', graphData);
-
         setGraph(graphData, scope.key, scope.flatten, scope.timeScale, $(element).find('.drill-down-graph')[0]);
 
+        // scope.$watch('dataset', function (newVal, oldVal) {
+        //   scope.years = _.keys(scope.dataset);
+        //   graphData = setGraphData(scope.dataset, scope.timeScale);
+        //   setGraph(graphData, scope.key, scope.flatten, scope.timeScale, $(element).find('.drill-down-graph')[0]);
+        // }, true);
+
+        scope.$on('updateGraph', function () {
+          scope.years = _.keys(scope.dataset);
+          graphData = setGraphData(scope.dataset, scope.timeScale);
+          setGraph(graphData, scope.key, scope.flatten, scope.timeScale, $(element).find('.drill-down-graph')[0]);
+        });
+
+        scope.$watch('key', function (newVal, oldVal) {
+          setGraph(graphData, scope.key, scope.flatten, scope.timeScale, $(element).find('.drill-down-graph')[0]);
+        });
       }
     };
   }]);

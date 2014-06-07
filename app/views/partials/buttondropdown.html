@@ -1,0 +1,16 @@
+<div class="btn-group">
+  <div class="btn-dropdown-wrapper" ng-repeat="item in data">
+  <button type="button" class="btn btn-default" ng-click="openDropDown(item.type, 'child', item.isLeaf, $event)">{{item.name}} <span class="caret"></span></button>
+  <ul class="child dropdown-menu" ng-class="item.type" role="menu">
+    <li ng-repeat="child in item.children">
+      <a href="#" ng-show="child.isLeaf" ng-click="loadArea(child, $event)">{{child.name}}</a>
+      <a href="#" ng-show="!child.isLeaf" ng-click="openDropDown(child.type, 'grandchild', child.isLeaf, $event, item.type)">{{child.name}}</a>
+      <ul ng-show="!child.isLeaf" class="grandchild dropdown-menu" ng-class="[child.type, item.type]" role="menu">
+        <li ng-repeat="grandchild in child.children">
+          <a href="#" ng-click="loadArea(grandchild, $event)">{{grandchild.name}}</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+  </div>
+</div>

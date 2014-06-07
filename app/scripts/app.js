@@ -45,7 +45,8 @@ angular.module('nycCrashStatsApp', [
       trendStats: ['Socrata', '$location', function(Socrata, $location) {
         var options = {
           'type': 'zipcode',
-          'value': getPathValue($location.$$path)
+          'value': getPathValue($location.$$path),
+          'year': '2014-01-01'
         };
 
         return Socrata(options, 'daily');
@@ -59,7 +60,8 @@ angular.module('nycCrashStatsApp', [
       trendStats: ['Socrata', '$location', function(Socrata, $location) {
         var options = {
           'type': 'community',
-          'value': getPathValue($location.$$path)
+          'value': getPathValue($location.$$path),
+          'year': '2014-01-01'
         };
         return Socrata(options, 'daily');
       }
@@ -72,7 +74,8 @@ angular.module('nycCrashStatsApp', [
       trendStats: ['Socrata', '$location', function(Socrata, $location) {
         var options = {
           'type': 'borough',
-          'value': getPathValue($location.$$path)
+          'value': getPathValue($location.$$path),
+          'year': '2014-01-01'
         };
         return Socrata(options, 'daily');
       }
@@ -85,7 +88,8 @@ angular.module('nycCrashStatsApp', [
       trendStats: ['Socrata', '$location', function(Socrata, $location) {
         var options = {
           'type': 'citycouncil',
-          'value': getPathValue($location.$$path)
+          'value': getPathValue($location.$$path),
+          'year': '2014-01-01'
         };
         return Socrata(options, 'daily');
       }
@@ -98,7 +102,8 @@ angular.module('nycCrashStatsApp', [
       trendStats: ['Socrata', '$location', function(Socrata, $location) {
         var options = {
           'type': 'neighborhood',
-          'value': getPathValue($location.$$path)
+          'value': getPathValue($location.$$path),
+          'year': '2014-01-01'
         };
         return Socrata(options, 'daily');
       }
@@ -111,7 +116,8 @@ angular.module('nycCrashStatsApp', [
       trendStats: ['Socrata', '$location', function(Socrata, $location) {
         var options = {
           'type': 'precinct',
-          'value': getPathValue($location.$$path)
+          'value': getPathValue($location.$$path),
+          'year': '2014-01-01'
         };
         return Socrata(options, 'daily');
       }

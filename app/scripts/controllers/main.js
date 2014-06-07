@@ -2,16 +2,18 @@
 
 angular.module('nycCrashStatsApp')
   .controller('MainCtrl', ['$scope', 'crashStats', 'Socrata', function ($scope, crashStats, Socrata) {
-    crashStats.lastAccidents.title = 'Last ' + crashStats.lastAccidents.length + ' Accidents';
+    crashStats.lastAccidents.title = 'Last ' + crashStats.lastAccidents.length + ' Crashes';
     crashStats.lastAccidents.id = 'accident';
-    crashStats.lastInjuries.title = (crashStats.lastInjuries.length >= 100) ? 'Last ' + crashStats.lastInjuries.length + ' Accidents Resulting In An Injury' : 'All Accidents Resulting In An Injury';
+    crashStats.lastInjuries.title = (crashStats.lastInjuries.length >= 100) ? 'Last ' + crashStats.lastInjuries.length + ' Crashes Resulting In An Injury' : 'All Crashes Resulting In An Injury';
     crashStats.lastInjuries.id = 'injury';
-    crashStats.lastDeaths.title = (crashStats.lastDeaths.length >= 100) ? 'Last ' + crashStats.lastDeaths.length + ' Accidents Resulting In A Death' : 'All Accidents Resulting In A Death';
+    crashStats.lastDeaths.title = (crashStats.lastDeaths.length >= 100) ? 'Last ' + crashStats.lastDeaths.length + ' Crashes Resulting In A Death' : 'All Crashes Resulting In A Death';
     crashStats.lastDeaths.id = 'death';
 
     $scope.crashStats = crashStats;
+    // console.log(crashStats.yearly);
     $scope.yearly = crashStats.yearly[0];
     $scope.factorListSize = 5;
+    $scope.hideInstruction = true;
 
     $scope.setActiveAccident = function (accident, useApply) {
       // console.log(accident);
@@ -25,13 +27,12 @@ angular.module('nycCrashStatsApp')
       }
 
       showDetailCrashPopup(event);
-
     };
 
     $scope.showAccidentDetails = function (accidentId, withApply) {
       // console.log(accidentId);
       var accident = getAccident(accidentId);
-
+      console.log('accident', accident);
       if(accident) {
         accident.factors = getAccidentFactors(accident);
         accident.additionalAccidents = getAdditionalAccidents(accident.location);
@@ -66,136 +67,167 @@ angular.module('nycCrashStatsApp')
       factorsV1 = [],
       factorsV2 = [];
 
-      yearlyKeys.push('persons_killed');
-      yearlyKeys.push('persons_injured');
-
-
       _.forEach(yearlyKeys, function (key) {
         if (!newYearly.hasOwnProperty(key)) {
           newYearly[key] = 0;
         }
 
         newYearly[key] = _.reduce(dataset, function (sum, accident) {
-          return sum += parseInt(accident['number_of_' + key], 10);
+          return sum += parseInt(accident[key], 10);
         }, 0);
       });
 
-      newYearly.total_injured = newYearly.persons_injured;
-      newYearly.total_killed = newYearly.persons_killed;
       newYearly.total_accidents = dataset.length;
       $scope.yearly = newYearly;
       $scope.factorsVehicle1 = calculateFactorTotals(dataset);
     };
 
-    $scope.showJumbo = function () {
-      $('.jumbotron-wrapper').fadeIn();
-      ga('send', 'event', 'click', 'about');
+    // $scope.showJumbo = function () {
+    //   $('.jumbotron-wrapper').fadeIn();
+    //   ga('send', 'event', 'click', 'about');
+    // };
+
+    // $scope.hideJumbo = function () {
+    //   $('.jumbotron-wrapper').fadeOut();
+    // };
+
+    // Handle the click event for the overlay display
+    // Community Boards, Neighborhoods, Zip codes etc.
+    // Makes the service call to get the correct shape file
+    // Calls the display layer function to show the shapes
+    $scope.showOverlay = function (type, $event) {
+      $('.nav.map-layers li').removeClass('active');
+      $($event.target.parentElement).addClass('active');
+
+      if($scope.selected === type) {
+        $scope.selected = '';
+        $scope.activeType = '';
+        $scope.hideInstruction = true;
+      } else {
+        $scope.activeType = getActiveType(type);
+        $scope.hideInstruction = false;
+        $scope.selected = type;
+      }
+
+      $scope.$broadcast('displayMapOverlay', type);
     };
 
-    $scope.hideJumbo = function () {
-      $('.jumbotron-wrapper').fadeOut();
+    var getActiveType = function (type) {
+      switch (type) {
+        case 'citycouncil':
+          return 'City Council District';
+        case 'community':
+          return 'Community Board District';
+        case 'neighborhood':
+          return 'neighborhood';
+        case 'precinct':
+          return 'Police Precinct';
+        case 'zipcode':
+          return 'zip code';
+      }
+      return '';
     };
 
     // Maps the contributing factor text to a css class.
     var factorMap = function (factor) {
-      switch(factor) {
-        case 'Uspecified':
+      switch(factor.toLowerCase()) {
+        case 'uspecified':
           return 'unspecf';
-        case 'Driver Inattention/Distraction':
+        case 'driver inattention/distraction':
           return 'inattn';
-        case 'Failure to Yield Right-of-Way':
+        case 'failure to yield right-of-way':
           return 'fail-yield';
-        case 'Fatigued/Drowsy':
+        case 'fatigued/drowsy':
           return 'drowsy';
-        case 'Backing Unsafely':
+        case 'backing unsafely':
           return 'backing';
-        case 'Other Vehicular':
+        case 'other vehicular':
           return 'other';
-        case 'Lost Consciousness':
+        case 'lost consciousness':
           return 'lost-con';
-        case 'Pavement Slippery':
+        case 'pavement slippery':
           return 'slippy';
-        case 'Prescription Medication':
+        case 'prescription medication':
           return 'pres-meds';
-        case 'Turning Improperly':
+        case 'turning improperly':
           return 'turn-imp';
         case 'blank':
           return '';
-        case 'Blank':
+        case 'blank':
           return 'blank';
-        case 'Driver Inexperience':
+        case 'driver inexperience':
           return 'inexp';
-        case 'Physical Disability':
+        case 'physical disability':
           return 'disable';
-        case 'Traffic Control Disregarded':
+        case 'traffic control disregarded':
           return 'disregard';
-        case 'Outside Car Distraction':
+        case 'outside car distraction':
           return 'distract';
-        case 'Alcohol Involvement':
+        case 'alcohol involvement':
           return 'booze';
-        case 'Oversized Vehicle':
+        case 'oversized vehicle':
           return 'wideload';
-        case 'Passenger Distraction':
+        case 'passenger distraction':
           return 'pass-distract';
-        case 'View Obstructed/Limited':
+        case 'view obstructed/limited':
           return 'view-obstruct';
-        case 'Other Electronic Device':
+        case 'other electronic device':
           return 'electronic-device';
-        case 'Aggressive Driving/Road Rage':
+        case 'aggressive driving/road rage':
           return 'road-rage';
-        case 'Illness':
+        case 'illness':
           return 'ill';
-        case 'Glare':
+        case 'glare':
           return 'glare';
-        case 'Brakes Defective':
+        case 'brakes defective':
           return 'brake-defect';
-        case 'Reaction to Other Uninvolved Vehicle':
+        case 'reaction to other uninvolved vehicle':
           return 'react-vehicle';
-        case 'Obstruction/Debris':
+        case 'obstruction/debris':
           return 'debris';
-        case 'Failure to Keep Right':
+        case 'failure to keep right':
           return 'fail-right';
-        case 'Pavement Defective':
+        case 'pavement defective':
           return 'pavement-defect';
-        case 'Fell Asleep':
+        case 'fell asleep':
           return 'snooze';
-        case 'Steering Failure':
+        case 'steering failure':
           return 'steer';
-        case 'Unsafe Speed':
+        case 'unsafe speed':
           return 'unsafe-speed';
-        case 'Drugs (Illegal)':
+        case 'drugs (illegal)':
           return 'drugs';
-        case 'Following Too Closely':
+        case 'following too closely':
           return 'tailgate';
-        case 'Tire Failure/Inadequate':
+        case 'tire failure/inadequate':
           return 'tire-fail';
-        case 'Lane Marking Improper/Inadequate':
+        case 'lane marking improper/inadequate':
           return 'lane-marking';
-        case 'Accelerator Defective':
+        case 'accelerator defective':
           return 'accel-defect';
-        case 'Traffic Control Device Improper/Non-Working':
+        case 'traffic control device improper/non-working':
           return 'bad-traffic-device';
-        case 'Animals Action':
+        case 'animals action':
           return 'animal';
-        case 'Unsafe Lane Changing':
+        case 'unsafe lane changing':
           return 'unsafe-change';
-        case 'Passing or Lane Usage Improper':
+        case 'passing or lane usage improper':
           return 'passing';
-        case 'Cell Phone (hands-free)':
+        case 'cell phone (hands-free)':
           return 'cell-free';
-        case 'Pedestrian/Bicyclist/Other Pedestrian Error/Confusion':
+        case 'pedestrian/bicyclist/other pedestrian error/confusion':
           return 'ped-bike';
-        case 'Windshield Inadequate':
+        case 'windshield inadequate':
           return 'bad-windshield';
-        case 'Headlights Defective':
+        case 'headlights defective':
           return 'headlight-defect';
-        case 'Cell Phone (hand-held)':
+        case 'cell phone (hand-held)':
           return 'cell-hand';
-        case 'Shoulders Defective/Improper':
+        case 'shoulders defective/improper':
           return 'shoulder-defect';
-        case 'Other Lighting Defects':
+        case 'other lighting defects':
           return 'lighting-defect';
-        case 'Tow Hitch Defective':
+        case 'tow hitch defective':
           return 'hitch-defect';
         default:
           return 'none';
@@ -219,11 +251,9 @@ angular.module('nycCrashStatsApp')
 
     // Get the additional accidents at this location in the current dataset.
     var getAdditionalAccidents = function (accidentLocation) {
-      var index = 'lastAccidents';
+      var key = 'lastAccidents';
 
-      //make true socrata api call for this.
-
-      return _.filter($scope.crashStats[index], function (accident) {
+      return _.filter($scope.crashStats[key], function (accident) {
         if(accident.hasOwnProperty('location')) {
           if((accident.location.latitude === accidentLocation.latitude) && (accident.location.longitude === accidentLocation.longitude)) {
             return true;
@@ -235,13 +265,10 @@ angular.module('nycCrashStatsApp')
 
     //Fetch an accident by id.
     var getAccident = function (accidentId) {
-        var index = 'lastAccidents';
-
-        return _.find($scope.crashStats[index], function (accident) {
-          if(accidentId === accident.unique_key) {
-            return true;
-          }
-          return false;
+        var key = 'lastAccidents';
+        accidentId = Number(accidentId);
+        return _.find($scope.crashStats[key], function (accident) {
+          return (accidentId === accident.unique_key);
         });
     };
 

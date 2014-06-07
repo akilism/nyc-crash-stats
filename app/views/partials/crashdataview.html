@@ -1,23 +1,19 @@
 <div class="row crash-data-view-wrapper">
-  <h3>{{dataset.title}}</h3>
 
-  <ul class="nav nav-pills map-layers col-xs-9">
-    <li class="nav-boroughs"><a href="#" ng-click="showOverlay('borough', $event)">Boroughs</a></li>
-    <li><a href="#" ng-click="showOverlay('citycouncil', $event)">City Council</a></li>
-    <li><a href="#" ng-click="showOverlay('community', $event)">Community Boards</a></li>
-    <li><a href="#" ng-click="showOverlay('neighborhood', $event)">Neighborhoods</a></li>
-    <li><a href="#" ng-click="showOverlay('precinct', $event)">Police Precincts</a></li>
-    <li><a href="#" ng-click="showOverlay('zipcode', $event)">Zip Codes</a></li>
-  </ul>
-
-  <div class="col-xs-3 crash-map-view-toggle">
+  <div class="col-xs-12 crash-map-view-toggle">
+    <h3 class="col-xs-9" ng-click="loadDetails($event)">{{dataset.title}}<span class="more-info">more info..</span></h3>
     <ul class="nav nav-pills map-highlight pull-right">
-      <li class="active"><a href="#" ng-click="highlight($event, 'death')"><i class="fa fa-exclamation-triangle fa-2x"></i></a></li>
-      <li><a href="#" ng-click="highlight($event, 'factors')"><i class="fa fa-info-circle fa-2x"></i></a></li>
+      <li class="active">
+        <a href="#" ng-click="highlight($event, 'death')">
+          <i class="fa fa-exclamation-triangle fa-2x"></i>
+        </a>
+      </li>
+      <li>
+        <a href="#" ng-click="highlight($event, 'factors')">
+          <i class="fa fa-info-circle fa-2x"></i>
+        </a>
+      </li>
     </ul>
   </div>
-
-  <span class="filter-instruction text-muted" ng-class="{hidden: hideInstruction}">Select a {{activeType}} from the map to filter.</span>
   <div class="crash-data-view-map col-xs-12 death-injury-highlight" ng-class="dataset.id"></div>
-
 </div>

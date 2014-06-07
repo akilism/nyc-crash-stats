@@ -1,6 +1,6 @@
 'use strict';
 
-directives.directive('crashDataView', ['GeoData', 'Socrata', function (GeoData, Socrata) {
+directives.directive('crashDataView', ['$location', '$window', 'GeoData', 'Socrata', function ($location, $window, GeoData, Socrata) {
     return {
       templateUrl: 'partials/crashdataview.html',
       restrict: 'E',
@@ -9,7 +9,9 @@ directives.directive('crashDataView', ['GeoData', 'Socrata', function (GeoData, 
         'setActiveAccident': '=setaccident',
         'calculateYearlyStats': '=statcalc',
         'featuredArea': '=area',
-        'getFactorClass': '=classer'
+        'getFactorClass': '=classer',
+        'defaultZoom': '=defaultzoom',
+        'areaShapes': '=shapes'
       },
       link: function postLink(scope, element, attrs) {
         var mapId = scope.dataset.id;
@@ -17,93 +19,6 @@ directives.directive('crashDataView', ['GeoData', 'Socrata', function (GeoData, 
         map.attr('id', mapId);
         scope.crashMap = L.map(map[0]);
         scope.selected = '';
-        scope.hideInstruction = true;
-
-        // Handle the click event for the overlay display
-        // Community Boards, Neighborhoods, Zip codes etc.
-        // Makes the service call to get the correct shape file
-        // Calls the display layer function to show the shapes
-        scope.showOverlay = function (type, $event) {
-
-          $('.map-layers li').removeClass('active');
-
-          //Hide layer if already selected.
-          if(scope.selected === type) {
-                removeLayer(type);
-                scope.selected = '';
-                scope.activeType = '';
-                scope.hideInstruction = true;
-                return;
-          } else {
-            $($event.target.parentElement).addClass('active');
-            scope.activeType = getActiveType(type);
-            scope.hideInstruction = false;
-          }
-
-          scope.selected = type;
-          switch (type) {
-            case 'borough':
-              if(!scope.borough) {
-                GeoData('/borough').then(function (data) {
-                  scope.borough = data;
-                  displayLayer(scope.borough, 'borough');
-                });
-              } else {
-                displayLayer(scope.borough, 'borough');
-              }
-              break;
-            case 'citycouncil':
-              if(!scope.citycouncil) {
-                GeoData('/citycouncil').then(function (data) {
-                  scope.citycouncil = data;
-                  displayLayer(scope.citycouncil, 'citycouncil');
-                });
-              } else {
-                displayLayer(scope.citycouncil, 'citycouncil');
-              }
-              break;
-            case 'community':
-              if(!scope.community) {
-                GeoData('/community').then(function (data) {
-                  scope.community = data;
-                  displayLayer(scope.community, 'community');
-                });
-              } else {
-                displayLayer(scope.community, 'community');
-              }
-              break;
-            case 'neighborhood':
-              if(!scope.neighborhood) {
-                GeoData('/neighborhood').then(function (data) {
-                  scope.neighborhood = data;
-                  displayLayer(scope.neighborhood, 'neighborhood');
-                });
-              } else {
-                displayLayer(scope.neighborhood, 'neighborhood');
-              }
-              break;
-            case 'precinct':
-              if(!scope.precinct) {
-                GeoData('/precinct').then(function (data) {
-                  scope.precinct = data;
-                  displayLayer(scope.precinct, 'precinct');
-                });
-              } else {
-                displayLayer(scope.precinct, 'precinct');
-              }
-              break;
-            case 'zipcode':
-              if(!scope.zipcode) {
-                GeoData('/zipcode').then(function (data) {
-                  scope.zipcode = data;
-                  displayLayer(scope.zipcode, 'zipcode');
-                });
-              } else {
-                displayLayer(scope.zipcode, 'zipcode');
-              }
-              break;
-          }
-        };
 
         // Handles the highlight toggle between Injury / Death and Factors.
         scope.highlight = function ($event, type) {
@@ -133,20 +48,50 @@ directives.directive('crashDataView', ['GeoData', 'Socrata', function (GeoData, 
           $('.crash-data-map-controls').show();
         };
 
-        var getActiveType = function (type) {
-          switch (type) {
-            case 'citycouncil':
-              return 'City Council District';
-            case 'community':
-              return 'Community Board District';
-            case 'neighborhood':
-              return 'neighborhood';
-            case 'precinct':
-              return 'Police Precinct';
-            case 'zipcode':
-              return 'zip code';
+        scope.loadDetails = function ($event) {
+          if(scope.activeFeature) {
+            console.log(scope.activeFeature);
+            var properties = scope.activeFeature.properties;
+            var link = '';
+            if(properties.hasOwnProperty('communityDistrict')) {
+              link = '/community/' + properties.communityDistrict;
+            } else if(properties.hasOwnProperty('neighborhood')) {
+              link = '/neighborhood/' + properties.neighborhood;
+            } else if(properties.hasOwnProperty('cityCouncilDistrict')) {
+              link = '/citycouncil/' + properties.cityCouncilDistrict;
+            } else if(properties.hasOwnProperty('policePrecinct')) {
+              link = '/precinct/' + properties.policePrecinct;
+            } else if(properties.hasOwnProperty('postalCode')) {
+              link = '/zipcode/' + properties.postalCode;
+            }
+
+            ga('send', 'event', 'moredetails', link);
+              $window.location.href = link;
           }
-          return '';
+        };
+
+        scope.$on('displayMapOverlay', function (event, type) {
+          showOverlay(type);
+        });
+
+        var showOverlay = function (type) {
+          //Hide layer if already selected.
+          if(scope.selected === type) {
+            removeLayer(type);
+            scope.selected = '';
+            return;
+          }
+
+          scope.selected = type;
+
+          if(!scope[type]) {
+            GeoData('/' + type).then(function (data) {
+              scope[type] = data;
+              displayLayer(scope[type], type);
+            });
+          } else {
+            displayLayer(scope[type], type);
+          }
         };
 
         // Accident hover mouse out event.
@@ -167,7 +112,9 @@ directives.directive('crashDataView', ['GeoData', 'Socrata', function (GeoData, 
 
         // Accident onclick event.
         var onClick = function (event) {
-          var accidentId = event.target.options.className.split(' ')[0].replace('accident-','');
+          // console.log(event);
+          var accidentId = event.target.options.className.split(' ')[1].replace('accident-','');
+          console.log(accidentId);
           scope.setActiveAccident(accidentId, true);
           $('.accident-popup').css('top', (pageYOffset + 30) + 'px').show();
           ga('send', 'event', 'accidentPopup', scope.selected, accidentId);
@@ -299,21 +246,38 @@ directives.directive('crashDataView', ['GeoData', 'Socrata', function (GeoData, 
             'clickable': true
           });
 
-          layer.on('mousemove', function (event) {
-            showTooltip(event.target.feature.properties, scope.selected, { 'x': event.originalEvent.pageX, 'y': event.originalEvent.pageY });
-            event.target.setStyle({
-              'fillOpacity': 0.25
+          if (scope.setLayerHandlers) {
+            layer.on('mousemove', function (event) {
+              showTooltip(event.target.feature.properties, scope.selected, { 'x': event.originalEvent.pageX, 'y': event.originalEvent.pageY });
+              event.target.setStyle({
+                'fillOpacity': 0.25
+              });
             });
-          });
 
-          layer.on('mouseout', function (event) {
-            hideToolTip();
-            event.target.setStyle({
-              'fillOpacity': 0
+            layer.on('mouseout', function (event) {
+              hideToolTip();
+              event.target.setStyle({
+                'fillOpacity': 0
+              });
             });
-          });
 
-          layer.on('click', filterMap);
+            layer.on('click', filterMap);
+          }
+        };
+
+        var getIdentifier = function (properties, type) {
+          switch(type) {
+            case 'citycouncil':
+              return properties.cityCouncilDistrict;
+            case 'community':
+              return properties.communityDistrict;
+            case 'neighborhood':
+              return properties.neighborhood;
+            case 'precinct':
+              return properties.policePrecinct;
+            case 'zipcode':
+              return properties.postalCode;
+          }
         };
 
         // Filter the accidents on the map to a specific feature's bounds.
@@ -329,21 +293,24 @@ directives.directive('crashDataView', ['GeoData', 'Socrata', function (GeoData, 
           scope.activeFeature = event.target.feature;
 
           var options = {
-            boundingBox: formatBoundingBox(boundingBox),
+            // boundingBox: formatBoundingBox(boundingBox),
             type: scope.selected,
-            properties: event.target.feature.properties
+            value: getIdentifier(event.target.feature.properties, scope.selected),
+            year: '2014-01-01'
+            // properties: event.target.feature.properties
           };
 
           Socrata(options, 'feature').then(function (result) {
             $('#loader').hide();
             //zoom map to shape.
             //load in all accidents.
-            if(result.length > 0) {
+            if(result.hasOwnProperty('accidents') && result.accidents.length > 0) {
               hideToolTip();
               var title = getFeatureContent(scope.activeFeature.properties, scope.selected);
               scope.featuredArea = title;
               $('.yearly-featured').show();
-              resetMap(result, title);
+              $('.crash-data-view-wrapper h3').addClass('linked');
+              resetMap(result.accidents, title);
             } else {
               removeAllLayers();
             }
@@ -378,10 +345,10 @@ directives.directive('crashDataView', ['GeoData', 'Socrata', function (GeoData, 
             scope.dataset.title = title;
             scope.selected = null;
             removeAllLayers();
-            setMap(scope.dataset, 14);
+            setDistinctLocations(scope.dataset);
+            setMap(scope.distinctLocations, 14);
             setActiveFeatureLayer(scope.activeFeature);
             scope.calculateYearlyStats(scope.dataset);
-            scope.hideInstruction = true;
         };
 
         // Format the bounding box so it's easier to deal with on the backend.
@@ -397,22 +364,26 @@ directives.directive('crashDataView', ['GeoData', 'Socrata', function (GeoData, 
         // Set the css classes on an accident.
         // default classes, injury or death, vehicle 1 contributing factor
         var setAccidentClassName = function (accident) {
-          var classNames = ['accident-' + accident.unique_key, 'accident-path'];
+          var classNames = ['accident-path'];
+
+          if(accident.hasOwnProperty('crashIds')) {
+            classNames = classNames.concat(_.map(accident.crashIds, function (crashId) {
+              return 'accident-' + crashId;
+            }));
+          }
 
           if(accident.number_of_persons_killed > 0) {
             classNames.push('death');
-          }
-
-          if(accident.number_of_persons_injured > 0) {
+          } else if(accident.number_of_persons_injured > 0) {
             classNames.push('injury');
-          }
-
-          if(accident.number_of_persons_killed === '0' && accident.number_of_persons_injured === '0') {
+          } else {
             classNames.push('none-hurt');
           }
 
-          if(accident.hasOwnProperty('contributing_factor_vehicle_1')) {
-            classNames.push(scope.getFactorClass(accident.contributing_factor_vehicle_1, 1));
+          if(accident.hasOwnProperty('factors')) {
+            classNames = classNames.concat(_.map(accident.factors, function (factor) {
+              return scope.getFactorClass(factor, 1);
+            }));
           }
 
           return classNames.join(' ');
@@ -426,13 +397,26 @@ directives.directive('crashDataView', ['GeoData', 'Socrata', function (GeoData, 
 
           var accidents = L.featureGroup();
 
+          if(scope.dataset.hasOwnProperty('shapes')) {
+            scope.setLayerHandlers = false;
+            displayLayer({'features': scope.dataset.shapes}, 'active');
+          } else {
+            scope.setLayerHandlers = true;
+          }
+
+          var getR = function (location) {
+            var r = location.crashIds.length + 2;
+            return (r > 20) ? 20 : r;
+          };
+
+          // console.log('dataset', dataset);
           _.forEach(dataset, function (accident) {
-              if(accident.latitude && accident.longitude) {
-                var marker = L.circleMarker([accident.latitude, accident.longitude], {
+              if(accident.location && accident.location.latitude !== 0 && accident.location.longitude !== 0) {
+                var marker = L.circleMarker([accident.location.latitude, accident.location.longitude], {
                   className: setAccidentClassName(accident),
                   stroke: false,
                   fill: false
-                }).setRadius(5);
+                }).setRadius(getR(accident));
                 // marker.on('mouseover', onMouseOver);
                 marker.on('click', onClick);
 
@@ -444,38 +428,92 @@ directives.directive('crashDataView', ['GeoData', 'Socrata', function (GeoData, 
           scope.accidentLayer = accidents;
           var bounds = accidents.getBounds();
           accidents.addTo(scope.crashMap);
+
           scope.crashMap.setView(bounds.getCenter(), zoom);
         };
 
         var setMapTiles = function () {
-
-          // var tiles = L.tileLayer('http://{s}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png',
-          // { attribution: '&copy; <a href="http://www.opencyclemap.org">OpenCycleMap</a>, &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>' });
-
-          // var tiles = L.tileLayer('http://openmapsurfer.uni-hd.de/tiles/roadsg/x={x}&y={y}&z={z}', {
-          //     attribution: 'Imagery from <a href="http://giscience.uni-hd.de/">GIScience Research Group @ University of Heidelberg</a> &mdash; Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'
-          // });
 
           var tiles = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
             attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
             maxZoom: 16,
             minZoom: 11
           });
-          // var tiles = L.tileLayer('http://{s}.{base}.maps.cit.api.here.com/maptile/2.1/maptile/{mapID}/normal.night.mobile/{z}/{x}/{y}/256/png8?app_id={app_id}&app_code={app_code}', {
-          //   attribution: 'Map &copy; 1987-2014 <a href="http://developer.here.com">HERE</a>',
-          //   subdomains: '1234',
-          //   mapID: 'newest',
-          //   app_id: 'TalFdVVqSwdoOWYLFZzk',
-          //   app_code: 'dWMkYcqlYDi2p3YFmez3pA',
-          //   base: 'base',
-          //   minZoom: 11,
-          //   maxZoom: 17
-          // });
 
           tiles.addTo(scope.crashMap);
         };
 
-        setMap(scope.dataset, 11);
+        var setDistinctLocations = function (crashes) {
+          scope.distinctLocations = {};
+
+          _.forOwn(crashes, function (crash) {
+            //setup the distinct locations in the dataset to assist mapping crashes.
+            var crashKey = crash.longitude + ',' + crash.latitude;
+            if(!scope.distinctLocations.hasOwnProperty(crashKey)) {
+              scope.distinctLocations[crashKey] = {};
+              scope.distinctLocations[crashKey].crashIds = [];
+              scope.distinctLocations[crashKey].factors = [];
+              scope.distinctLocations[crashKey].location = crash.location;
+              scope.distinctLocations[crashKey].off_street_name = crash.off_street_name;
+              scope.distinctLocations[crashKey].on_street_name = crash.on_street_name;
+              scope.distinctLocations[crashKey].number_of_persons_killed = 0;
+              scope.distinctLocations[crashKey].number_of_persons_injured = 0;
+              scope.distinctLocations[crashKey].number_of_cyclist_injured = 0;
+              scope.distinctLocations[crashKey].number_of_cyclist_killed = 0;
+              scope.distinctLocations[crashKey].number_of_motorist_injured = 0;
+              scope.distinctLocations[crashKey].number_of_motorist_killed = 0;
+              scope.distinctLocations[crashKey].number_of_pedestrians_injured = 0;
+              scope.distinctLocations[crashKey].number_of_pedestrians_killed = 0;
+            }
+
+            scope.distinctLocations[crashKey].crashIds.push(crash.unique_key);
+            if (crash.contributing_factor_vehicle_1 !== '' && scope.distinctLocations[crashKey].factors.indexOf(crash.contributing_factor_vehicle_1) < 0) {
+              scope.distinctLocations[crashKey].factors.push(crash.contributing_factor_vehicle_1);
+            }
+            if (crash.contributing_factor_vehicle_2 !== '' && scope.distinctLocations[crashKey].factors.indexOf(crash.contributing_factor_vehicle_2) < 0) {
+              scope.distinctLocations[crashKey].factors.push(crash.contributing_factor_vehicle_2);
+            }
+
+
+
+            if (crash.number_of_persons_killed > 0) {
+              scope.distinctLocations[crashKey].number_of_persons_killed += crash.number_of_persons_killed;
+              scope.distinctLocations[crashKey].killed = true;
+            }
+            if (crash.number_of_persons_injured > 0) {
+             scope.distinctLocations[crashKey].number_of_persons_injured += crash.number_of_persons_injured;
+             scope.distinctLocations[crashKey].injured = true;
+            }
+            if (crash.number_of_cyclist_injured > 0) {
+              scope.distinctLocations[crashKey].number_of_cyclist_injured += crash.number_of_cyclist_injured;
+              scope.distinctLocations[crashKey].cycl_injured = true;
+            }
+            if (crash.number_of_cyclist_killed > 0) {
+             scope.distinctLocations[crashKey].number_of_cyclist_killed += crash.number_of_cyclist_killed;
+             scope.distinctLocations[crashKey].cycl_killed = true;
+            }
+            if (crash.number_of_motorist_injured > 0) {
+              scope.distinctLocations[crashKey].number_of_motorist_injured += crash.number_of_motorist_injured;
+              scope.distinctLocations[crashKey].moto_injured = true;
+            }
+            if (crash.number_of_motorist_killed > 0) {
+              scope.distinctLocations[crashKey].number_of_motorist_killed += crash.number_of_motorist_killed;
+             scope.distinctLocations[crashKey].moto_killed = true;
+            }
+            if (crash.number_of_pedestrians_injured > 0) {
+              scope.distinctLocations[crashKey].number_of_pedestrians_injured += crash.number_of_pedestrians_injured;
+              scope.distinctLocations[crashKey].ped_injured = true;
+            }
+            if (crash.number_of_pedestrians_killed > 0) {
+             scope.distinctLocations[crashKey].number_of_pedestrians_killed += crash.number_of_pedestrians_killed;
+             scope.distinctLocations[crashKey].ped_killed = true;
+            }
+          });
+        };
+
+        setDistinctLocations(scope.dataset);
+        //setMap(scope.dataset, scope.defaultZoom);
+        setMap(scope.distinctLocations, scope.defaultZoom);
         setMapTiles();
       }
     };
