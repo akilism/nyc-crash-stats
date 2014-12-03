@@ -72,6 +72,10 @@ $bcolor: #C4CACA;
   text-transform: capitalize;
 }
 
+body {
+  min-width: 640px;
+}
+
 .crash-data-view-wrapper {
   border-bottom: 1px solid $bcolor;
   // border-bottom: 1px solid #C4CACA;

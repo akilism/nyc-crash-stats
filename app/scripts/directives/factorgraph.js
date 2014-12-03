@@ -99,7 +99,7 @@ directives.directive('factorGraph', ['numberFilter', function (numberFilter) {
 
         // Show the factor accident count tooltip.
         var showToolTip = function (total, pos) {
-          var content = (total > 1) ? total + ' Accidents': total + ' Accident';
+          var content = (total > 1) ? total + ' Crashes': total + ' Crash';
           $('.map-tooltip').html(content).css({
             'left': (pos.x + 15) + 'px',
             'top': (pos.y - 10) + 'px'
