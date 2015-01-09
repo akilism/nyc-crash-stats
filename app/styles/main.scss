@@ -281,12 +281,13 @@ body {
   padding-bottom: 5px;
   border-bottom: 1px solid $bcolor;
 
-  h3 {
-    font-size: 5em;
+  h3, span {
+    font-size: 2em;
     padding: 0;
     margin: 0;
     font-weight: bold;
     color: #01535f;
+    line-height: 1.1;
   }
 }
 
@@ -1356,8 +1357,29 @@ body {
 }
 
 .btn-dropdown-wrapper {
-  padding-right: 5px;
+  padding: 0 7px 5px 0;
+
+  .btn {
+    padding: 15px 15px;
+
+    @media (min-width: 992px) {
+      padding: 5px 7px;
+    }
+  }
+
+  @media (min-width: 992px) {
+    padding-right: 5px;
+  }
+
   display: inline-block;
+
+  .dropdown-menu {
+    top: auto;
+
+    @media (min-width: 992px) {
+      top: 100%;
+    }
+  }
 
   .active {
     background-color: #e6e6e6;
@@ -1604,4 +1626,143 @@ background-color:#CF9B4C}
 100%{
 background-color:#FFFFFF}
 
+}
+
+
+/* new layout stuff*/
+
+.stat-count {
+  font-size: 1.953em;
+  text-align: center;
+  color: darkorange;
+}
+
+.stat-label {
+  font-size: 1.25em;
+  text-align: center;
+
+  .label-text {
+    display: inline;
+  }
+}
+
+.stat-group {
+  background-color: #f3eeee;
+  border-radius: 5px;
+  border: 1px solid #a0a0a0;
+  margin: 10px 0;
+
+  .stat-title {
+    font-size: 1.953em;
+    margin: 10px 15px;
+    border-bottom: solid 1px #a0a0a0;
+  }
+
+  .col-md-4 {
+    padding: 0 10px;
+  }
+
+  .stat-box {
+    background-color: #fff;
+    border: solid 1px #a0a0a0;
+    border-radius: 3px;
+    margin-bottom: 10px;
+
+    p {
+      margin: 0;
+    }
+  }
+
+  // .stat-count {
+  //   font-size: 3em;
+  // }
+
+  .stat-label {
+    font-size: 1.563em;
+    text-align: center;
+
+    .fa { display: none; }
+    .fa-2x { font-size: 1.25em; }
+
+    @media (min-width: 992px) {
+      .fa {
+        display: inline;
+      }
+
+      .label-text {
+        display: none;
+      }
+    }
+
+    .sticky-label {
+      display: inline;
+    }
+  }
+}
+
+.factor-stats {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  li {
+    display: inline-block;
+  }
+
+  p {
+      margin: 0;
+  }
+
+  .factor-stat {
+    background-color: #f3eeee;
+    border: solid 2px #fff;
+    border-radius: 5px;
+    display: inline-block;
+    min-height: 118px; //123px when details show.
+    padding: 0 2px 0 2px;
+
+    .stat-count {
+      line-height: 1.25;
+      font-size: 3em;
+    }
+
+    .stat-label {
+      line-height: 1.2;
+
+      .label-text {
+        text-transform: capitalize;
+      }
+    }
+
+    @media (min-width: 992px) {
+      min-height: 123px;
+    }
+  }
+
+  .stat-details {
+    margin: 5px 10px 0 10px;
+    display: none;
+
+    span {
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    @media (min-width: 992px) {
+      display: block;
+      position: absolute;
+      bottom: 0;
+    }
+  }
+}
+
+.main-year-selector {
+  font-size: 1.563em;
+  line-height: 1;
+  margin: 5px 0;
+
+  .year-display {
+   border-bottom: dashed 1px #a0a0a0;
+   cursor: pointer;
+  }
 }

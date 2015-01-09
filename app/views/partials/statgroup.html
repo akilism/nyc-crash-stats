@@ -1,0 +1,12 @@
+<div class="stat-group clearfix">
+    <h2 class="stat-title">{{stat.total | number}} {{stat.title}}</h2>
+    <div class="col-xs-4 col-md-4" ng-repeat="item in stat.items">
+        <div class="stat-box">
+            <p class="stat-count">{{item.count | number}}</p>
+            <p class="stat-label">
+                <span class="label-text" ng-class="item.stickyLabel">{{item.label}}</span>
+                <i ng-class="item.icon" ng-show="item.showIcon"></i>
+            </p>
+        </div>
+    </div>
+</div>

@@ -13,7 +13,6 @@ angular.module('nycCrashStatsApp')
     $scope.dateRange = null;
     $scope.hoverCrash = {};
 
-
     $scope.getButtonVal = function (key, year, visible) {
       if (year && $scope.groupStats.hasOwnProperty(year)) {
         return parseInt($scope.groupStats[year].totals[key], 10);
@@ -403,6 +402,7 @@ angular.module('nycCrashStatsApp')
       return Socrata(options, 'daily');
     };
 
+/*
     var getAllShapes = function () {
       GeoData('/all').then(function (data) {
         // console.log(data);
@@ -510,7 +510,7 @@ angular.module('nycCrashStatsApp')
         return parseInt(val.identifier, 10);
       }
     };
-
+*/
     var translateCommunityBoardDistrict = function (districtId) {
       if (districtId > 500) {
         return 'Staten Island Community Board ' + (districtId - 500);
@@ -665,6 +665,11 @@ angular.module('nycCrashStatsApp')
 
         if(dateRange && !isValidDate(dateRange, crash.date)) {
           return;
+        }
+
+        if(crash.location) {
+          crash.latitude = crash.location.latitude;
+          crash.longitude = crash.location.longitude;
         }
 
         //Group the data by year -> month -> day
@@ -1098,7 +1103,7 @@ angular.module('nycCrashStatsApp')
       },
     ];
 
-    getAllShapes();
+    // getAllShapes();
 
     $scope.graphKey = 'total_accidents';
     $scope.title = getTitle($location.$$path, false);

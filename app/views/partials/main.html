@@ -1,5 +1,25 @@
 <header></header>
-<div class="row yearly-accident-totals" ng-class="setTotalsClass()">
+<div class="row">
+  <div class="col-sm-12 filter-buttons">
+    <button-dropdown></button-dropdown>
+  </div>
+  <div class="col-md-4">
+    <stat-group dataset="crashStats.crashTotals"></stat-group>
+  </div>
+  <div class="col-md-4">
+    <stat-group dataset="crashStats.injuryTotals"></stat-group>
+  </div>
+  <div class="col-md-4">
+    <stat-group dataset="crashStats.deathTotals"></stat-group>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <stat-list dataset="crashStats.factorTotals"></stat-list>
+    <stat-list dataset="crashStats.vehicleTotals"></stat-list>
+  </div>
+</div>
+<!-- <div class="row yearly-accident-totals" ng-class="setTotalsClass()">
   <h4 class="text-muted">Current year to date breakdown:</h4>
   <h2 class="yearly-featured">{{featuredArea}}</h2>
   <h2 class="yearly-total">Total crashes in 2014: {{yearly.total_accidents | number}}</h2>
@@ -40,7 +60,7 @@
     </div>
     <crash-data-view setaccident="showAccidentDetails" defaultzoom="11" classer="getFactorClass" statcalc="calculateYearlyStats" dataset="crashStats.lastAccidents" area="featuredArea"></crash-data-view>
   </div>
-</div>
+</div> -->
 <div class="footer">
   <p><a href="http://www.wolvesintheserverroom.com/" target="_blank" title="wolvesintheserverroom.com" class='text-muted'>wolvesintheserverroom.com</a></p>
 </div>
