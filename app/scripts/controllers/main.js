@@ -11,6 +11,7 @@ angular.module('nycCrashStatsApp')
 
     $scope.crashStats = crashStats;
     // console.log(crashStats.yearly);
+    $scope.year = new Date().getFullYear();
     $scope.yearly = crashStats.yearly[0];
     $scope.factorListSize = 5;
     $scope.hideInstruction = true;

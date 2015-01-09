@@ -2,15 +2,15 @@
 <div class="row yearly-accident-totals" ng-class="setTotalsClass()">
   <h4 class="text-muted">Current year to date breakdown:</h4>
   <h2 class="yearly-featured">{{featuredArea}}</h2>
-  <h2 class="yearly-total">Total crashes in 2014: {{yearly.total_accidents | number}}</h2>
-  <h3 class="yearly-total col-md-6"><span class="total-label">Total persons injured in 2014:</span> {{yearly.number_of_persons_injured | number}}
+  <h2 class="yearly-total">Total crashes in {{year}}: {{yearly.total_accidents | number}}</h2>
+  <h3 class="yearly-total col-md-6"><span class="total-label">Total persons injured in {{year}}:</span> {{yearly.number_of_persons_injured | number}}
     <ul class="detail-list">
       <li class="btn btn-default m-r-20"><div class="glyphicon glyphicon-user">&nbsp;</div> {{yearly.number_of_pedestrians_injured | number}}</li>
       <li class="btn btn-default m-r-20"><div class="maki-icon bicycle">&nbsp;</div> {{yearly.number_of_cyclist_injured | number}}</li>
       <li class="btn btn-default m-r-20"><div class="maki-icon car">&nbsp;</div> {{yearly.number_of_motorist_injured | number}}</li>
     </ul>
   </h3>
-  <h3 class="yearly-total col-md-6"><span class="total-label">Total persons killed in 2014:</span> {{yearly.number_of_persons_killed | number}}
+  <h3 class="yearly-total col-md-6"><span class="total-label">Total persons killed in {{year}}:</span> {{yearly.number_of_persons_killed | number}}
     <ul class="detail-list">
       <li class="btn btn-default m-r-20"><div class="glyphicon glyphicon-user">&nbsp;</div> {{yearly.number_of_pedestrians_killed | number}}</li>
       <li class="btn btn-default m-r-20"><div class="maki-icon bicycle">&nbsp;</div> {{yearly.number_of_cyclist_killed | number}}</li>
