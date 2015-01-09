@@ -1,14 +1,14 @@
 <header></header>
 <div class="trend-head clearfix">
-  <div class="col-md-5" style="padding-left:2px;">
+  <div class="col-sm-12" style="padding-left:2px;">
     <h1 class="trend-header">{{title}}</h1>
   </div>
-  <div class="col-md-7 filter-buttons">
-    <button-dropdown></button-dropdown>
+  <div class="col-sm-12 filter-buttons">
+    <button-dropdown dataset="menuData"></button-dropdown>
   </div>
 </div>
 <div class="clearfix">
-  <div class="loader col-md-5" style="display: none;">
+  <div class="loader col-sm-12" style="display: none;">
       <div id="floatingCirclesG">
         <div class="f_circleG" id="frotateG_01"> </div>
         <div class="f_circleG" id="frotateG_02"> </div>
@@ -20,7 +20,7 @@
         <div class="f_circleG" id="frotateG_08"> </div>
       </div>
   </div>
-  <div class="trend-left col-md-5">
+  <div class="trend-left col-sm-12">
     <div class="year-selector">Years:
       <ul>
         <li class="checkbox">
@@ -38,33 +38,37 @@
             <input type="checkbox" ng-model="selectedYears.2014" ng-change="setYear()"> 2014
           </label>
         </li>
+        <li class="checkbox">
+          <label>
+            <input type="checkbox" ng-model="selectedYears.2015" ng-change="setYear()"> 2015
+          </label>
+        </li>
       </ul>
-
     </div>
     <ul class="keys col-xs-12">
-    <li class="keys-header">
-      <span class="key-label"></span>
-      <span ng-repeat="(year, visible) in selectedYears" class="key-value" ng-hide="!visible">{{year}}</span>
-      <span class="key-value">Total</span>
-    </li>
-    <li ng-repeat="key in keys" ng-click="switchGraph(key, $event)" ng-class="key" class="key-item">
-      <span class="key-label">{{key | keyFilter}}</span>
-      <span ng-repeat="(year, visible) in selectedYears" class="key-value" ng-hide="!visible">
-        {{getButtonVal(key, year, visible)}}
-      </span>
-      <span class="key-value">{{getButtonVal(key)}}</span>
-    </li>
-  </ul>
-  <ul class="col-xs-12" style="padding-left: 0;">
-    <li class="checkbox" style="margin-top: 0; white-space: nowrap;">
-      <label>
-        <input type="checkbox" ng-model="fitDates" ng-change="setDates(true)"> Constrain to Matching Dates
-      </label>
-       <span>{{dateRange | rangeDisplayFilter}}</span>
-    </li>
-  </ul>
+      <li class="keys-header">
+        <span class="key-label"></span>
+        <span ng-repeat="(year, visible) in selectedYears" class="key-value" ng-hide="!visible">{{year}}</span>
+        <span class="key-value">Total</span>
+      </li>
+      <li ng-repeat="key in keys" ng-click="switchGraph(key, $event)" ng-class="key" class="key-item">
+        <span class="key-label">{{key | keyFilter}}</span>
+        <span ng-repeat="(year, visible) in selectedYears" class="key-value" ng-hide="!visible">
+          {{getButtonVal(key, year, visible)}}
+        </span>
+        <span class="key-value">{{getButtonVal(key)}}</span>
+      </li>
+    </ul>
+    <ul class="col-xs-12" style="padding-left: 0;">
+      <li class="checkbox" style="margin-top: 0; white-space: nowrap;">
+        <label>
+          <input type="checkbox" ng-model="fitDates" ng-change="setDates(true)"> Constrain to Matching Dates
+        </label>
+         <span>{{dateRange | rangeDisplayFilter}}</span>
+      </li>
+    </ul>
   </div>
-  <div class="trend-right col-md-7">
+  <div class="trend-right col-sm-12">
     <div id="trendMap" class="trend-map col-xs-12 death-injury-highlight"></div>
   </div>
 </div>
