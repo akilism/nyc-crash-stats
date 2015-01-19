@@ -4,7 +4,7 @@ angular.module('nycCrashStatsApp')
   .controller('TrendCtrl', ['$scope', '$location', 'trendStats', 'Socrata', 'GeoData', function ($scope, $location, trendStats, Socrata, GeoData) {
 
     $scope.selectedYears = {};
-    $scope.selectedYears['2014'] = true;
+    $scope.selectedYears['2015'] = true;
     $scope.keys = [];
     $scope.storedYears = [];
     $scope.distinctLocations = {};
