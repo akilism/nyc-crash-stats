@@ -1475,12 +1475,12 @@ body {
 
   .key-value {
     font-weight: bold;
-    width: 60px;
-    display: inline-block;
-    padding: 4px;
-    text-align: right;
-    border: 1px solid #000;
-    border-width: 0 0 0 1px;
+    // width: 60px;
+    // display: inline-block;
+    // padding: 4px;
+    // text-align: right;
+    // border: 1px solid #000;
+    // border-width: 0 0 0 1px;
 
     // &:last-child {
     //   border-width: 0;
@@ -1488,9 +1488,9 @@ body {
   }
 
   .key-label {
-    width: 193px;
-    display: inline-block;
-    padding: 4px 4px 4px 10px;
+    // width: 193px;
+    // display: inline-block;
+    // padding: 4px 4px 4px 10px;
     text-transform: capitalize;
   }
 }
@@ -1524,6 +1524,10 @@ body {
   padding: 0 0 0 2px;
 }
 
+.trend-right {
+  padding: 0;
+}
+
 .crash-map-hover {
   width: 250px;
   border: 1px solid black;
@@ -1552,6 +1556,11 @@ body {
 
 
 //Loader
+.loader,
+.trend-left {
+  height: 355px;
+}
+
 #floatingCirclesG{
   position:relative;
   width: 128px;
@@ -1766,4 +1775,28 @@ background-color:#FFFFFF}
    border-bottom: dashed 1px #a0a0a0;
    cursor: pointer;
   }
+}
+
+#crashTable {
+  border: 1px solid black;
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+
+.crash-table-header .crash-table-head-item {
+  font-weight: bold;
+  border: 1px solid black;
+  padding: 5px 10px;
+  text-align: center;
+}
+
+#crashTable .crash-table-body .crash-table-row .crash-table-item:first-child {
+  padding: 5px 40px 5px 5px;
+  text-align: left;
+}
+
+.crash-table-item {
+  border: 1px solid black;
+  padding: 5px 2px;
+  text-align: center;
 }

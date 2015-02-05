@@ -46,7 +46,7 @@ angular.module('nycCrashStatsApp', [
         var options = {
           'type': 'zipcode',
           'value': getPathValue($location.$$path),
-          'year': '2014-01-01'
+          'year': getTrendDate()
         };
 
         return Socrata(options, 'daily');
@@ -61,7 +61,7 @@ angular.module('nycCrashStatsApp', [
         var options = {
           'type': 'community',
           'value': getPathValue($location.$$path),
-          'year': '2014-01-01'
+          'year': getTrendDate()
         };
         return Socrata(options, 'daily');
       }
@@ -75,7 +75,7 @@ angular.module('nycCrashStatsApp', [
         var options = {
           'type': 'borough',
           'value': getPathValue($location.$$path),
-          'year': '2014-01-01'
+          'year': getTrendDate()
         };
         return Socrata(options, 'daily');
       }
@@ -89,7 +89,7 @@ angular.module('nycCrashStatsApp', [
         var options = {
           'type': 'citycouncil',
           'value': getPathValue($location.$$path),
-          'year': '2014-01-01'
+          'year': getTrendDate()
         };
         return Socrata(options, 'daily');
       }
@@ -103,7 +103,7 @@ angular.module('nycCrashStatsApp', [
         var options = {
           'type': 'neighborhood',
           'value': getPathValue($location.$$path),
-          'year': '2014-01-01'
+          'year': getTrendDate()
         };
         return Socrata(options, 'daily');
       }
@@ -117,7 +117,7 @@ angular.module('nycCrashStatsApp', [
         var options = {
           'type': 'precinct',
           'value': getPathValue($location.$$path),
-          'year': '2014-01-01'
+          'year': getTrendDate()
         };
         return Socrata(options, 'daily');
       }
@@ -133,6 +133,11 @@ var getPathValue = function(path) {
   //remove the trailing slash if there is one.
   path = (path.slice(-1) === '/') ? path.slice(path.length-1) : path;
   return path.slice(path.lastIndexOf('/')+1);
+};
+
+var getTrendDate = function() {
+  // var d = new Date();
+  return '2015-01-01';
 };
 
 var directives = angular.module('nycCrashStatsApp.directives', []);
