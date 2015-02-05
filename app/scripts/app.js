@@ -46,7 +46,7 @@ angular.module('nycCrashStatsApp', [
         var options = {
           'type': 'zipcode',
           'value': getPathValue($location.$$path),
-          'year': '2014-01-01'
+          'year': '2015-01-01'
         };
 
         return Socrata(options, 'daily');
@@ -61,7 +61,7 @@ angular.module('nycCrashStatsApp', [
         var options = {
           'type': 'community',
           'value': getPathValue($location.$$path),
-          'year': '2014-01-01'
+          'year': '2015-01-01'
         };
         return Socrata(options, 'daily');
       }
@@ -75,7 +75,7 @@ angular.module('nycCrashStatsApp', [
         var options = {
           'type': 'borough',
           'value': getPathValue($location.$$path),
-          'year': '2014-01-01'
+          'year': '2015-01-01'
         };
         return Socrata(options, 'daily');
       }
@@ -89,7 +89,7 @@ angular.module('nycCrashStatsApp', [
         var options = {
           'type': 'citycouncil',
           'value': getPathValue($location.$$path),
-          'year': '2014-01-01'
+          'year': '2015-01-01'
         };
         return Socrata(options, 'daily');
       }
@@ -103,7 +103,7 @@ angular.module('nycCrashStatsApp', [
         var options = {
           'type': 'neighborhood',
           'value': getPathValue($location.$$path),
-          'year': '2014-01-01'
+          'year': '2015-01-01'
         };
         return Socrata(options, 'daily');
       }
@@ -117,7 +117,7 @@ angular.module('nycCrashStatsApp', [
         var options = {
           'type': 'precinct',
           'value': getPathValue($location.$$path),
-          'year': '2014-01-01'
+          'year': '2015-01-01'
         };
         return Socrata(options, 'daily');
       }

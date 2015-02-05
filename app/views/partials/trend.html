@@ -45,28 +45,33 @@
         </li>
       </ul>
     </div>
-    <ul class="keys col-xs-12">
-      <li class="keys-header">
-        <span class="key-label"></span>
-        <span ng-repeat="(year, visible) in selectedYears" class="key-value" ng-hide="!visible">{{year}}</span>
-        <span class="key-value">Total</span>
-      </li>
-      <li ng-repeat="key in keys" ng-click="switchGraph(key, $event)" ng-class="key" class="key-item">
-        <span class="key-label">{{key | keyFilter}}</span>
-        <span ng-repeat="(year, visible) in selectedYears" class="key-value" ng-hide="!visible">
-          {{getButtonVal(key, year, visible)}}
-        </span>
-        <span class="key-value">{{getButtonVal(key)}}</span>
-      </li>
-    </ul>
-    <ul class="col-xs-12" style="padding-left: 0;">
-      <li class="checkbox" style="margin-top: 0; white-space: nowrap;">
-        <label>
-          <input type="checkbox" ng-model="fitDates" ng-change="setDates(true)"> Constrain to Matching Dates
-        </label>
-         <span>{{dateRange | rangeDisplayFilter}}</span>
-      </li>
-    </ul>
+        <table class="keys" id="crashTable">
+  <thead class="keys-header crash-table-header">
+    <tr>
+      <th class="crash-table-head-item">
+        &nbsp;
+      </th>
+      <th class="crash-table-head-item" ng-repeat="(year, visible) in selectedYears" class="crash-table-head-item" ng-hide="!visible">
+        {{year}}
+      </th>
+      <th class="crash-table-head-item">
+        Total
+      </th>
+    </tr>
+  </thead>
+  <tbody class="crash-table-body">
+    <tr ng-repeat="key in keys" ng-click="switchGraph(key, $event)" ng-class="key" class="crash-table-row key-item">
+      <td class="crash-table-item key-label">
+        {{key | keyFilter}}
+      </td>
+      <td  ng-repeat="(year, visible) in selectedYears" class="crash-table-item" ng-hide="!visible">
+        {{getButtonVal(key, year, visible)}}
+      </td>
+      <td class="crash-table-item key-value">{{getButtonVal(key)}}</td>
+    </tr>
+  </tbody>
+</table>
+
   </div>
   <div class="trend-right col-sm-12">
     <div id="trendMap" class="trend-map col-xs-12 death-injury-highlight"></div>
