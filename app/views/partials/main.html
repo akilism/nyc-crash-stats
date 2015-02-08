@@ -14,9 +14,12 @@
   </div>
 </div>
 <div class="row">
-  <div class="col-md-12">
+  <div class="col-sm-12 show" id="factors">
     <stat-list dataset="crashStats.factorTotals"></stat-list>
     <stat-list dataset="crashStats.vehicleTotals"></stat-list>
+  </div>
+  <div class="col-sm-12" id="crashMap">
+    <crash-map setaccident="showAccidentDetails" defaultzoom="11" area="featuredArea"></crash-map>
   </div>
 </div>
 <!-- <div class="row yearly-accident-totals" ng-class="setTotalsClass()">

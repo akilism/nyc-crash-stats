@@ -99,7 +99,6 @@ var getBaseData = function (path, $http, $q) {
   return getDefer();
 };
 
-
 services.factory('Socrata', ['$http', '$q', function ($http, $q) {
   return function (options, path) {
     if (options) {

@@ -45,13 +45,15 @@ angular.module('nycCrashStatsApp')
         return result;
       }, 0);
 
-      return _.map(totals, function(v, k) {
+      return _.sortBy(_.map(totals, function(v, k) {
         return {
           count: v || 0,
           label: k.replace(re, ' / ').toLowerCase(),
           pctTotal: getPctTotal(v, accTotal),
           pctChange: 0
         };
+      }), function(item) {
+        return -item.count;
       });
     };
 
@@ -511,6 +513,6 @@ angular.module('nycCrashStatsApp')
       return factors.reverse();
     };
 
-    $scope.activeAccident = crashStats.lastAccidents[0];
+    // $scope.activeAccident = crashStats.lastAccidents[0];
     $scope.factorsVehicle1 = calculateFactorTotals(crashStats.lastAccidents);
   }]);

@@ -13,6 +13,7 @@ directives.directive('buttonDropdown', ['$location', 'GeoData', function ($locat
       controller: directives.buttonDropdown,
       controllerAs: 'buttonDropdown',
       link: function postLink(scope, element, attrs) {
+        scope.mapView = false;
         scope.hideDropDown = function () {
           element.find('.dropdown-menu').removeClass('show');
         };
@@ -49,6 +50,22 @@ directives.directive('buttonDropdown', ['$location', 'GeoData', function ($locat
               }
             }
           }
+        };
+
+        scope.showMap = function() {
+          document.querySelector('#crashMap').classList.add('show');
+          document.querySelector('#factors').classList.remove('show');
+          // $('#crashMap').show();
+          // $('#factors').hide();
+          scope.mapView = !scope.mapView;
+          var type = {type: 'city', year: new Date().getFullYear() };
+          scope.$broadcast('loadMap', type);
+        };
+
+        scope.showFactors = function() {
+          document.querySelector('#crashMap').classList.remove('show');
+          document.querySelector('#factors').classList.add('show');
+          scope.mapView = !scope.mapView;
         };
       }
     };

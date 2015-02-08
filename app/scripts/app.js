@@ -136,7 +136,6 @@ var getPathValue = function(path) {
 };
 
 var getTrendDate = function() {
-  // var d = new Date();
   return '2015-01-01';
 };
 
