@@ -162,6 +162,7 @@ directives.crashMap = function ($scope, $element, $attrs) {
     $scope.crashView.setView([40.7127, -74.0059], zoom);
     $scope.svg = $scope.svg || d3.select($scope.crashView.getPanes().overlayPane).append('svg');
     $scope.g = $scope.g || $scope.svg.append('g').attr('class', 'leaflet-zoom-hide');
+    console.log($scope.svg, $scope.g);
     $scope.drawing = false;
   };
 
@@ -176,26 +177,70 @@ directives.crashMap = function ($scope, $element, $attrs) {
   };
 
   var drawCrashes = function() {
+    var domainMax = d3.max($scope.distinctLocations, function(d) {
+      return d.crashIds.length;
+    });
+    var domainMin = 1;
+    var svg = $scope.svg;
+    var g = $scope.g;
 
+    var projectPoint = function (x, y) {
+      var point = $scope.crashMap.latLngToLayerPoint(new L.LatLng(y, x));
+      console.log(x, y, point);
+      this.stream.point(point.x, point.y);
+    };
+
+    var transform = d3.geo.transform({point: projectPoint});
+
+    var crash = g.selectAll('path')
+      .data(_.keys($scope.distinctLocations));
+
+    var crashEnter = crash.enter().append('path')
+      .attr('d', function(d) {
+        var location = $scope.distinctLocations[d];
+        console.log(location.location);
+        return d3.geo.path(location.location).projection(transform);
+      })
+      .attr('class', 'crash-location')
+      .attr('fill', function (d) {
+        return '#dfdfdf';
+      });
+
+    var crashUpdate = crash.transition()
+      .attr('d', d3.geo.path().projection(transform))
+      .attr('fill', function(d) {
+        return '#000000';
+      });
+
+    crash.exit().remove();
+    $scope.drawing = false;
   };
 
   var getCrashKey = function (crash) {
     var re = / /g;
-    return (crash.on_street_name + crash.off_street_name + crash.zip_code).replace(re, '');
+    return (crash.on_street_name + crash.cross_street_name + crash.zip_code).replace(re, '');
+  };
+
+  var buildLocation = function(location) {
+    return {
+      'type': 'Feature',
+      'geometry': { 'type': 'Point', 'coordinates': [location.latitude, location.longitude] },
+    };
   };
 
   var setDistinctLocations = function (newCrashes) {
-    console.log('setDistinctLocations start:', new Date());
-    _.forEach(newCrashes, function (crash) {
+    // console.log('setDistinctLocations start:', new Date());
+    _.forEach(_.filter(newCrashes, function(crash) { return crash.location.longitude; }), function (crash) {
       var crashKey = getCrashKey(crash);
 
       if(!$scope.distinctLocations.hasOwnProperty(crashKey)) {
         $scope.distinctLocations[crashKey] = {};
         $scope.distinctLocations[crashKey].crashIds = [];
         $scope.distinctLocations[crashKey].factors = [];
-        $scope.distinctLocations[crashKey].location = crash.location;
+        $scope.distinctLocations[crashKey].location = buildLocation(crash.location);
         $scope.distinctLocations[crashKey].off_street_name = crash.off_street_name;
         $scope.distinctLocations[crashKey].on_street_name = crash.on_street_name;
+        $scope.distinctLocations[crashKey].cross_street_name = crash.cross_street_name;
         $scope.distinctLocations[crashKey].number_of_persons_killed = 0;
         $scope.distinctLocations[crashKey].number_of_persons_injured = 0;
         $scope.distinctLocations[crashKey].number_of_cyclist_injured = 0;
@@ -246,7 +291,7 @@ directives.crashMap = function ($scope, $element, $attrs) {
        $scope.distinctLocations[crashKey].ped_killed = true;
       }
     });
-    console.log('setDistinctLocations end:', new Date());
+    // console.log('setDistinctLocations end:', new Date());
   };
 
   var handleCrashEvent = function (event) {
@@ -258,6 +303,7 @@ directives.crashMap = function ($scope, $element, $attrs) {
     if(!$scope.drawing && $scope.unloadedCrashes.length > 250) {
       $scope.drawing = true;
       setDistinctLocations($scope.unloadedCrashes);
+      drawCrashes();
       // setMap($scope.distinctLocations, $scope.shapes, $scope.defaultZoom, false);
       $scope.crashes = $scope.crashes.concat($scope.unloadedCrashes);
       $scope.unloadedCrashes = [];
@@ -266,7 +312,7 @@ directives.crashMap = function ($scope, $element, $attrs) {
 
   var handleCloseEvent = function (event) {
     console.log('closing sse connection', new Date());
-    console.log($scope.crashes);
+    // console.log($scope.crashes);
     if($scope.unloadedCrashes.length > 0) {
       setDistinctLocations($scope.unloadedCrashes);
       // setMap($scope.distinctLocations, $scope.shapes, $scope.defaultZoom, true);
