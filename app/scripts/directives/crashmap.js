@@ -5,11 +5,6 @@ directives.directive('crashMap', ['$location', '$window', 'GeoData', 'Socrata', 
       templateUrl: 'partials/crashmap.html',
       restrict: 'E',
       scope: {
-        // 'dataset': '=dataset',
-        // 'setActiveAccident': '=setaccident',
-        // 'calculateYearlyStats': '=statcalc',
-        // 'featuredArea': '=area',
-        // 'getFactorClass': '=classer',
         'defaultZoom': '=defaultzoom',
         'shapes': '=area'
       },
@@ -22,16 +17,8 @@ directives.directive('crashMap', ['$location', '$window', 'GeoData', 'Socrata', 
   }]);
 
 directives.crashMap = function ($scope, $element, $attrs) {
-  $scope.crashes = [];
-  $scope.distinctLocations = {};
-  $scope.unloadedCrashes = [];
-  $scope.drawing = false;
-  $scope.shapeSet = false;
-
   var eventSource;
-  var map = $element.find('.crash-data-view-map');
 
-  $scope.crashView = L.map(map[0]);
 
   var onHoverCrash = function (layer) {
     var $$tooltip = $('.crash-map-hover');
@@ -117,100 +104,118 @@ directives.crashMap = function ($scope, $element, $attrs) {
    $scope.layers[type].addTo($scope.crashView);
   };
 
+   var onViewReset = function (event) {
+    drawCrashes();
+  };
+
    // Set the crashes on the map. Zoom and center on bounds.
   // var setMap = function (locations, shapes, zoom, rebound) {
   var setMap = function (shapes, zoom, rebound) {
-    var crashLocations;
-    if($scope.hasOwnProperty('crashLayer')) { crashLocations = $scope.crashLayer } else { crashLocations = L.featureGroup(); rebound = true; }
-    crashLocations.clearLayers();
 
     if(shapes && !$scope.shapeSet) {
       displayLayer({'features': shapes}, 'active');
       $scope.shapeSet = true;
     }
+  };
 
-    // var getR = function (location) {
-    //   var r = Math.floor(location.crashIds.length/2) + 4;
-    //   return (r > 20) ? 20 : r;
-    // };
-
-    // _.forOwn(locations, function (location) {
-    //     if(location.location.latitude && location.location.longitude) {
-    //       var marker = L.circleMarker([location.location.latitude, location.location.longitude], {
-    //         className: setLocationClassName(location),
-    //         stroke: false,
-    //         fill: false
-    //       }).setRadius(getR(location));
-    //       // marker.on('click', onClick);
-
-    //       // marker.bindPopup(getPopupContent(crash));
-    //       // marker.tooltipData = {};
-    //       // marker.tooltipData.crashes = getTooltipCrashes(location.location);
-    //       // marker.tooltipData.on_street_name = location.on_street_name;
-    //       // marker.tooltipData.off_street_name = location.off_street_name;
-    //       // marker.on('mousemove', onHoverCrash);
-    //       // marker.on('mouseout', onOutCrash);
-    //       crashLocations.addLayer(marker);
-    //     }
+  var reboundMap = function(zoom) {
+    // $scope.crashView.eachLayer(function(layer) {
+    //   $scope.crashView.removeLayer(layer);
     // });
 
-    // $scope.crashLayer = crashLocations;
+    var crashLocations = L.geoJson(_.toArray($scope.distinctLocations));
     // crashLocations.addTo($scope.crashView);
-    // if(rebound && _.size(locations) > 0) {
-    //   // var bounds = crashLocations.getBounds();
-    // }
-    $scope.crashView.setView([40.7127, -74.0059], zoom);
-    $scope.svg = $scope.svg || d3.select($scope.crashView.getPanes().overlayPane).append('svg');
-    $scope.g = $scope.g || $scope.svg.append('g').attr('class', 'leaflet-zoom-hide');
-    console.log($scope.svg, $scope.g);
-    $scope.drawing = false;
+    var bounds = crashLocations.getBounds();
+    $scope.crashView.setView(bounds.getCenter(), zoom);
+    // console.log(bounds);
   };
+
 
   var setMapTiles = function () {
     var tiles = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
       attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
       maxZoom: 16,
-      minZoom: 11
+      minZoom: 8
     });
+
+    // var tiles = L.tileLayer('http://openmapsurfer.uni-hd.de/tiles/roadsg/x={x}&y={y}&z={z}', {
+    //     attribution: 'Imagery from <a href="http://giscience.uni-hd.de/">GIScience Research Group @ University of Heidelberg</a> &mdash; Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+    //     minZoom: 11,
+    //     maxZoom: 14
+    //   });
 
     tiles.addTo($scope.crashView);
   };
 
+  var getLocationClasses = function(location) {
+    var classes = ['location-path'];
+    if(location.properties.killed) { classes.push('death'); }
+    if(location.properties.injured) { classes.push('injury'); }
+    if(location.properties.cycl_injured) { classes.push('cycl_injured'); }
+    if(location.properties.cycl_killed) { classes.push('cycl_killed'); }
+    if(location.properties.moto_injured) { classes.push('moto_injured'); }
+    if(location.properties.moto_killed) { classes.push('moto_killed'); }
+    if(location.properties.ped_injured) { classes.push('ped_injured'); }
+    if(location.properties.ped_killed) { classes.push('ped_killed'); }
+    return classes;
+  };
+
   var drawCrashes = function() {
-    var domainMax = d3.max($scope.distinctLocations, function(d) {
-      return d.crashIds.length;
-    });
-    var domainMin = 1;
     var svg = $scope.svg;
     var g = $scope.g;
 
     var projectPoint = function (x, y) {
-      var point = $scope.crashMap.latLngToLayerPoint(new L.LatLng(y, x));
-      console.log(x, y, point);
+      var point = $scope.crashView.latLngToLayerPoint(new L.LatLng(y, x));
       this.stream.point(point.x, point.y);
     };
 
-    var transform = d3.geo.transform({point: projectPoint});
+    var transform = d3.geo.transform({point: projectPoint}),
+        locations = _.toArray($scope.distinctLocations),
+        pathInitial = d3.geo.path().pointRadius(function(d) { return 0; }).projection(transform),
+        path = d3.geo.path().pointRadius(function(d) { return crashScale(d.properties.crashIds.length); }).projection(transform);
+
+    var domainMax = d3.max(locations, function(d) {
+      return d.properties.crashIds.length;
+    });
+
+    var domainMin = 1;
+
+    var crashScale = d3.scale.sqrt().domain([domainMin, domainMax]).range([3, 25]);
+
+
+    var bounds = path.bounds({type: 'FeatureCollection', features: locations}),
+        topLeft = bounds[0],
+        bottomRight = bounds[1];
+
+    svg.attr('width', bottomRight[0] - topLeft[0])
+      .attr('height', bottomRight[1] - topLeft[1])
+      .style('left', topLeft[0] + 'px')
+      .style('top', topLeft[1] + 'px');
+
+    g.attr('transform', 'translate(' + -topLeft[0] + ',' + -topLeft[1] + ')');
 
     var crash = g.selectAll('path')
-      .data(_.keys($scope.distinctLocations));
+      .data(locations, function(d) {
+        return d.properties.crashKey;
+      });
 
     var crashEnter = crash.enter().append('path')
-      .attr('d', function(d) {
-        var location = $scope.distinctLocations[d];
-        console.log(location.location);
-        return d3.geo.path(location.location).projection(transform);
-      })
-      .attr('class', 'crash-location')
-      .attr('fill', function (d) {
-        return '#dfdfdf';
+      .attr('d', path)
+      .attr('class', function(d) {
+        return getLocationClasses(d).join(' ');
       });
+      // .attr('style', function (d) {
+      //   return '#00000';
+      // });
 
     var crashUpdate = crash.transition()
-      .attr('d', d3.geo.path().projection(transform))
-      .attr('fill', function(d) {
-        return '#000000';
+      .attr('d', path)
+      .attr('class', function(d) {
+        return getLocationClasses(d).join(' ');
       });
+      // .attr('fill', function(d) {
+      //   return '#000000';
+      // });
 
     crash.exit().remove();
     $scope.drawing = false;
@@ -224,7 +229,7 @@ directives.crashMap = function ($scope, $element, $attrs) {
   var buildLocation = function(location) {
     return {
       'type': 'Feature',
-      'geometry': { 'type': 'Point', 'coordinates': [location.latitude, location.longitude] },
+      'geometry': { 'type': 'Point', 'coordinates': [location.longitude, location.latitude] },
     };
   };
 
@@ -234,61 +239,63 @@ directives.crashMap = function ($scope, $element, $attrs) {
       var crashKey = getCrashKey(crash);
 
       if(!$scope.distinctLocations.hasOwnProperty(crashKey)) {
-        $scope.distinctLocations[crashKey] = {};
-        $scope.distinctLocations[crashKey].crashIds = [];
-        $scope.distinctLocations[crashKey].factors = [];
-        $scope.distinctLocations[crashKey].location = buildLocation(crash.location);
-        $scope.distinctLocations[crashKey].off_street_name = crash.off_street_name;
-        $scope.distinctLocations[crashKey].on_street_name = crash.on_street_name;
-        $scope.distinctLocations[crashKey].cross_street_name = crash.cross_street_name;
-        $scope.distinctLocations[crashKey].number_of_persons_killed = 0;
-        $scope.distinctLocations[crashKey].number_of_persons_injured = 0;
-        $scope.distinctLocations[crashKey].number_of_cyclist_injured = 0;
-        $scope.distinctLocations[crashKey].number_of_cyclist_killed = 0;
-        $scope.distinctLocations[crashKey].number_of_motorist_injured = 0;
-        $scope.distinctLocations[crashKey].number_of_motorist_killed = 0;
-        $scope.distinctLocations[crashKey].number_of_pedestrians_injured = 0;
-        $scope.distinctLocations[crashKey].number_of_pedestrians_killed = 0;
+        $scope.distinctLocations[crashKey] = buildLocation(crash.location);
+        $scope.distinctLocations[crashKey].properties = {};
+        $scope.distinctLocations[crashKey].properties.crashIds = [];
+        $scope.distinctLocations[crashKey].properties.factors = [];
+        // $scope.distinctLocations[crashKey].location = buildLocation(crash.location);
+        $scope.distinctLocations[crashKey].properties.crashKey = crashKey;
+        $scope.distinctLocations[crashKey].properties.off_street_name = crash.off_street_name;
+        $scope.distinctLocations[crashKey].properties.on_street_name = crash.on_street_name;
+        $scope.distinctLocations[crashKey].properties.cross_street_name = crash.cross_street_name;
+        $scope.distinctLocations[crashKey].properties.number_of_persons_killed = 0;
+        $scope.distinctLocations[crashKey].properties.number_of_persons_injured = 0;
+        $scope.distinctLocations[crashKey].properties.number_of_cyclist_injured = 0;
+        $scope.distinctLocations[crashKey].properties.number_of_cyclist_killed = 0;
+        $scope.distinctLocations[crashKey].properties.number_of_motorist_injured = 0;
+        $scope.distinctLocations[crashKey].properties.number_of_motorist_killed = 0;
+        $scope.distinctLocations[crashKey].properties.number_of_pedestrians_injured = 0;
+        $scope.distinctLocations[crashKey].properties.number_of_pedestrians_killed = 0;
       }
 
-      $scope.distinctLocations[crashKey].crashIds.push(crash.unique_key);
-      if (crash.contributing_factor_vehicle_1 !== '' && $scope.distinctLocations[crashKey].factors.indexOf(crash.contributing_factor_vehicle_1) < 0) {
-        $scope.distinctLocations[crashKey].factors.push(crash.contributing_factor_vehicle_1);
+      $scope.distinctLocations[crashKey].properties.crashIds.push(crash.unique_key);
+      if (crash.contributing_factor_vehicle_1 !== '' && $scope.distinctLocations[crashKey].properties.factors.indexOf(crash.contributing_factor_vehicle_1) < 0) {
+        $scope.distinctLocations[crashKey].properties.factors.push(crash.contributing_factor_vehicle_1);
       }
-      if (crash.contributing_factor_vehicle_2 !== '' && $scope.distinctLocations[crashKey].factors.indexOf(crash.contributing_factor_vehicle_2) < 0) {
-        $scope.distinctLocations[crashKey].factors.push(crash.contributing_factor_vehicle_2);
+      if (crash.contributing_factor_vehicle_2 !== '' && $scope.distinctLocations[crashKey].properties.factors.indexOf(crash.contributing_factor_vehicle_2) < 0) {
+        $scope.distinctLocations[crashKey].properties.factors.push(crash.contributing_factor_vehicle_2);
       }
       if (crash.number_of_persons_killed > 0) {
-        $scope.distinctLocations[crashKey].number_of_persons_killed += crash.number_of_persons_killed;
-        $scope.distinctLocations[crashKey].killed = true;
+        $scope.distinctLocations[crashKey].properties.number_of_persons_killed += crash.number_of_persons_killed;
+        $scope.distinctLocations[crashKey].properties.killed = true;
       }
       if (crash.number_of_persons_injured > 0) {
-       $scope.distinctLocations[crashKey].number_of_persons_injured += crash.number_of_persons_injured;
-       $scope.distinctLocations[crashKey].injured = true;
+       $scope.distinctLocations[crashKey].properties.number_of_persons_injured += crash.number_of_persons_injured;
+       $scope.distinctLocations[crashKey].properties.injured = true;
       }
       if (crash.number_of_cyclist_injured > 0) {
-        $scope.distinctLocations[crashKey].number_of_cyclist_injured += crash.number_of_cyclist_injured;
-        $scope.distinctLocations[crashKey].cycl_injured = true;
+        $scope.distinctLocations[crashKey].properties.number_of_cyclist_injured += crash.number_of_cyclist_injured;
+        $scope.distinctLocations[crashKey].properties.cycl_injured = true;
       }
       if (crash.number_of_cyclist_killed > 0) {
-       $scope.distinctLocations[crashKey].number_of_cyclist_killed += crash.number_of_cyclist_killed;
-       $scope.distinctLocations[crashKey].cycl_killed = true;
+       $scope.distinctLocations[crashKey].properties.number_of_cyclist_killed += crash.number_of_cyclist_killed;
+       $scope.distinctLocations[crashKey].properties.cycl_killed = true;
       }
       if (crash.number_of_motorist_injured > 0) {
-        $scope.distinctLocations[crashKey].number_of_motorist_injured += crash.number_of_motorist_injured;
-        $scope.distinctLocations[crashKey].moto_injured = true;
+        $scope.distinctLocations[crashKey].properties.number_of_motorist_injured += crash.number_of_motorist_injured;
+        $scope.distinctLocations[crashKey].properties.moto_injured = true;
       }
       if (crash.number_of_motorist_killed > 0) {
-        $scope.distinctLocations[crashKey].number_of_motorist_killed += crash.number_of_motorist_killed;
-       $scope.distinctLocations[crashKey].moto_killed = true;
+        $scope.distinctLocations[crashKey].properties.number_of_motorist_killed += crash.number_of_motorist_killed;
+       $scope.distinctLocations[crashKey].properties.moto_killed = true;
       }
       if (crash.number_of_pedestrians_injured > 0) {
-        $scope.distinctLocations[crashKey].number_of_pedestrians_injured += crash.number_of_pedestrians_injured;
-        $scope.distinctLocations[crashKey].ped_injured = true;
+        $scope.distinctLocations[crashKey].properties.number_of_pedestrians_injured += crash.number_of_pedestrians_injured;
+        $scope.distinctLocations[crashKey].properties.ped_injured = true;
       }
       if (crash.number_of_pedestrians_killed > 0) {
-       $scope.distinctLocations[crashKey].number_of_pedestrians_killed += crash.number_of_pedestrians_killed;
-       $scope.distinctLocations[crashKey].ped_killed = true;
+       $scope.distinctLocations[crashKey].properties.number_of_pedestrians_killed += crash.number_of_pedestrians_killed;
+       $scope.distinctLocations[crashKey].properties.ped_killed = true;
       }
     });
     // console.log('setDistinctLocations end:', new Date());
@@ -300,24 +307,27 @@ directives.crashMap = function ($scope, $element, $attrs) {
     // console.log('crash:', crash);
     $scope.unloadedCrashes.push(crash);
 
-    if(!$scope.drawing && $scope.unloadedCrashes.length > 250) {
+    if(!$scope.drawing && $scope.unloadedCrashes.length > 100) {
       $scope.drawing = true;
       setDistinctLocations($scope.unloadedCrashes);
       drawCrashes();
-      // setMap($scope.distinctLocations, $scope.shapes, $scope.defaultZoom, false);
+      // reboundMap($scope.defaultZoom);
       $scope.crashes = $scope.crashes.concat($scope.unloadedCrashes);
       $scope.unloadedCrashes = [];
     }
   };
+
 
   var handleCloseEvent = function (event) {
     console.log('closing sse connection', new Date());
     // console.log($scope.crashes);
     if($scope.unloadedCrashes.length > 0) {
       setDistinctLocations($scope.unloadedCrashes);
-      // setMap($scope.distinctLocations, $scope.shapes, $scope.defaultZoom, true);
+      drawCrashes();
+      // reboundMap($scope.defaultZoom);
       $scope.crashes = $scope.crashes.concat($scope.unloadedCrashes);
       $scope.unloadedCrashes = [];
+
     }
     event.target.close();
   };
@@ -333,15 +343,26 @@ directives.crashMap = function ($scope, $element, $attrs) {
   };
 
   $scope.type;
+  $scope.crashes = [];
+  $scope.distinctLocations = {};
+  $scope.unloadedCrashes = [];
+  $scope.drawing = false;
+  $scope.shapeSet = false;
+  $scope.crashView = L.map(document.querySelector('.crash-data-view-map'), {center: [40.9200, -74.2500], zoom: $scope.defaultZoom});
+  $scope.crashView.addLayer(L.tileLayer('http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png',
+    { attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    maxZoom: 16,
+    minZoom: 11 }));
+  $scope.svg = $scope.svg || d3.select($scope.crashView.getPanes().overlayPane).append('svg');
+  $scope.g = $scope.g || $scope.svg.append('g').attr('class', 'leaflet-zoom-hide');
+  $scope.crashView.on('viewreset', onViewReset);
+
   $scope.$on('loadMap', function (event, type) {
     if(!$scope.type || $scope.type.type !== type.type || $scope.type.year !== type.year) {
       $scope.type = type;
       getCrashes(type);
     }
   });
-
-  setMapTiles();
-  setMap($scope.shapes, $scope.defaultZoom, false);
 
 };
 

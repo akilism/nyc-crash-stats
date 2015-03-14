@@ -1812,3 +1812,8 @@ background-color:#FFFFFF}
 .show {
   display: block !important;
 }
+
+
+.leaflet-overlay-pane svg {
+  position: relative !important;
+}
