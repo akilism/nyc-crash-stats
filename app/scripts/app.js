@@ -16,7 +16,14 @@ angular.module('nycCrashStatsApp', [
     controller: 'MainCtrl',
     resolve: {
       crashStats: ['Socrata', '$location', function(Socrata, $location) {
-        return Socrata(null, $location.$$path);
+        // return Socrata(null, $location.$$path);
+        var options = {
+          'type': 'city',
+          'value': 'city',
+          'year': getTrendDate()
+        };
+
+        return Socrata(options, 'featureTotal');
       }
     ]}
   })
@@ -25,7 +32,14 @@ angular.module('nycCrashStatsApp', [
     controller: 'MainCtrl',
     resolve: {
       crashStats: ['Socrata', '$location', function(Socrata, $location) {
-        return Socrata(null, $location.$$path);
+        // return Socrata(null, $location.$$path);
+        var options = {
+          'type': 'city',
+          'value': 'city',
+          'year': getTrendDate()
+        };
+
+        return Socrata(options, 'featureTotal');
       }
     ]}
   })
@@ -39,90 +53,175 @@ angular.module('nycCrashStatsApp', [
     ]}
   })
   .when('/zipcode/:zipcode', {
-    templateUrl: 'partials/trend',
-    controller: 'TrendCtrl',
+    templateUrl: 'partials/main',
+    controller: 'MainCtrl',
     resolve: {
-      trendStats: ['Socrata', '$location', function(Socrata, $location) {
+      crashStats: ['Socrata', '$location', function(Socrata, $location) {
         var options = {
           'type': 'zipcode',
           'value': getPathValue($location.$$path),
           'year': getTrendDate()
         };
 
-        return Socrata(options, 'daily');
+        return Socrata(options, 'featureTotal');
       }
     ]}
   })
   .when('/community/:cdid', {
-    templateUrl: 'partials/trend',
-    controller: 'TrendCtrl',
+    templateUrl: 'partials/main',
+    controller: 'MainCtrl',
     resolve: {
-      trendStats: ['Socrata', '$location', function(Socrata, $location) {
+      crashStats: ['Socrata', '$location', function(Socrata, $location) {
         var options = {
           'type': 'community',
           'value': getPathValue($location.$$path),
           'year': getTrendDate()
         };
-        return Socrata(options, 'daily');
+        return Socrata(options, 'featureTotal');
       }
     ]}
   })
   .when('/borough/:borough', {
-    templateUrl: 'partials/trend',
-    controller: 'TrendCtrl',
+    templateUrl: 'partials/main',
+    controller: 'MainCtrl',
     resolve: {
-      trendStats: ['Socrata', '$location', function(Socrata, $location) {
+      crashStats: ['Socrata', '$location', function(Socrata, $location) {
         var options = {
           'type': 'borough',
           'value': getPathValue($location.$$path),
           'year': getTrendDate()
         };
-        return Socrata(options, 'daily');
+        return Socrata(options, 'featureTotal');
       }
     ]}
   })
   .when('/citycouncil/:ccid', {
-    templateUrl: 'partials/trend',
-    controller: 'TrendCtrl',
+    templateUrl: 'partials/main',
+    controller: 'MainCtrl',
     resolve: {
-      trendStats: ['Socrata', '$location', function(Socrata, $location) {
+      crashStats: ['Socrata', '$location', function(Socrata, $location) {
         var options = {
           'type': 'citycouncil',
           'value': getPathValue($location.$$path),
           'year': getTrendDate()
         };
-        return Socrata(options, 'daily');
+        return Socrata(options, 'featureTotal');
       }
     ]}
   })
   .when('/neighborhood/:neighborhood', {
-    templateUrl: 'partials/trend',
-    controller: 'TrendCtrl',
+    templateUrl: 'partials/main',
+    controller: 'MainCtrl',
     resolve: {
-      trendStats: ['Socrata', '$location', function(Socrata, $location) {
+      crashStats: ['Socrata', '$location', function(Socrata, $location) {
         var options = {
           'type': 'neighborhood',
           'value': getPathValue($location.$$path),
           'year': getTrendDate()
         };
-        return Socrata(options, 'daily');
+        return Socrata(options, 'featureTotal');
       }
     ]}
   })
   .when('/precinct/:pcid', {
-    templateUrl: 'partials/trend',
-    controller: 'TrendCtrl',
+    templateUrl: 'partials/main',
+    controller: 'MainCtrl',
     resolve: {
-      trendStats: ['Socrata', '$location', function(Socrata, $location) {
+      crashStats: ['Socrata', '$location', function(Socrata, $location) {
         var options = {
           'type': 'precinct',
           'value': getPathValue($location.$$path),
           'year': getTrendDate()
         };
-        return Socrata(options, 'daily');
+        return Socrata(options, 'featureTotal');
       }
     ]}
   })
+  // .when('/zipcode/:zipcode', {
+  //   templateUrl: 'partials/trend',
+  //   controller: 'TrendCtrl',
+  //   resolve: {
+  //     trendStats: ['Socrata', '$location', function(Socrata, $location) {
+  //       var options = {
+  //         'type': 'zipcode',
+  //         'value': getPathValue($location.$$path),
+  //         'year': getTrendDate()
+  //       };
+
+  //       return Socrata(options, 'daily');
+  //     }
+  //   ]}
+  // })
+  // .when('/community/:cdid', {
+  //   templateUrl: 'partials/trend',
+  //   controller: 'TrendCtrl',
+  //   resolve: {
+  //     trendStats: ['Socrata', '$location', function(Socrata, $location) {
+  //       var options = {
+  //         'type': 'community',
+  //         'value': getPathValue($location.$$path),
+  //         'year': getTrendDate()
+  //       };
+  //       return Socrata(options, 'daily');
+  //     }
+  //   ]}
+  // })
+  // .when('/borough/:borough', {
+  //   templateUrl: 'partials/trend',
+  //   controller: 'TrendCtrl',
+  //   resolve: {
+  //     trendStats: ['Socrata', '$location', function(Socrata, $location) {
+  //       var options = {
+  //         'type': 'borough',
+  //         'value': getPathValue($location.$$path),
+  //         'year': getTrendDate()
+  //       };
+  //       return Socrata(options, 'daily');
+  //     }
+  //   ]}
+  // })
+  // .when('/citycouncil/:ccid', {
+  //   templateUrl: 'partials/trend',
+  //   controller: 'TrendCtrl',
+  //   resolve: {
+  //     trendStats: ['Socrata', '$location', function(Socrata, $location) {
+  //       var options = {
+  //         'type': 'citycouncil',
+  //         'value': getPathValue($location.$$path),
+  //         'year': getTrendDate()
+  //       };
+  //       return Socrata(options, 'daily');
+  //     }
+  //   ]}
+  // })
+  // .when('/neighborhood/:neighborhood', {
+  //   templateUrl: 'partials/trend',
+  //   controller: 'TrendCtrl',
+  //   resolve: {
+  //     trendStats: ['Socrata', '$location', function(Socrata, $location) {
+  //       var options = {
+  //         'type': 'neighborhood',
+  //         'value': getPathValue($location.$$path),
+  //         'year': getTrendDate()
+  //       };
+  //       return Socrata(options, 'daily');
+  //     }
+  //   ]}
+  // })
+  // .when('/precinct/:pcid', {
+  //   templateUrl: 'partials/trend',
+  //   controller: 'TrendCtrl',
+  //   resolve: {
+  //     trendStats: ['Socrata', '$location', function(Socrata, $location) {
+  //       var options = {
+  //         'type': 'precinct',
+  //         'value': getPathValue($location.$$path),
+  //         'year': getTrendDate()
+  //       };
+  //       return Socrata(options, 'daily');
+  //     }
+  //   ]}
+  // })
   .otherwise({
     redirectTo: '/'
   });

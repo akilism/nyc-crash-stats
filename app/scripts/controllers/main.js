@@ -123,6 +123,7 @@ angular.module('nycCrashStatsApp')
     };
 
     var getTotals = function(totals, type) {
+
       var formattedTotals = {};
 
       switch(type) {
@@ -154,20 +155,6 @@ angular.module('nycCrashStatsApp')
 
       return formattedTotals;
     };
-
-
-    $scope.crashStats = crashStats;
-    var yearlyTotals = compressTotalsByYear(crashStats.totals);
-    var d = new Date();
-    $scope.crashStats.crashTotals = getTotals(yearlyTotals[d.getFullYear()], 'crash');
-    $scope.crashStats.injuryTotals = getTotals(yearlyTotals[d.getFullYear()], 'injury');
-    $scope.crashStats.deathTotals = getTotals(yearlyTotals[d.getFullYear()], 'death');
-    $scope.crashStats.factorTotals = getTotals(yearlyTotals[d.getFullYear()].factors, 'factors');
-    $scope.crashStats.vehicleTotals = getTotals(yearlyTotals[d.getFullYear()].vehicles, 'vehicles');
-
-    console.log(crashStats);
-    $scope.factorListSize = 5;
-    $scope.hideInstruction = true;
 
     $scope.setActiveAccident = function (accident, useApply) {
       // console.log(accident);
@@ -443,7 +430,8 @@ angular.module('nycCrashStatsApp')
       $('#accidentPopup .btn-popup-close').on('click', closeDetailPopup);
     };
 
-    //Calculate the aggregate factor totals for the filtered accidents. Vehicle 1 only right now.
+    //Calculate the aggregate factor totals for the filtered
+    //accidents. Vehicle 1 only right now.
     var calculateFactorTotals = function (dataset) {
       var factors = {},
         factor = {
@@ -495,24 +483,98 @@ angular.module('nycCrashStatsApp')
         return factor.total_accidents;
       });
 
-      // var reverseArray = function (initialArray) {
-      //   var len = initialArray.length - 1;
-      //   var i = 0;
-      //   var reversedArray = [];
-
-      //   while (i <= len) {
-      //     reversedArray[i] = initialArray[len];
-      //     reversedArray[len] = initialArray[i];
-      //     i++;
-      //     len--;
-      //   }
-      //   return reversedArray;
-      // };
-
-      // factors = reverseArray(factors);
       return factors.reverse();
     };
 
-    // $scope.activeAccident = crashStats.lastAccidents[0];
+    //if a single year is selected just return the year
+    //otherwise count up all the selected year totals.
+    var getSelectedYearTotals = function(yearly) {
+      var selectedYears = _.reduce($scope.selectedYears, function(acc, v, k) {
+        if(v) { acc.push(k); }
+        return acc;
+      },[]);
+
+      // console.log('yearly:', yearly);
+      if(selectedYears.length === 1) {
+        return yearly[selectedYears[0]];
+      } else if (selectedYears.length > 1) {
+        return calculateTotals(
+          _.filter(yearly, function(v, k) { return _.contains(selectedYears, k); })
+        );
+      } else {
+        return [];
+      }
+    };
+
+    //count up all the yearly totals.
+    var calculateTotals = function(data) {
+      return _.reduce(data, function(acc, curr) {
+        if(!acc) { return curr; }
+        var totals = {};
+        _.forEach(curr, function(v, k) {
+          totals[k] = getTotal(acc[k], v);
+        });
+        return totals;
+      }, false);
+
+    };
+
+    var getTotal = function(acc, curr) {
+      if(!acc) { return curr; }
+      if(_.isObject(curr)) { return calculateTotals([acc, curr]); }
+      if(_.isNaN(acc)) { return curr; }
+      if(_.isNaN(curr)) { return acc; }
+      return acc+curr;
+    };
+
+    var setTotals = function(selectedYearTotals) {
+      // console.log('selectedYearTotals', selectedYearTotals);
+      if(selectedYearTotals) {
+        $scope.crashStats.crashTotals = getTotals(selectedYearTotals, 'crash');
+        $scope.crashStats.injuryTotals = getTotals(selectedYearTotals, 'injury');
+        $scope.crashStats.deathTotals = getTotals(selectedYearTotals, 'death');
+        $scope.crashStats.factorTotals = getTotals(selectedYearTotals.factors, 'factors');
+        $scope.crashStats.vehicleTotals = getTotals(selectedYearTotals.vehicles, 'vehicles');
+      } else {
+        displayHelp();
+      }
+    };
+
+    var displayHelp = function() {
+      console.log('please choose a year.');
+    };
+
+    $scope.setYear = function() {
+      // console.log('selectedYears:', $scope.selectedYears);
+      if(_.every($scope.selectedYears, function(v,k) { return !v; })) {
+        displayHelp();
+      } else {
+        setTotals(getSelectedYearTotals(yearlyTotals));
+      }
+    };
+
+
+    var yearlyTotals = compressTotalsByYear(crashStats.totals);
+    var d = new Date();
+    var statDate = _.reduce(_.map(_.keys(crashStats.totals), function(key){
+      var parts = key.split('_');
+      return parts[1];
+    }), function(hi, curr, i) {
+      return Math.max(hi, parseInt(curr, 10));
+    }, 0);
+
+    $scope.crashStats = _.cloneDeep(crashStats);
+    $scope.selectedYears = {};
+    $scope.selectedYears[Math.min(statDate, d.getFullYear())] = true;
+    setTotals(getSelectedYearTotals(yearlyTotals));
+    $scope.factorListSize = 5;
+    $scope.hideInstruction = true;
     $scope.factorsVehicle1 = calculateFactorTotals(crashStats.lastAccidents);
+
+    // console.log('stateDate:', statDate);
+    // console.log('crashStats:', crashStats);
+    // console.log('$scope.selectedYears:', $scope.selectedYears);
+    // console.log('$scope.crashstats:', crashStats);
+
+
   }]);

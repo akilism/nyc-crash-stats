@@ -24,6 +24,10 @@ directives.directive('buttonDropdown', ['$location', 'GeoData', function ($locat
           scope.hideDropDown();
         };
 
+        scope.loadMain = function() {
+          $location.path('/');
+        };
+
         //parenttype is optional.
         scope.openDropDown = function (type, level, isLeaf, $event, parentType) {
           $event.preventDefault();
@@ -71,14 +75,13 @@ directives.directive('buttonDropdown', ['$location', 'GeoData', function ($locat
     };
   }]);
 
-directives.buttonDropdown = function (GeoData, $scope) {
+directives.buttonDropdown = function (GeoData, $scope, $location) {
   // $scope.$watch('menuData', function (oldVal, newVal) {
   //   $scope.data = newVal;
   // });
 
   var getAllShapes = function () {
     GeoData('/all').then(function (data) {
-      // console.log(data);
 
       _.forEach(data, function (shape) {
         shape.name = getDisplayValue(shape.type, shape.identifier, false);
@@ -261,11 +264,23 @@ directives.buttonDropdown = function (GeoData, $scope) {
         return (isTitle) ? ' in ' + value + '.' : value + '';
       case 'precinct':
         return (isTitle) ? ' in the ' + precinctDisplay(value) + '.' : precinctDisplay(value) + '';
+      default:
+        return 'City Wide';
     }
+  };
+
+  var getTitle = function (path, isGraphTitle) {
+    if(path === '/') { return 'City Wide'; }
+
+    var parts = path.split('/');
+    var type = parts[1];
+    var value = parts[2];
+
+    return getDisplayValue(type, value, isGraphTitle);
   };
 
 
 
   getAllShapes();
-
+  $scope.title = getTitle($location.$$path, false);
 };
