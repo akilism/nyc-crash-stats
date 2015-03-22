@@ -5,9 +5,13 @@ directives.directive('statList', ['$location', function ($location) {
       templateUrl: 'partials/statlist.html',
       restrict: 'E',
       scope: {
-        'stat': '=dataset'
+        'stat': '=dataset',
+        'type': '@',
+        'itemClickHandler': '=itemclick'
       },
       link: function postLink(scope, element, attrs) {
+
+
       }
     };
   }]);

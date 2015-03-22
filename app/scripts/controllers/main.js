@@ -4,8 +4,9 @@ angular.module('nycCrashStatsApp')
     .controller('MainCtrl', ['$scope', 'crashStats', 'Socrata', function($scope, crashStats, Socrata) {
 
     var addValues = function(currVals, newVals, keys) {
-      var totaledVals = currVals;
+      var totaledVals = _.cloneDeep(currVals);
       _.forEach(keys, function(key) {
+        if(!totaledVals[key]) { totaledVals[key] = 0; }
         totaledVals[key] += newVals[key];
       });
 
@@ -48,7 +49,7 @@ angular.module('nycCrashStatsApp')
       return _.sortBy(_.map(totals, function(v, k) {
         return {
           count: v || 0,
-          label: k.replace(re, ' / ').toLowerCase(),
+          label: k,
           pctTotal: getPctTotal(v, accTotal),
           pctChange: 0
         };
@@ -486,13 +487,17 @@ angular.module('nycCrashStatsApp')
       return factors.reverse();
     };
 
-    //if a single year is selected just return the year
-    //otherwise count up all the selected year totals.
-    var getSelectedYearTotals = function(yearly) {
-      var selectedYears = _.reduce($scope.selectedYears, function(acc, v, k) {
+    var getSelectedYearsArray = function(selYears) {
+      return _.reduce(selYears, function(acc, v, k) {
         if(v) { acc.push(k); }
         return acc;
       },[]);
+    };
+
+    //if a single year is selected just return the year
+    //otherwise count up all the selected year totals.
+    var getSelectedYearTotals = function(yearly) {
+      var selectedYears = getSelectedYearsArray($scope.selectedYears);
 
       // console.log('yearly:', yearly);
       if(selectedYears.length === 1) {
@@ -576,5 +581,22 @@ angular.module('nycCrashStatsApp')
     // console.log('$scope.selectedYears:', $scope.selectedYears);
     // console.log('$scope.crashstats:', crashStats);
 
+    var getGraphStats = function(item, type) {
+      //month/year total
+      var totals = {};
+      _.forEach(_.filter(crashStats.totals, function(total) {
+        return _.contains(getSelectedYearsArray($scope.selectedYears), total.year + '');
+      }), function(total) {
+        totals[total.month + '_' + total.year] = {
+          'total': (_.filter(total[type], function(v, key) { return key === item; }))[0],
+          year: total.year,
+          month: total.month
+        };
+      });
+      return totals;
+    };
 
+    $scope.statGraph = function(item, type) {
+      console.log(getGraphStats(item, type));
+    };
   }]);

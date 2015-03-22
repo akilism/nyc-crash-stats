@@ -39,8 +39,8 @@
 </div>
 <div class="row">
   <div class="col-sm-12 show" id="factors">
-    <stat-list dataset="crashStats.factorTotals"></stat-list>
-    <stat-list dataset="crashStats.vehicleTotals"></stat-list>
+    <stat-list dataset="crashStats.factorTotals" itemclick="statGraph" type="factors"></stat-list>
+    <stat-list dataset="crashStats.vehicleTotals" itemclick="statGraph" type="vehicles"></stat-list>
   </div>
   <div class="col-sm-12" id="crashMap">
     <crash-map setaccident="showAccidentDetails" defaultzoom="11" area="featuredArea"></crash-map>
