@@ -581,14 +581,14 @@ angular.module('nycCrashStatsApp')
     // console.log('$scope.selectedYears:', $scope.selectedYears);
     // console.log('$scope.crashstats:', crashStats);
 
-    var getGraphStats = function(item, type) {
+    var getGraphStats = function(items, type) {
       //month/year total
       var totals = {};
       _.forEach(_.filter(crashStats.totals, function(total) {
         return _.contains(getSelectedYearsArray($scope.selectedYears), total.year + '');
       }), function(total) {
         totals[total.month + '_' + total.year] = {
-          'total': (_.filter(total[type], function(v, key) { return key === item; }))[0],
+          'totals': getTypeTotals(total[type], items),
           year: total.year,
           month: total.month
         };
@@ -596,7 +596,17 @@ angular.module('nycCrashStatsApp')
       return totals;
     };
 
+    var getTypeTotals = function(typeTotal, items) {
+      var totals = {};
+      _.forEach(items, function(item) {
+         totals[item] = (_.filter(typeTotal, function(v, key) { return key === item; }))[0];
+      });
+      return totals;
+    };
+
+    $scope.items = [];
     $scope.statGraph = function(item, type) {
-      console.log(getGraphStats(item, type));
+      $scope.items.push(item);
+      console.log(getGraphStats($scope.items, type));
     };
   }]);
