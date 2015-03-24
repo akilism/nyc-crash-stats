@@ -284,3 +284,5 @@ directives.buttonDropdown = function (GeoData, $scope, $location) {
   getAllShapes();
   $scope.title = getTitle($location.$$path, false);
 };
+
+directives.buttonDropdown.$inject = ['GeoData', '$scope', '$location'];
