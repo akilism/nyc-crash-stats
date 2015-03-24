@@ -1,6 +1,8 @@
 'use strict';
 
-var express = require('express');
+var http = require('http'),
+  express = require('express'),
+  SSE = require('sse');
 
 /**
  * Main application file

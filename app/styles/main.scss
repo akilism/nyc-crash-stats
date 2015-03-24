@@ -278,15 +278,17 @@ body {
 }
 
 .header {
-  padding-bottom: 5px;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
   border-bottom: 1px solid $bcolor;
 
-  h3 {
-    font-size: 5em;
+  h3, span {
+    font-size: 2em;
     padding: 0;
     margin: 0;
     font-weight: bold;
     color: #01535f;
+    line-height: 1.1;
   }
 }
 
@@ -420,7 +422,7 @@ body {
 }
 
 .filter-buttons {
-  z-index: 1999;
+  z-index: 2;
   position: relative;
 }
 
@@ -593,6 +595,7 @@ body {
     height: auto;
   }
 }
+
 
 .nav .nav-boroughs {
   display: none;
@@ -1356,8 +1359,29 @@ body {
 }
 
 .btn-dropdown-wrapper {
-  padding-right: 5px;
+  padding: 0 7px 5px 0;
+
+  .btn {
+    padding: 15px 15px;
+
+    @media (min-width: 992px) {
+      padding: 5px 7px;
+    }
+  }
+
+  @media (min-width: 992px) {
+    padding-right: 5px;
+  }
+
   display: inline-block;
+
+  .dropdown-menu {
+    top: auto;
+
+    @media (min-width: 992px) {
+      top: 100%;
+    }
+  }
 
   .active {
     background-color: #e6e6e6;
@@ -1479,15 +1503,6 @@ body {
   padding: 0;
 }
 
-.trend-right {
-  padding: 0;
-}
-
-.loader,
-.trend-left {
-  height: 355px;
-}
-
 .trend-head {
   margin-bottom: 5px;
   padding: 5px 0;
@@ -1509,6 +1524,10 @@ body {
 .trend-left {
   margin: 0;
   padding: 0 0 0 2px;
+}
+
+.trend-right {
+  padding: 0;
 }
 
 .crash-map-hover {
@@ -1539,6 +1558,11 @@ body {
 
 
 //Loader
+.loader,
+.trend-left {
+  height: 355px;
+}
+
 #floatingCirclesG{
   position:relative;
   width: 128px;
@@ -1616,6 +1640,148 @@ background-color:#FFFFFF}
 
 }
 
+
+/* new layout stuff*/
+
+.stat-count {
+  font-size: 1.953em;
+  text-align: center;
+  color: darkorange;
+}
+
+.stat-label {
+  font-size: 1.25em;
+  text-align: center;
+
+  .label-text {
+    display: inline;
+  }
+}
+
+.stat-group {
+  background-color: #f3eeee;
+  border-radius: 5px;
+  border: 1px solid #a0a0a0;
+  margin: 10px 0;
+
+  .stat-title {
+    font-size: 1.953em;
+    margin: 10px 15px;
+    border-bottom: solid 1px #a0a0a0;
+    cursor: pointer;
+  }
+
+  .col-md-4 {
+    padding: 0 10px;
+  }
+
+  .stat-box {
+    background-color: #fff;
+    border: solid 1px #a0a0a0;
+    border-radius: 3px;
+    margin-bottom: 10px;
+    cursor: pointer;
+
+    p {
+      margin: 0;
+    }
+  }
+
+  // .stat-count {
+  //   font-size: 3em;
+  // }
+
+  .stat-label {
+    font-size: 1.563em;
+    text-align: center;
+
+    .fa { display: none; }
+    .fa-2x { font-size: 1.25em; }
+
+    @media (min-width: 992px) {
+      .fa {
+        display: inline;
+      }
+
+      .label-text {
+        display: none;
+      }
+    }
+
+    .sticky-label {
+      display: inline;
+    }
+  }
+}
+
+.factor-stats {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  li {
+    display: inline-block;
+  }
+
+  p {
+      margin: 0;
+  }
+
+  .factor-stat {
+    background-color: #f3eeee;
+    border: solid 2px #fff;
+    border-radius: 5px;
+    display: inline-block;
+    min-height: 118px; //123px when details show.
+    padding: 0 2px 0 2px;
+    cursor: pointer;
+
+    .stat-count {
+      line-height: 1.25;
+      font-size: 3em;
+    }
+
+    .stat-label {
+      line-height: 1.2;
+
+      .label-text {
+        text-transform: capitalize;
+      }
+    }
+
+    @media (min-width: 992px) {
+      min-height: 123px;
+    }
+  }
+
+  .stat-details {
+    margin: 5px 10px 0 10px;
+    display: none;
+
+    span {
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    @media (min-width: 992px) {
+      display: block;
+      position: absolute;
+      bottom: 0;
+    }
+  }
+}
+
+.main-year-selector {
+  font-size: 1.563em;
+  line-height: 1;
+  margin: 5px 0;
+
+  .year-display {
+   border-bottom: dashed 1px #a0a0a0;
+   cursor: pointer;
+  }
+}
+
 #crashTable {
   border: 1px solid black;
   border-spacing: 0;
@@ -1638,4 +1804,50 @@ background-color:#FFFFFF}
   border: 1px solid black;
   padding: 5px 2px;
   text-align: center;
+}
+
+#factors {
+  display: none;
+}
+
+#crashMap {
+  display: none;
+}
+
+.show {
+  display: block !important;
+}
+
+
+.leaflet-overlay-pane svg {
+  position: relative !important;
+}
+.area-title {
+  font-size: 45px;
+  border-bottom: 1px solid #c4caca;
+}
+
+
+.stat-graph {
+  background-color: #fff;
+  border-radius: 3px;
+  border: 1px solid #a0a0a0;
+  padding: 0px 10px;
+  opacity: 0;
+  z-index: 0;
+  margin: auto;
+  position: fixed;
+  top: 0; left: 0; bottom: 0; right: 0;
+  transition: opacity 150ms;
+}
+
+
+.graph-title {
+  text-transform: capitalize;
+}
+
+
+.showy {
+  z-index: 3;
+  opacity: 1;
 }

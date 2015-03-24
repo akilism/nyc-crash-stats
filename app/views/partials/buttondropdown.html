@@ -1,4 +1,7 @@
 <div class="btn-group">
+  <div class="btn-dropdown-wrapper">
+    <button type="button" class="btn btn-default" ng-click="loadMain()">Citywide</button>
+  </div>
   <div class="btn-dropdown-wrapper" ng-repeat="item in data">
   <button type="button" class="btn btn-default" ng-click="openDropDown(item.type, 'child', item.isLeaf, $event)">{{item.name}} <span class="caret"></span></button>
   <ul class="child dropdown-menu" ng-class="item.type" role="menu">
@@ -13,4 +16,9 @@
     </li>
   </ul>
   </div>
+  <div class="btn-dropdown-wrapper">
+    <!-- <button type="button" class="btn btn-default btn-info" ng-click="showMap()" ng-show="!mapView">Show Map</button>
+    <button type="button" class="btn btn-default btn-info" ng-click="showFactors()" ng-show="mapView">Show Factors</button> -->
+  </div>
 </div>
+<h2 class="area-title">{{title}}</h2>

@@ -45,7 +45,7 @@
         </li>
       </ul>
     </div>
-        <table class="keys" id="crashTable">
+    <table class="keys" id="crashTable">
   <thead class="keys-header crash-table-header">
     <tr>
       <th class="crash-table-head-item">
@@ -71,8 +71,15 @@
     </tr>
   </tbody>
 </table>
-
-  </div>
+<!--     <ul class="col-xs-12" style="padding-left: 0;">
+      <li class="checkbox" style="margin-top: 0; white-space: nowrap;">
+        <label>
+          <input type="checkbox" ng-model="fitDates" ng-change="setDates(true)"> Constrain to Matching Dates
+        </label>
+         <span>{{dateRange | rangeDisplayFilter}}</span>
+      </li>
+    </ul>
+ -->  </div>
   <div class="trend-right col-sm-12">
     <div id="trendMap" class="trend-map col-xs-12 death-injury-highlight"></div>
   </div>
@@ -88,8 +95,8 @@
     </div>
   </div>
 </div>
-<drilldowngraph key="graphKey" dataset="unConstrainedStats" timescale="monthly" header="graphHeader"></drilldowngraph>
 
+<drilldowngraph key="graphKey" dataset="unConstrainedStats" timescale="monthly" header="graphHeader"></drilldowngraph>
 <div class="crash-graph-hover">
   <p class="date"><span class="hover-label">Date:</span> <span class="hover-value"></span></p>
   <p class="amount"><span class="hover-label">Total:</span> <span class="hover-value"></span></p>

@@ -10,7 +10,7 @@
     <title>NYC Crash Stats</title>
     <meta name="description" content="NYC Crash Stats">
     <meta name="viewport" content="width=device-width">
-    <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
     <!-- build:css(app) styles/vendor.css -->
     <!-- bower:css -->
     <!-- endbower -->
@@ -59,25 +59,32 @@
 
     <!-- build:js({.tmp,app}) scripts/scripts.js -->
     <script src="scripts/app.js"></script>
+    <script src="scripts/services/Socrata.js"></script>
+    <script src="scripts/services/GeoData.js"></script>
+
     <script src="scripts/controllers/main.js"></script>
     <script src="scripts/controllers/trend.js"></script>
     <script src="scripts/controllers/navbar.js"></script>
-    <script src="scripts/services/Socrata.js"></script>
+
     <script src="scripts/directives/crashDataView.js"></script>
+    <script src="scripts/directives/crashMap.js"></script>
     <script src="scripts/directives/crashAccidentDisplay.js"></script>
     <script src="scripts/directives/crashPopup.js"></script>
-    <script src="scripts/filters/dateDisplayFilter.js"></script>
     <script src="scripts/directives/factorGraph.js"></script>
-    <script src="scripts/filters/factorname.js"></script>
-    <script src="scripts/services/GeoData.js"></script>
-    <script src="scripts/filters/month.js"></script>
     <script src="scripts/directives/monthgraph.js"></script>
     <script src="scripts/directives/drilldowngraph.js"></script>
     <script src="scripts/directives/dropdown.js"></script>
     <script src="scripts/directives/header.js"></script>
     <script src="scripts/directives/buttondropdown.js"></script>
+    <script src="scripts/directives/statgroup.js"></script>
+    <script src="scripts/directives/statlist.js"></script>
+
     <script src="scripts/filters/keyfilter.js"></script>
     <script src="scripts/filters/rangedisplayfilter.js"></script>
+    <script src="scripts/filters/dateDisplayFilter.js"></script>
+    <script src="scripts/filters/month.js"></script>
+    <script src="scripts/filters/factorname.js"></script>
+    <script src="scripts/filters/statname.js"></script>
     <!-- endbuild -->
 
 </body>

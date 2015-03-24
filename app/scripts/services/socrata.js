@@ -89,7 +89,6 @@ var getBaseData = function (path, $http, $q) {
 
   var getDefer = function () { $http.get(apiPath).success(
     function(data) {
-      // console.log('baseData', data);
       deferred.resolve(reMapKeys(data));
     });
 
@@ -98,7 +97,6 @@ var getBaseData = function (path, $http, $q) {
 
   return getDefer();
 };
-
 
 services.factory('Socrata', ['$http', '$q', function ($http, $q) {
   return function (options, path) {

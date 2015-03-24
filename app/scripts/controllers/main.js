@@ -1,20 +1,7 @@
 'use strict';
 
 angular.module('nycCrashStatsApp')
-  .controller('MainCtrl', ['$scope', 'crashStats', 'Socrata', function ($scope, crashStats, Socrata) {
-    crashStats.lastAccidents.title = 'Last ' + crashStats.lastAccidents.length + ' Crashes';
-    crashStats.lastAccidents.id = 'accident';
-    crashStats.lastInjuries.title = (crashStats.lastInjuries.length >= 100) ? 'Last ' + crashStats.lastInjuries.length + ' Crashes Resulting In An Injury' : 'All Crashes Resulting In An Injury';
-    crashStats.lastInjuries.id = 'injury';
-    crashStats.lastDeaths.title = (crashStats.lastDeaths.length >= 100) ? 'Last ' + crashStats.lastDeaths.length + ' Crashes Resulting In A Death' : 'All Crashes Resulting In A Death';
-    crashStats.lastDeaths.id = 'death';
-
-    $scope.crashStats = crashStats;
-    // console.log(crashStats.yearly);
-    $scope.year = new Date().getFullYear();
-    $scope.yearly = crashStats.yearly[0];
-    $scope.factorListSize = 5;
-    $scope.hideInstruction = true;
+    .controller('MainCtrl', ['$scope', 'crashStats', 'Socrata', function($scope, crashStats, Socrata) {
 
     $scope.setActiveAccident = function (accident, useApply) {
       // console.log(accident);
@@ -83,15 +70,6 @@ angular.module('nycCrashStatsApp')
       $scope.factorsVehicle1 = calculateFactorTotals(dataset);
     };
 
-    // $scope.showJumbo = function () {
-    //   $('.jumbotron-wrapper').fadeIn();
-    //   ga('send', 'event', 'click', 'about');
-    // };
-
-    // $scope.hideJumbo = function () {
-    //   $('.jumbotron-wrapper').fadeOut();
-    // };
-
     // Handle the click event for the overlay display
     // Community Boards, Neighborhoods, Zip codes etc.
     // Makes the service call to get the correct shape file
@@ -111,6 +89,63 @@ angular.module('nycCrashStatsApp')
       }
 
       $scope.$broadcast('displayMapOverlay', type);
+    };
+
+    $scope.setYear = function() {
+      // console.log('selectedYears:', $scope.selectedYears);
+      if(_.every($scope.selectedYears, function(v,k) { return !v; })) {
+        displayHelp();
+      } else {
+        setTotals(getSelectedYearTotals(yearlyTotals));
+      }
+    };
+
+    $scope.statGraph = function(item, type) {
+      // $scope.items.push(item);
+
+      switch(type) {
+        case 'crashes':
+          if(item.toLowerCase() === 'death') {
+            item = 'result_death';
+          } else if(item.toLowerCase() === 'injury') {
+            item = 'result_injury';
+          } else {
+            item = 'total_accidents';
+          }
+          $scope.items = [item];
+          $scope.graphData = getGraphStats($scope.items, type);
+          break;
+        case 'injuries':
+          if(item.toLowerCase() === 'cyclists') {
+            item = 'number_of_cyclist_injured';
+          } else if(item.toLowerCase() === 'pedestrians') {
+            item = 'number_of_pedestrians_injured';
+          } else if(item.toLowerCase() === 'motorists') {
+            item = 'number_of_motorist_injured';
+          } else {
+            item = 'number_of_persons_injured';
+          }
+          $scope.items = [item];
+          $scope.graphData = getGraphStats($scope.items, type);
+          break;
+        case 'deaths':
+          if(item.toLowerCase() === 'cyclists') {
+            item = 'number_of_cyclist_killed';
+          } else if(item.toLowerCase() === 'pedestrians') {
+            item = 'number_of_pedestrians_killed';
+          } else if(item.toLowerCase() === 'motorists') {
+            item = 'number_of_motorist_killed';
+          } else {
+            item = 'number_of_persons_killed';
+          }
+          $scope.items = [item];
+          $scope.graphData = getGraphStats($scope.items, type);
+          break;
+        default:
+          $scope.items = [item];
+          $scope.graphData = getGraphStats($scope.items, type);
+      }
+
     };
 
     var getActiveType = function (type) {
@@ -290,7 +325,151 @@ angular.module('nycCrashStatsApp')
       $('#accidentPopup .btn-popup-close').on('click', closeDetailPopup);
     };
 
-    //Calculate the aggregate factor totals for the filtered accidents. Vehicle 1 only right now.
+    var displayHelp = function() {
+      console.log('please choose a year.');
+    };
+
+    // Begin total calculation functions.
+
+    var compressTotalsByYear = function(totals) {
+      var grouped = _.groupBy(totals, function(t) { return t.year; });
+      var years = {};
+      _.forEach(grouped, function(v, k) {
+        years[k] = calculateTotals(v);
+      });
+      return years;
+    };
+
+    var getPctTotal = function(value, total) {
+      value = value || 0;
+      // console.log(value, total, value/total * 100);
+      return (value/total * 100).toPrecision(2);
+    };
+
+    var getItemTotals = function (totals) {
+      var re = /\//g;
+
+      var accTotal = _.reduce(totals, function(result, total) {
+        total = total || 0;
+        result += total;
+        return result;
+      }, 0);
+
+      // console.log('getItemTotals', totals, accTotal);
+      return _.sortBy(_.map(totals, function(v, k) {
+        return {
+          count: v || 0,
+          label: k,
+          pctTotal: getPctTotal(v, accTotal),
+          pctChange: 0
+        };
+      }), function(item) {
+        return -item.count;
+      });
+    };
+
+    var buildItems = function(totals, type) {
+      // console.log('buildItems', totals);
+      var formattedItems = [];
+      formattedItems[0] = {};
+      formattedItems[1] = {};
+
+      switch(type) {
+        case 'crash':
+          formattedItems[0].count = totals.result_injury;
+          formattedItems[0].label = 'Injury';
+          formattedItems[0].stickyLabel = 'sticky-label';
+          formattedItems[0].icon = '';
+          formattedItems[0].showIcon = false;
+          formattedItems[1].count = totals.result_death;
+          formattedItems[1].label = 'Death';
+          formattedItems[1].stickyLabel = 'sticky-label';
+          formattedItems[1].icon = '';
+          formattedItems[1].showIcon = false;
+          break;
+        case 'injury':
+          formattedItems[2] = {};
+          formattedItems[0].count = totals.number_of_pedestrians_injured;
+          formattedItems[0].label = 'Pedestrians';
+          formattedItems[0].stickyLabel = false;
+          formattedItems[0].icon = 'fa fa-user fa-2x';
+          formattedItems[0].showIcon = true;
+          formattedItems[1].count = totals.number_of_cyclist_injured;
+          formattedItems[1].label = 'Cyclists';
+          formattedItems[1].stickyLabel = false;
+          formattedItems[1].icon = 'fa fa-bicycle fa-2x';
+          formattedItems[1].showIcon = true;
+          formattedItems[2].count = totals.number_of_motorist_injured;
+          formattedItems[2].label = 'Motorists';
+          formattedItems[2].stickyLabel = false;
+          formattedItems[2].icon = 'fa fa-car fa-2x';
+          formattedItems[2].showIcon = true;
+          break;
+        case 'death':
+          formattedItems[2] = {};
+          formattedItems[0].count = totals.number_of_pedestrians_killed;
+          formattedItems[0].label = 'Pedestrians';
+          formattedItems[0].stickyLabel = false;
+          formattedItems[0].icon = 'fa fa-user fa-2x';
+          formattedItems[0].showIcon = true;
+          formattedItems[1].count = totals.number_of_cyclist_killed;
+          formattedItems[1].label = 'Cyclists';
+          formattedItems[1].stickyLabel = false;
+          formattedItems[1].icon = 'fa fa-bicycle fa-2x';
+          formattedItems[1].showIcon = true;
+          formattedItems[2].count = totals.number_of_motorist_killed;
+          formattedItems[2].label = 'Motorists';
+          formattedItems[2].stickyLabel = false;
+          formattedItems[2].icon = 'fa fa-car fa-2x';
+          formattedItems[2].showIcon = true;
+          break;
+        case 'factors':
+          formattedItems = getItemTotals(totals);
+          break;
+        case 'vehicles':
+          formattedItems = getItemTotals(totals);
+          break;
+      }
+
+      return formattedItems;
+    };
+
+    var getTotals = function(totals, type) {
+      // console.log('getTotals', totals);
+      var formattedTotals = {};
+
+      switch(type) {
+        case 'crash':
+          formattedTotals.total = totals.total_accidents;
+          formattedTotals.title = 'Total Crashes';
+          formattedTotals.items = buildItems(totals, 'crash');
+          break;
+        case 'injury':
+          formattedTotals.total = totals.number_of_persons_injured;
+          formattedTotals.title = 'Total Injuries';
+          formattedTotals.items = buildItems(totals, 'injury');
+          break;
+        case 'death':
+          formattedTotals.total = totals.number_of_persons_killed;
+          formattedTotals.title = 'Total Deaths';
+          formattedTotals.items = buildItems(totals, 'death');
+          break;
+        case 'factors':
+          formattedTotals.title = 'Contributing Factors';
+          formattedTotals.items = buildItems(totals, 'factors');
+          break;
+        case 'vehicles':
+          formattedTotals.total = totals.number_of_persons_killed;
+          formattedTotals.title = 'Vehicle Types';
+          formattedTotals.items = buildItems(totals, 'vehicles');
+          break;
+      }
+
+      return formattedTotals;
+    };
+
+    //Calculate the aggregate factor totals for the filtered
+    //accidents. Vehicle 1 only right now.
     var calculateFactorTotals = function (dataset) {
       var factors = {},
         factor = {
@@ -342,24 +521,145 @@ angular.module('nycCrashStatsApp')
         return factor.total_accidents;
       });
 
-      var reverseArray = function (initialArray) {
-        var len = initialArray.length - 1;
-        var i = 0;
-        var reversedArray = [];
-
-        while (i <= len) {
-          reversedArray[i] = initialArray[len];
-          reversedArray[len] = initialArray[i];
-          i++;
-          len--;
-        }
-        return reversedArray;
-      };
-
-      factors = reverseArray(factors);
-      return factors;
+      return factors.reverse();
     };
 
-    $scope.activeAccident = crashStats.lastAccidents[0];
+    var getSelectedYearsArray = function(selYears) {
+      return _.reduce(selYears, function(acc, v, k) {
+        if(v) { acc.push(k); }
+        return acc;
+      },[]);
+    };
+
+    //if a single year is selected just return the year
+    //otherwise count up all the selected year totals.
+    var getSelectedYearTotals = function(yearly) {
+      var selectedYears = getSelectedYearsArray($scope.selectedYears);
+
+      if(selectedYears.length === 1) {
+        return yearly[selectedYears[0]];
+      } else if (selectedYears.length > 1) {
+        return calculateTotals(
+          _.filter(yearly, function(v, k) { return _.contains(selectedYears, k); })
+        );
+      } else {
+        return [];
+      }
+    };
+
+    //count up all the yearly totals.
+    var calculateTotals = function(data) {
+      return _.reduce(data, function(acc, curr) {
+        if(!acc) { return curr; }
+        var totals = {};
+        _.forEach(curr, function(v, k) {
+          // console.log(acc[k], v, k);
+          if(k === 'year' || k === 'month') { totals[k] = v; }
+          else { totals[k] = getTotal(acc[k], v); }
+        });
+        return totals;
+      }, false);
+    };
+
+    var getTotal = function(acc, curr) {
+      if(!acc) { return curr; }
+      if(_.isObject(curr)) { return calculateTotals([acc, curr]); }
+      if(_.isNaN(acc)) { return curr; }
+      if(_.isNaN(curr)) { return acc; }
+      return acc+curr;
+    };
+
+    var setTotals = function(selectedYearTotals) {
+      // console.log('selectedYearTotals', selectedYearTotals);
+      if(selectedYearTotals) {
+        $scope.crashStats.crashTotals = getTotals(selectedYearTotals, 'crash');
+        $scope.crashStats.injuryTotals = getTotals(selectedYearTotals, 'injury');
+        $scope.crashStats.deathTotals = getTotals(selectedYearTotals, 'death');
+        $scope.crashStats.factorTotals = getTotals(selectedYearTotals.factors, 'factors');
+        $scope.crashStats.vehicleTotals = getTotals(selectedYearTotals.vehicles, 'vehicles');
+      } else {
+        displayHelp();
+      }
+    };
+
+    // End total calculation functions.
+    var getDisplayValue = function(item) {
+      switch(item) {
+        case 'number_of_cyclist_injured':
+          return 'total cyclists injured';
+        case 'number_of_cyclist_killed':
+          return 'total cyclists killed.';
+        case 'number_of_motorist_injured':
+          return 'total motorists injured.';
+        case 'number_of_motorist_killed':
+          return 'total motorists killed.';
+        case 'number_of_pedestrians_injured':
+          return 'total pedestrians injured.';
+        case 'number_of_pedestrians_killed':
+          return 'total pedestrians killed.';
+        case 'number_of_persons_injured':
+          return 'total persons injured.';
+        case 'number_of_persons_killed':
+          return 'total persons killed.';
+        case 'result_death':
+          return 'crashes resulting in a death.';
+        case 'result_injury':
+          return 'crashes resulting in an injury.';
+        case 'total_accidents':
+          return 'total crashes.';
+      }
+    };
+
+    var getGraphStats = function(items, type) {
+      //month/year total
+      var totals = {};
+      _.forEach(_.filter(crashStats.totals, function(total) {
+        return _.contains(getSelectedYearsArray($scope.selectedYears), total.year + '');
+      }), function(total) {
+        if(type === 'crashes' || type === 'injuries' || type === 'deaths') {
+          var display = getDisplayValue(items[0]);
+          totals[total.month + '_' + total.year] = {
+            'totals': {},
+            year: total.year,
+            month: total.month
+          };
+          totals[total.month + '_' + total.year].totals[display] = total[items[0]];
+        } else {
+          totals[total.month + '_' + total.year] = {
+            'totals': getTypeTotals(total[type], items),
+            year: total.year,
+            month: total.month
+          };
+        }
+      });
+      return totals;
+    };
+
+    var getTypeTotals = function(typeTotal, items) {
+      var totals = {};
+      _.forEach(items, function(item) {
+         totals[item] = (_.filter(typeTotal, function(v, key) { return key === item; }))[0];
+      });
+      return totals;
+    };
+
+
+    var yearlyTotals = compressTotalsByYear(crashStats.totals);
+    var d = new Date();
+    var statDate = _.reduce(_.map(_.keys(crashStats.totals), function(key){
+      var parts = key.split('_');
+      return parts[1];
+    }), function(hi, curr, i) {
+      return Math.max(hi, parseInt(curr, 10));
+    }, 0);
+
+    $scope.crashStats = _.cloneDeep(crashStats);
+    $scope.selectedYears = {};
+    $scope.selectedYears[Math.min(statDate, d.getFullYear())] = true;
+    setTotals(getSelectedYearTotals(yearlyTotals));
+    $scope.factorListSize = 5;
+    $scope.hideInstruction = true;
     $scope.factorsVehicle1 = calculateFactorTotals(crashStats.lastAccidents);
+    $scope.items = [];
+    $scope.graphData = {};
   }]);

@@ -13,7 +13,6 @@ angular.module('nycCrashStatsApp')
     $scope.dateRange = null;
     $scope.hoverCrash = {};
 
-
     $scope.getButtonVal = function (key, year, visible) {
       if (year && $scope.groupStats.hasOwnProperty(year)) {
         return parseInt($scope.groupStats[year].totals[key], 10);
@@ -42,19 +41,7 @@ angular.module('nycCrashStatsApp')
       }
     };
 
-    $scope.setYear = function () {
-
-      var validYears = getValidYears();
-      var currentYears = _.keys($scope.groupStats);
-      // $('.key-item').removeClass('active');
-      // $('.key-item.total_accidents').addClass('active');
-      var yearToCut = _.difference(currentYears, validYears)[0];
-      if(yearToCut) {
-        ga('send', 'event', 'cutYear', yearToCut);
-        cutYear(yearToCut);
-        return;
-      }
-
+    var displayYear = function (validYears, currentYears) {
       var yearToFetch = _.difference(validYears, currentYears)[0];
 
       if(yearToFetch) {
@@ -71,8 +58,22 @@ angular.module('nycCrashStatsApp')
         } else {
           fetchYear(yearToFetch);
         }
-
       }
+    };
+
+    $scope.setYear = function () {
+      var validYears = getValidYears();
+      var currentYears = _.keys($scope.groupStats);
+      // $('.key-item').removeClass('active');
+      // $('.key-item.total_accidents').addClass('active');
+      var yearToCut = _.difference(currentYears, validYears)[0];
+      if(yearToCut) {
+        ga('send', 'event', 'cutYear', yearToCut);
+        cutYear(yearToCut);
+        return;
+      }
+
+      displayYear(validYears, currentYears);
     };
 
     var setAccidents = function (selector) {
@@ -117,9 +118,11 @@ angular.module('nycCrashStatsApp')
     //Use only overlapping dates or all dates.
     $scope.setDates = function (loadMap) {
       if($scope.fitDates === true) {
+        // console.log('calling overlapdates()');
         overlapDates();
         ga('send', 'event', 'setDates', 'overlap');
       } else {
+        // console.log('calling showalldates()');
         showAllDates();
         ga('send', 'event', 'setDates', 'showAll');
       }
@@ -392,7 +395,7 @@ angular.module('nycCrashStatsApp')
 
     var getYearlyAccidents = function (year) {
       var path = $location.$$path.split('/');
-      // console.log(path);
+      // console.log(year);
 
       var options = {
         'type': path[1],
@@ -403,6 +406,7 @@ angular.module('nycCrashStatsApp')
       return Socrata(options, 'daily');
     };
 
+/*
     var getAllShapes = function () {
       GeoData('/all').then(function (data) {
         // console.log(data);
@@ -510,7 +514,7 @@ angular.module('nycCrashStatsApp')
         return parseInt(val.identifier, 10);
       }
     };
-
+*/
     var translateCommunityBoardDistrict = function (districtId) {
       if (districtId > 500) {
         return 'Staten Island Community Board ' + (districtId - 500);
@@ -653,6 +657,7 @@ angular.module('nycCrashStatsApp')
 
     var groupData = function (crashData, dateRange) {
       // if(dateRange) { console.log(dateRange); }
+      // console.log(crashData.length, dateRange);
       var currentDate, currentMonth, currentYear;
       var years = {};
       var validYears = getValidYears();
@@ -665,6 +670,11 @@ angular.module('nycCrashStatsApp')
 
         if(dateRange && !isValidDate(dateRange, crash.date)) {
           return;
+        }
+
+        if(crash.location) {
+          crash.latitude = crash.location.latitude;
+          crash.longitude = crash.location.longitude;
         }
 
         //Group the data by year -> month -> day
@@ -720,6 +730,7 @@ angular.module('nycCrashStatsApp')
         }
       });
       // console.log('years', years);
+      // console.log($scope.groupStats);
       return years;
     };
 
@@ -1098,12 +1109,15 @@ angular.module('nycCrashStatsApp')
       },
     ];
 
-    getAllShapes();
+    // getAllShapes();
 
     $scope.graphKey = 'total_accidents';
     $scope.title = getTitle($location.$$path, false);
+    // console.log(trendStats.accidents);
     $scope.groupStats = groupData(trendStats.accidents);
+    // console.log($scope.groupStats);
     $scope.unConstrainedStats = _.clone($scope.groupStats);
+    // console.log($scope.unConstrainedStats);
     $scope.shapes = trendStats.shapes;
     $scope.graphHeader = 'Total crashes ' + getTitle($location.$$path, true);
     $scope.selectedArea = trendStats.shapes;
