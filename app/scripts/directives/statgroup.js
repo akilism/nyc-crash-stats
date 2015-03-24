@@ -5,7 +5,9 @@ directives.directive('statGroup', ['$location', function ($location) {
       templateUrl: 'partials/statgroup.html',
       restrict: 'E',
       scope: {
-        'stat': '=dataset'
+        'stat': '=dataset',
+        'type': '@',
+        'itemClickHandler': '=itemclick'
       },
       link: function postLink(scope, element, attrs) {
       }

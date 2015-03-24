@@ -5,6 +5,3 @@ filters.filter('factorname', function () {
       return (input) ? input : 'Blank';
     };
   });
-
-// statname.
-// k.replace(re, ' / ').toLowerCase()

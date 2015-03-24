@@ -1,6 +1,9 @@
-<h2>{{title}}</h2>
-<div class="drill-down-key">
-
+<div class="stat-graph" id="statGraph">
+  <h2 class="graph-title">{{title | statName}}</h2>
+  <div class="drill-down-key"></div>
+  <div class="drill-down-graph"></div>
+  <div class="crash-graph-hover">
+    <p class="date"><span class="hover-label">Date:</span> <span class="hover-value"></span></p>
+    <p class="amount"><span class="hover-label">Total:</span> <span class="hover-value"></span></p>
+  </div>
 </div>
-<div class="drill-down-graph"></div>
-

@@ -119,7 +119,7 @@ directives.buttonDropdown = function (GeoData, $scope, $location) {
         }
       });
 
-      if (filteredVals[0].hasOwnProperty('borough')) {
+      if (filteredVals[0].hasOwnProperty('borough') && filteredVals[0].type !== 'borough') {
         boroughLevelData = groupByBorough(filteredVals);
       }
 

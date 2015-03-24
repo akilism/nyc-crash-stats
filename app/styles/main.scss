@@ -278,7 +278,8 @@ body {
 }
 
 .header {
-  padding-bottom: 5px;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
   border-bottom: 1px solid $bcolor;
 
   h3, span {
@@ -421,7 +422,7 @@ body {
 }
 
 .filter-buttons {
-  z-index: 1999;
+  z-index: 2;
   position: relative;
 }
 
@@ -594,6 +595,7 @@ body {
     height: auto;
   }
 }
+
 
 .nav .nav-boroughs {
   display: none;
@@ -1666,6 +1668,7 @@ background-color:#FFFFFF}
     font-size: 1.953em;
     margin: 10px 15px;
     border-bottom: solid 1px #a0a0a0;
+    cursor: pointer;
   }
 
   .col-md-4 {
@@ -1677,6 +1680,7 @@ background-color:#FFFFFF}
     border: solid 1px #a0a0a0;
     border-radius: 3px;
     margin-bottom: 10px;
+    cursor: pointer;
 
     p {
       margin: 0;
@@ -1730,6 +1734,7 @@ background-color:#FFFFFF}
     display: inline-block;
     min-height: 118px; //123px when details show.
     padding: 0 2px 0 2px;
+    cursor: pointer;
 
     .stat-count {
       line-height: 1.25;
@@ -1820,4 +1825,29 @@ background-color:#FFFFFF}
 .area-title {
   font-size: 45px;
   border-bottom: 1px solid #c4caca;
+}
+
+
+.stat-graph {
+  background-color: #fff;
+  border-radius: 3px;
+  border: 1px solid #a0a0a0;
+  padding: 0px 10px;
+  opacity: 0;
+  z-index: 0;
+  margin: auto;
+  position: fixed;
+  top: 0; left: 0; bottom: 0; right: 0;
+  transition: opacity 150ms;
+}
+
+
+.graph-title {
+  text-transform: capitalize;
+}
+
+
+.showy {
+  z-index: 3;
+  opacity: 1;
 }
