@@ -654,6 +654,7 @@ angular.module('nycCrashStatsApp')
     }, 0);
 
     $scope.crashStats = _.cloneDeep(crashStats);
+    console.log('crashstats:', crashStats);
     $scope.selectedYears = {};
     $scope.selectedYears[Math.min(statDate, d.getFullYear())] = true;
     setTotals(getSelectedYearTotals(yearlyTotals));

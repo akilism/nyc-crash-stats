@@ -22,7 +22,6 @@ angular.module('nycCrashStatsApp', [
           'value': 'city',
           'year': getTrendDate()
         };
-
         return Socrata(options, 'featureTotal');
       }
     ]}

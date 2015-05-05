@@ -75,7 +75,9 @@ var getDataWithOptions = function (options, type, $http, $q) {
     params: options
   };
 
+  console.log(config);
   $http(config).success(function (data) {
+            console.log('test');
       deferred.resolve(reMapKeys(data));
     }
   );
