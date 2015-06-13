@@ -18,9 +18,7 @@ angular.module('nycCrashStatsApp')
     };
 
     $scope.showAccidentDetails = function (accidentId, withApply) {
-      // console.log(accidentId);
       var accident = getAccident(accidentId);
-      console.log('accident', accident);
       if(accident) {
         accident.factors = getAccidentFactors(accident);
         accident.additionalAccidents = getAdditionalAccidents(accident.location);
@@ -91,13 +89,9 @@ angular.module('nycCrashStatsApp')
       $scope.$broadcast('displayMapOverlay', type);
     };
 
-    $scope.setYear = function() {
-      // console.log('selectedYears:', $scope.selectedYears);
-      if(_.every($scope.selectedYears, function(v,k) { return !v; })) {
-        displayHelp();
-      } else {
-        setTotals(getSelectedYearTotals(yearlyTotals));
-      }
+    $scope.setYear = function(evt) {
+      //console.log('selectedYears:', $scope.selectedYear);
+      setTotals(getSelectedYearTotals(yearlyTotals));
     };
 
     $scope.statGraph = function(item, type) {
@@ -332,7 +326,8 @@ angular.module('nycCrashStatsApp')
     // Begin total calculation functions.
 
     var compressTotalsByYear = function(totals) {
-      var grouped = _.groupBy(totals, function(t) { return t.year; });
+      // console.log(totals);
+      var grouped = _.groupBy(_.filter(totals, function(t) { return (t.year > 2000); }), function(t) { return t.year; });
       var years = {};
       _.forEach(grouped, function(v, k) {
         years[k] = calculateTotals(v);
@@ -348,6 +343,7 @@ angular.module('nycCrashStatsApp')
 
     var getItemTotals = function (totals) {
       var re = /\//g;
+      delete totals.lowMonth;
 
       var accTotal = _.reduce(totals, function(result, total) {
         total = total || 0;
@@ -524,38 +520,26 @@ angular.module('nycCrashStatsApp')
       return factors.reverse();
     };
 
-    var getSelectedYearsArray = function(selYears) {
-      return _.reduce(selYears, function(acc, v, k) {
-        if(v) { acc.push(k); }
-        return acc;
-      },[]);
-    };
-
-    //if a single year is selected just return the year
-    //otherwise count up all the selected year totals.
     var getSelectedYearTotals = function(yearly) {
-      var selectedYears = getSelectedYearsArray($scope.selectedYears);
-
-      if(selectedYears.length === 1) {
-        return yearly[selectedYears[0]];
-      } else if (selectedYears.length > 1) {
-        return calculateTotals(
-          _.filter(yearly, function(v, k) { return _.contains(selectedYears, k); })
-        );
-      } else {
-        return [];
-      }
+      var selectedYear = $scope.selectedYear;
+      return yearly[selectedYear];
     };
 
     //count up all the yearly totals.
     var calculateTotals = function(data) {
+      var totals = { 'lowMonth': 12 };
       return _.reduce(data, function(acc, curr) {
         if(!acc) { return curr; }
-        var totals = {};
+
+        if(curr.month < totals.lowMonth) { totals.lowMonth = curr.month; }
+
         _.forEach(curr, function(v, k) {
+          acc[k] = acc[k] || 0;
           // console.log(acc[k], v, k);
+
           if(k === 'year' || k === 'month') { totals[k] = v; }
           else { totals[k] = getTotal(acc[k], v); }
+
         });
         return totals;
       }, false);
@@ -563,7 +547,14 @@ angular.module('nycCrashStatsApp')
 
     var getTotal = function(acc, curr) {
       if(!acc) { return curr; }
-      if(_.isObject(curr)) { return calculateTotals([acc, curr]); }
+      if(!curr) { return acc; }
+      if(_.isObject(curr)) { return _.reduce([acc, curr], function(acc, curr) {
+        _.forEach(curr, function(val, key) {
+          acc[key] = (acc[key]) ? acc[key] + val : val;
+        });
+
+        return acc;
+      }, {}); }
       if(_.isNaN(acc)) { return curr; }
       if(_.isNaN(curr)) { return acc; }
       return acc+curr;
@@ -571,6 +562,8 @@ angular.module('nycCrashStatsApp')
 
     var setTotals = function(selectedYearTotals) {
       // console.log('selectedYearTotals', selectedYearTotals);
+      $scope.startDate = selectedYearTotals.lowMonth + '/' +  selectedYearTotals.year;
+      $scope.endDate = (selectedYearTotals.month+1) + '/' + selectedYearTotals.year;
       if(selectedYearTotals) {
         $scope.crashStats.crashTotals = getTotals(selectedYearTotals, 'crash');
         $scope.crashStats.injuryTotals = getTotals(selectedYearTotals, 'injury');
@@ -613,9 +606,8 @@ angular.module('nycCrashStatsApp')
     var getGraphStats = function(items, type) {
       //month/year total
       var totals = {};
-      _.forEach(_.filter(crashStats.totals, function(total) {
-        return _.contains(getSelectedYearsArray($scope.selectedYears), total.year + '');
-      }), function(total) {
+      // console.log(crashStats.totals);
+      _.forEach(_.filter(crashStats.totals, function(t) { return (t.year > 2000); }), function(total) {
         if(type === 'crashes' || type === 'injuries' || type === 'deaths') {
           var display = getDisplayValue(items[0]);
           totals[total.month + '_' + total.year] = {
@@ -633,12 +625,32 @@ angular.module('nycCrashStatsApp')
         }
       });
       return totals;
+      // _.forEach(_.filter(crashStats.totals, function(total) {
+      //   return _.contains([$scope.selectedYear], total.year + '');
+      // }), function(total) {
+      //   if(type === 'crashes' || type === 'injuries' || type === 'deaths') {
+      //     var display = getDisplayValue(items[0]);
+      //     totals[total.month + '_' + total.year] = {
+      //       'totals': {},
+      //       year: total.year,
+      //       month: total.month
+      //     };
+      //     totals[total.month + '_' + total.year].totals[display] = total[items[0]];
+      //   } else {
+      //     totals[total.month + '_' + total.year] = {
+      //       'totals': getTypeTotals(total[type], items),
+      //       year: total.year,
+      //       month: total.month
+      //     };
+      //   }
+      // });
+      // return totals;
     };
 
     var getTypeTotals = function(typeTotal, items) {
       var totals = {};
       _.forEach(items, function(item) {
-         totals[item] = (_.filter(typeTotal, function(v, key) { return key === item; }))[0];
+         totals[item] = (_.filter(typeTotal, function(v, key) { return key === item; }))[0] || 0;
       });
       return totals;
     };
@@ -653,10 +665,13 @@ angular.module('nycCrashStatsApp')
       return Math.max(hi, parseInt(curr, 10));
     }, 0);
 
+    $scope.startDate;
+    $scope.endDate;
+
     $scope.crashStats = _.cloneDeep(crashStats);
-    console.log('crashstats:', crashStats);
-    $scope.selectedYears = {};
-    $scope.selectedYears[Math.min(statDate, d.getFullYear())] = true;
+    // console.log('crashstats:', crashStats);
+    $scope.selectedYear = Math.min(statDate, d.getFullYear());
+    // console.log(yearlyTotals);
     setTotals(getSelectedYearTotals(yearlyTotals));
     $scope.factorListSize = 5;
     $scope.hideInstruction = true;

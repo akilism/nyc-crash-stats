@@ -57,8 +57,8 @@ angular.module('nycCrashStatsApp', [
     resolve: {
       crashStats: ['Socrata', '$location', function(Socrata, $location) {
         var options = {
-          'type': 'zipcode',
-          'value': getPathValue($location.$$path),
+          'type': 'zip_code',
+          'value': parseInt(getPathValue($location.$$path), 10),
           'year': getTrendDate()
         };
 
@@ -100,7 +100,7 @@ angular.module('nycCrashStatsApp', [
     resolve: {
       crashStats: ['Socrata', '$location', function(Socrata, $location) {
         var options = {
-          'type': 'citycouncil',
+          'type': 'city_council_district',
           'value': getPathValue($location.$$path),
           'year': getTrendDate()
         };
@@ -128,7 +128,7 @@ angular.module('nycCrashStatsApp', [
     resolve: {
       crashStats: ['Socrata', '$location', function(Socrata, $location) {
         var options = {
-          'type': 'precinct',
+          'type': 'police_precinct',
           'value': getPathValue($location.$$path),
           'year': getTrendDate()
         };

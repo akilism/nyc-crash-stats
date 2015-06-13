@@ -19,7 +19,6 @@ directives.directive('crashMap', ['$location', '$window', 'GeoData', 'Socrata', 
 directives.crashMap = function ($scope, $element, $attrs) {
   var eventSource;
 
-
   var onHoverCrash = function (layer) {
     var $$tooltip = $('.crash-map-hover');
     var x = layer.originalEvent.clientX + 10;
@@ -104,14 +103,11 @@ directives.crashMap = function ($scope, $element, $attrs) {
    $scope.layers[type].addTo($scope.crashView);
   };
 
-   var onViewReset = function (event) {
-    drawCrashes();
-  };
+  var onViewReset = function (event) { drawCrashes(); };
 
    // Set the crashes on the map. Zoom and center on bounds.
   // var setMap = function (locations, shapes, zoom, rebound) {
   var setMap = function (shapes, zoom, rebound) {
-
     if(shapes && !$scope.shapeSet) {
       displayLayer({'features': shapes}, 'active');
       $scope.shapeSet = true;
@@ -301,22 +297,37 @@ directives.crashMap = function ($scope, $element, $attrs) {
     // console.log('setDistinctLocations end:', new Date());
   };
 
+  var setMap = function() {
+    if(!$scope.mapSet) {
+      $scope.crashView = L.map(document.querySelector('.crash-data-view-map'), {center: [40.7250, -74.00], zoom: $scope.defaultZoom});
+      $scope.crashView.addLayer(L.tileLayer('http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png',
+        { attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        maxZoom: 16,
+        minZoom: 11 }));
+      $scope.svg = $scope.svg || d3.select($scope.crashView.getPanes().overlayPane).append('svg');
+      $scope.g = $scope.g || $scope.svg.append('g').attr('class', 'leaflet-zoom-hide');
+      $scope.crashView.on('viewreset', onViewReset);
+    }
+  }
+
   var handleCrashEvent = function (event) {
     // console.log('crash event:', event);
     var crash = JSON.parse(event.data);
     // console.log('crash:', crash);
     $scope.unloadedCrashes.push(crash);
 
-    if(!$scope.drawing && $scope.unloadedCrashes.length > 100) {
-      $scope.drawing = true;
+    if(!$scope.drawing && $scope.unloadedCrashes.length > 200) {
+
       setDistinctLocations($scope.unloadedCrashes);
+      setMap();
+      $scope.drawing = true;
+      $scope.mapSet = true;
       drawCrashes();
       // reboundMap($scope.defaultZoom);
       $scope.crashes = $scope.crashes.concat($scope.unloadedCrashes);
       $scope.unloadedCrashes = [];
     }
   };
-
 
   var handleCloseEvent = function (event) {
     console.log('closing sse connection', new Date());
@@ -327,7 +338,6 @@ directives.crashMap = function ($scope, $element, $attrs) {
       // reboundMap($scope.defaultZoom);
       $scope.crashes = $scope.crashes.concat($scope.unloadedCrashes);
       $scope.unloadedCrashes = [];
-
     }
     event.target.close();
   };
@@ -348,14 +358,7 @@ directives.crashMap = function ($scope, $element, $attrs) {
   $scope.unloadedCrashes = [];
   $scope.drawing = false;
   $scope.shapeSet = false;
-  $scope.crashView = L.map(document.querySelector('.crash-data-view-map'), {center: [40.9200, -74.2500], zoom: $scope.defaultZoom});
-  $scope.crashView.addLayer(L.tileLayer('http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png',
-    { attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    maxZoom: 16,
-    minZoom: 11 }));
-  $scope.svg = $scope.svg || d3.select($scope.crashView.getPanes().overlayPane).append('svg');
-  $scope.g = $scope.g || $scope.svg.append('g').attr('class', 'leaflet-zoom-hide');
-  $scope.crashView.on('viewreset', onViewReset);
+  $scope.mapSet = false;
 
   $scope.$on('loadMap', function (event, type) {
     if(!$scope.type || $scope.type.type !== type.type || $scope.type.year !== type.year) {

@@ -1,6 +1,6 @@
 <h2 class="stat-title">{{stat.title}}</h2>
 <ul class="factor-stats clearfix">
-    <li class="factor-stat col-xs-3 col-md-2" ng-repeat="item in stat.items.slice(0, 12)" ng-click="itemClickHandler(item.label, type)">
+    <li class="factor-stat col-xs-3 col-md-2" ng-repeat="item in stat.items.slice(0, 15)" ng-click="itemClickHandler(item.label, type)">
         <p class="stat-count">{{item.count | number}}</p>
         <p class="stat-label">
             <span class="label-text">{{item.label | statName}}</span>

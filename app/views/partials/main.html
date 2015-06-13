@@ -4,30 +4,32 @@
     <button-dropdown></button-dropdown>
   </div>
   <drilldowngraph dataset="graphData"></drilldowngraph>
+
   <div class="col-sm-12 year-selector">Years:
     <ul>
       <li class="checkbox">
         <label>
-          <input type="checkbox" ng-model="selectedYears.2012" ng-change="setYear()"> 2012
+          <input name="year" type="radio" ng-model="selectedYear" value="2012" ng-change="setYear()"> 2012
         </label>
       </li>
       <li class="checkbox">
         <label>
-          <input type="checkbox" ng-model="selectedYears.2013" ng-change="setYear()"> 2013
+          <input name="year" type="radio" ng-model="selectedYear" value="2013" ng-change="setYear()"> 2013
         </label>
       </li>
       <li class="checkbox">
         <label>
-          <input type="checkbox" ng-model="selectedYears.2014" ng-change="setYear()"> 2014
+          <input name="year" type="radio" ng-model="selectedYear" value="2014" ng-change="setYear()"> 2014
         </label>
       </li>
       <li class="checkbox">
         <label>
-          <input type="checkbox" ng-model="selectedYears.2015" ng-change="setYear()"> 2015
+          <input name="year" type="radio" ng-model="selectedYear" value="2015" ng-change="setYear()"> 2015
         </label>
       </li>
     </ul>
   </div>
+  <div class="col-sm-12 range">{{startDate}} - {{endDate}}</div>
 </div>
 <div class="row">
   <div class="col-md-4">

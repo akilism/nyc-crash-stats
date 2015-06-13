@@ -37,7 +37,6 @@ directives.directive('drilldowngraph',['monthFilter', function (monthFilter) {
         };
 
         var setGraph = function (data, el) {
-
           var arrData = _.flatten(_.reduce(data, function(acc, v, k) {
             return acc.concat(_.reduce(v, function(mAcc, mv, mk) {
               if(mk === 'totals') {
@@ -192,8 +191,8 @@ directives.directive('drilldowngraph',['monthFilter', function (monthFilter) {
             $$graphHover.find('.amount .hover-value').text(numberFormatter(d.totals[0].count));
             $$graphHover.find('.date .hover-value').text(d.date.toLocaleDateString('en-us', dateOptions));
             $$graphHover.css({
-              'top':  (d3.event.y + 20) + 'px',
-              'left': d3.event.x + 'px'
+              'top':  (d3.event.clientY + 20) + 'px',
+              'left': d3.event.clientX + 'px'
             });
             $$graphHover.show();
 

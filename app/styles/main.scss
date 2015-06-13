@@ -901,7 +901,7 @@ body {
 }
 
 .drill-down-key {
-  width: 150px;
+  width: 310px;
   border: 1px solid #aaa;
   border-radius: 3px;
   padding: 0 5px;
@@ -909,11 +909,13 @@ body {
   .key-item {
     background-color: transparent;
     color: #000;
-    border-bottom: 1px solid #aaa;
+    // border-bottom: 1px solid #aaa;
+    float: left;
+    margin-right: 20px;
 
-    &:last-child {
-      border-bottom: none;
-    }
+    // &:last-child {
+    //   border-bottom: none;
+    // }
   }
 
   hr {
@@ -1358,6 +1360,14 @@ body {
   color: #31ae1d;
 }
 
+.year-2015 {
+  fill: #000;
+  stroke: #000;
+  border-color: #000;
+  background-color: #000;
+  color: #000;
+}
+
 .btn-dropdown-wrapper {
   padding: 0 7px 5px 0;
 
@@ -1424,12 +1434,12 @@ body {
     padding: 0;
     display: inline-block;
     margin-bottom: 0;
-    width: 300px;
+    width: 360px;
   }
 
   li {
     display: inline-block;
-    margin: 0 5px;
+    margin: 0px;
     height: 23px;
     vertical-align: bottom;
   }
@@ -1644,9 +1654,9 @@ background-color:#FFFFFF}
 /* new layout stuff*/
 
 .stat-count {
-  font-size: 1.953em;
+  font-size: 1.55em;
   text-align: center;
-  color: darkorange;
+  color: rgb(55, 36, 79);
 }
 
 .stat-label {
@@ -1659,10 +1669,12 @@ background-color:#FFFFFF}
 }
 
 .stat-group {
-  background-color: #f3eeee;
+  // background-color: #f3eeee;
   border-radius: 5px;
-  border: 1px solid #a0a0a0;
+  // border: 1px solid #a0a0a0;
   margin: 10px 0;
+  background-color: #EFF5F5;
+  box-shadow: 2px 2px 0px #00FFD8;
 
   .stat-title {
     font-size: 1.953em;
@@ -1728,13 +1740,27 @@ background-color:#FFFFFF}
   }
 
   .factor-stat {
-    background-color: #f3eeee;
-    border: solid 2px #fff;
+    // background-color: #f3eeee;
+    // border: solid 2px #fff;
+    margin: 10px 15px;
+    box-shadow: 2px 2px 0px #00FFD8;
+    background-color: #EFF5F5;
     border-radius: 5px;
     display: inline-block;
     min-height: 118px; //123px when details show.
     padding: 0 2px 0 2px;
     cursor: pointer;
+
+    &:hover {
+      .stat-label {
+        text-decoration: underline;
+      }
+
+      p {
+        color: rgb(76, 73, 205);
+        transition: color 50ms;
+      }
+    }
 
     .stat-count {
       line-height: 1.25;
@@ -1752,6 +1778,10 @@ background-color:#FFFFFF}
     @media (min-width: 992px) {
       min-height: 123px;
     }
+
+    @media (min-width: 1400px) {
+      margin: 10px 19px;
+    }
   }
 
   .stat-details {
@@ -1759,7 +1789,7 @@ background-color:#FFFFFF}
     display: none;
 
     span {
-      text-decoration: underline;
+      // text-decoration: underline;
       cursor: pointer;
     }
 
@@ -1850,4 +1880,14 @@ background-color:#FFFFFF}
 .showy {
   z-index: 3;
   opacity: 1;
+}
+
+
+input[type="radio"] {
+  vertical-align: baseline;
+  margin: 4px 3px 0 0;
+}
+
+.range {
+  margin-top: 2px;
 }
