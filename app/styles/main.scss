@@ -59,7 +59,12 @@ $bcolor: #C4CACA;
 @import 'bootstrap-sass-official/vendor/assets/stylesheets/bootstrap';
 @import url(http://fonts.googleapis.com/css?family=PT+Sans:400,700,700italic);
 
-
+@mixin hover-state() {
+  text-decoration: underline;
+  color: rgb(76, 73, 205);
+  transition: color 50ms;
+  cursor: pointer;
+}
 
 .browsehappy {
   margin: 0.2em 0;
@@ -102,7 +107,7 @@ body {
       }
 
       &:hover {
-        text-decoration: underline;
+        @include hover-state();
       }
     }
   }
@@ -201,7 +206,8 @@ h2.yearly-total {
   }
 }
 
-.jumbotron-wrapper {
+.jumbotron-wrapper,
+.graph-wrapper {
   position: absolute;
   top: 0px;
   // bottom: 0px;
@@ -801,7 +807,14 @@ body {
 
 .drill-down-graph {
   border-bottom: 1px solid $bcolor;
-  padding-bottom: 20px;
+  padding-top: 15px;
+
+  .year-2012,
+  .year-2013,
+  .year-2014,
+  .year-2015 {
+    transition: opacity 150ms;
+  }
 }
 
 .drill-down-graph .crash-month-line {
@@ -811,6 +824,10 @@ body {
   &.flat {
     stroke: #000;
   }
+}
+
+.note  {
+  color: #5B5D5D;
 }
 
 .crash-month-hover-line {
@@ -858,6 +875,11 @@ body {
 
     &:first-child {
       border-bottom: 1px solid $bcolor;
+    }
+
+    &.note {
+      margin-top: 0;
+      padding-top: 0;
     }
   }
 
@@ -916,6 +938,13 @@ body {
     // &:last-child {
     //   border-bottom: none;
     // }
+    &:hover {
+      @include hover-state();
+    }
+
+    &.disabled {
+      opacity: 0.5;
+    }
   }
 
   hr {
@@ -1674,13 +1703,17 @@ background-color:#FFFFFF}
   // border: 1px solid #a0a0a0;
   margin: 10px 0;
   background-color: #EFF5F5;
-  box-shadow: 2px 2px 0px #00FFD8;
+  box-shadow: 2px 2px 2px #00FFD8;
 
   .stat-title {
     font-size: 1.953em;
     margin: 10px 15px;
     border-bottom: solid 1px #a0a0a0;
     cursor: pointer;
+
+    &:hover {
+        @include hover-state();
+    }
   }
 
   .col-md-4 {
@@ -1693,6 +1726,12 @@ background-color:#FFFFFF}
     border-radius: 3px;
     margin-bottom: 10px;
     cursor: pointer;
+
+    &:hover {
+        .stat-count {
+          @include hover-state();
+        }
+    }
 
     p {
       margin: 0;
@@ -1743,7 +1782,7 @@ background-color:#FFFFFF}
     // background-color: #f3eeee;
     // border: solid 2px #fff;
     margin: 10px 15px;
-    box-shadow: 2px 2px 0px #00FFD8;
+    box-shadow: 2px 2px 2px #00FFD8;
     background-color: #EFF5F5;
     border-radius: 5px;
     display: inline-block;
@@ -1850,8 +1889,9 @@ background-color:#FFFFFF}
 
 
 .leaflet-overlay-pane svg {
-  position: relative !important;
+  position: absolute !important;
 }
+
 .area-title {
   font-size: 45px;
   border-bottom: 1px solid #c4caca;
@@ -1891,3 +1931,4 @@ input[type="radio"] {
 .range {
   margin-top: 2px;
 }
+

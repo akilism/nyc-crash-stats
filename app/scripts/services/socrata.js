@@ -58,7 +58,7 @@ var reMapKeys = function (data) {
   return mappedData;
 };
 
-var getPath = function (path) {
+var getPath = function (path, shape) {
   if (path === '/') { return '/api/base/'; }
   return '/api/' + path + '/';
 };
@@ -71,7 +71,7 @@ var getDataWithOptions = function (options, type, $http, $q) {
 
   var config = {
     method: 'GET',
-    url: getPath(type),
+    url: (options.shape) ? getPath('shape') : getPath(type),
     params: options
   };
 
@@ -89,6 +89,7 @@ var getBaseData = function (path, $http, $q) {
 
   var getDefer = function () { $http.get(apiPath).success(
     function(data) {
+      console.log(data);
       deferred.resolve(reMapKeys(data));
     });
 

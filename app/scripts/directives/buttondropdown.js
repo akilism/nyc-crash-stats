@@ -62,7 +62,8 @@ directives.directive('buttonDropdown', ['$location', 'GeoData', function ($locat
           // $('#crashMap').show();
           // $('#factors').hide();
           scope.mapView = !scope.mapView;
-          var type = {type: 'city', year: new Date().getFullYear() };
+          var view = ($location.$$path === '/') ? '/city/0' : $location.$$path;
+          var type = {type: view, year: new Date().getFullYear() };
           scope.$broadcast('loadMap', type);
         };
 

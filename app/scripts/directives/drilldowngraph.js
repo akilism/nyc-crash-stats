@@ -7,12 +7,12 @@ directives.directive('drilldowngraph',['monthFilter', function (monthFilter) {
       scope: {
         'dataset': '='
       },
-      link: function postLink(scope, element, attrs) {
+      link: function postLink($scope, $element, $attrs) {
         var d = new Date();
-        scope.month = d.getMonth();
-        scope.year = d.getFullYear();
-        scope.flatten = false;
-        scope.years = [d.getFullYear()];
+        $scope.month = d.getMonth();
+        $scope.year = d.getFullYear();
+        $scope.flatten = false;
+        $scope.years = [d.getFullYear()];
 
         var getGraphHeight = function (margin) {
           var width = (window.innerWidth/2 > 640) ? Math.round(window.innerWidth/2) : 640;
@@ -71,7 +71,7 @@ directives.directive('drilldowngraph',['monthFilter', function (monthFilter) {
             dateMax = d3.max(groupedByDate, function(d) { return d.date.getMonth(); }),
             dateMin = d3.min(groupedByDate, function(d) { return d.date.getMonth(); }),
             lengthMax = 12,
-            margin = {top: 20, right: 0, bottom: 0, left: (domainMax > 999) ? 50 : 40},
+            margin = {top: 20, right: 0, bottom: 20, left: (domainMax > 999) ? 50 : 40},
             width = getGraphHeight(margin),
             height = Math.round(width/2) - margin.top - margin.bottom,
             count = data.length,
@@ -91,11 +91,11 @@ directives.directive('drilldowngraph',['monthFilter', function (monthFilter) {
           setScaleRange(height - 10, 5);
           x.domain([0, lengthMax]);
 
-          scope.svg = scope.svg || d3.select(el).append('svg');
-          scope.g = scope.g || scope.svg.append('g');
+          $scope.svg = $scope.svg || d3.select(el).append('svg');
+          $scope.g = $scope.g || $scope.svg.append('g');
 
-          var svg = scope.svg;
-          var g = scope.g;
+          var svg = $scope.svg;
+          var g = $scope.g;
 
           svg.attr('width', width + margin.left + margin.right + 6)
           .attr('height', height + margin.top + margin.bottom + 6);
@@ -137,17 +137,17 @@ directives.directive('drilldowngraph',['monthFilter', function (monthFilter) {
             .style('text-anchor', ' end');
           };
 
-          scope.xAxis = scope.xAxis || g.append('g').attr('class', 'x axis').attr('transform','translate(0, ' + (height-10) + ')');
-          scope.yAxis = scope.yAxis || g.append('g').attr('class', 'y axis');
+          $scope.xAxis = $scope.xAxis || g.append('g').attr('class', 'x axis').attr('transform','translate(0, ' + (height-10) + ')');
+          $scope.yAxis = $scope.yAxis || g.append('g').attr('class', 'y axis');
 
-          scope.xAxis
+          $scope.xAxis
           .call(xAxis)
           .selectAll('text')
           .attr('x', 5)
           .attr('y', 10)
           .style('text-anchor', 'start');
 
-          scope.yAxis
+          $scope.yAxis
           .call(yAxis)
           .attr('transform','translate(0, 0)')
           .call(customAxis);
@@ -183,11 +183,22 @@ directives.directive('drilldowngraph',['monthFilter', function (monthFilter) {
             d3Target.on('mouseout', null);
           };
 
+          var dt = new Date();
+          $scope.date = (dt.getMonth() + 1) + '/' + dt.getDate() + '/' + dt.getFullYear();
+
           var showHover = function (d, i) {
             var d3Target = d3.select(d3.event.target);
-            var d3Parent = d3.select(d3.event.target.parentElement);
+            var d3Parent = d3.select(d3.event.target.parent$Element);
             var $$graphHover = $('.crash-graph-hover');
             var dateOptions = {month: 'long', year: 'numeric'};
+            var dt = new Date();
+
+            if(d.date.getMonth() === dt.getMonth() && d.date.getYear() == dt.getYear()) {
+              $$graphHover.find('.note').text('Last Updated: ' + $scope.date);
+              $$graphHover.find('.note').css({display: 'block'});
+            } else {
+              $$graphHover.find('.note').css({display: 'none'});
+            }
             $$graphHover.find('.amount .hover-value').text(numberFormatter(d.totals[0].count));
             $$graphHover.find('.date .hover-value').text(d.date.toLocaleDateString('en-us', dateOptions));
             $$graphHover.css({
@@ -199,15 +210,15 @@ directives.directive('drilldowngraph',['monthFilter', function (monthFilter) {
             d3Target.on('mouseout', removeHover);
           };
 
-          scope.paths = {};
+          $scope.paths = {};
           _.forEach(distinctYears, function(year) {
-            scope.paths[year] = scope.paths[year] || g.append('path');
-            scope.paths[year].attr('d', pathSegment(getYearTotal(groupedByDate, year)))
+            $scope.paths[year] = $scope.paths[year] || g.append('path');
+            $scope.paths[year].attr('d', pathSegment(getYearTotal(groupedByDate, year)))
             .attr('class', 'crash-month-line year-' + year);
             addKeyItem(year);
           });
 
-          // console.log(scope.paths);
+          // console.log($scope.paths);
 
           g.selectAll('circle').remove();
 
@@ -231,42 +242,77 @@ directives.directive('drilldowngraph',['monthFilter', function (monthFilter) {
           lineGraph.exit().remove();
 
           //move the domain to the back so we can fill it with a color.
-          var $$xAxis = $(element).find('.x.axis');
+          var $$xAxis = $($element).find('.x.axis');
           var $$xDomain = $$xAxis.children('.domain').detach();
           $$xDomain.prependTo($$xAxis);
           $$xDomain = null;
           $$xAxis = null;
         };
 
-        var addKeyItem = function(year) {
-          var $$key = element.find('.drill-down-key');
-          var $$keyForYear = $$key.children('[year="' + year + '"]');
-          if ($$keyForYear.length === 0) {
-            $$key.append('<div year="' + year + '" class="key-item year-' + year + '"><hr>' + year + '</div>');
+        $scope.years = {'2012': true, '2013': true, '2014': true, '2015': true};
+
+        var toggleYear = function(evt) {
+          var year = evt.currentTarget.attributes.year.value;
+          $scope.years[year] = !$scope.years[year];
+          if($scope.years[year]) {
+            $(evt.currentTarget).removeClass('disabled');
+            $('.drill-down-graph .year-'+year).css({opacity: 1.0});
+            $('.drill-down-graph .year-'+year).css({opacity: 1.0});
+            $('.drill-down-graph .year-'+year).css({opacity: 1.0});
+          } else {
+            $(evt.currentTarget).addClass('disabled');
+            $('.crash-month-line.year-'+year).css({opacity: 0});
+            $('.drill-down-graph .year-'+year).css({opacity: 0});
+            $('.drill-down-graph .year-'+year).css({opacity: 0});
           }
         };
 
-        var clearKey = function () {
-          element.find('.drill-down-key').html('');
+        var addKeyItem = function(year) {
+          //TODO: toggle show and hide year when clicking on key
+          //grey out when hidden.
+          var $$key = $element.find('.drill-down-key');
+          var $$keyForYear = $$key.children('[year="' + year + '"]');
+          if ($$keyForYear.length === 0) {
+            $$key.append('<div year="' + year + '" class="key-item year-' + year + '"><hr>' + year + '</div>')
+            $('.key-item.year-'+year).on('click', function(evt) {
+            evt.stopImmediatePropagation();
+            toggleYear(evt);
+          });
+          }
+          // $('.drill-down-key').children();
         };
 
-        if(!_.isEmpty(scope.dataset)) {
-          setGraph(scope.dataset, $(element).find('.drill-down-graph')[0]);
+        var clearKey = function () {
+          $element.find('.drill-down-key').html('');
+        };
+
+        if(!_.isEmpty($scope.dataset)) {
+          setGraph($scope.dataset, $($element).find('.drill-down-graph')[0]);
         }
 
         var hideGraph = function(evt) {
           $('.stat-graph').removeClass('showy');
-          $('.stat-graph').off('click', hideGraph);
+          $('.graph-wrapper').css({display:'none'});
+          $('.graph-wrapper').off('click', hideGraph);
+          $('.key-item').removeClass('disabled');
+          _.map($scope.years, function(v, k) {
+            return true;
+          });
         };
 
-        scope.$watch('dataset', function (newVal, oldVal) {
-          if(!_.isEmpty(scope.dataset)) {
-            var keys = _.keys(scope.dataset);
-            var title = _.keys(scope.dataset[keys[0]].totals);
-            scope.title = title[0];
-            setGraph(scope.dataset, $(element).find('.drill-down-graph')[0]);
+        $element.find('.drill-down-key').on('click', function(evt) {
+          evt.stopImmediatePropagation();
+        });
+
+        $scope.$watch('dataset', function (newVal, oldVal) {
+          if(!_.isEmpty($scope.dataset)) {
+            var keys = _.keys($scope.dataset);
+            var title = _.keys($scope.dataset[keys[0]].totals);
+            $scope.title = title[0];
+            setGraph($scope.dataset, $($element).find('.drill-down-graph')[0]);
             $('.stat-graph').addClass('showy');
-            $('.stat-graph').on('click', hideGraph);
+            $('.graph-wrapper').css({display:'block'});
+            $('.graph-wrapper').on('click', hideGraph);
           }
         });
       }

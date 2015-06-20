@@ -1,9 +1,13 @@
-<div class="stat-graph" id="statGraph">
-  <h2 class="graph-title">{{title | statName}}</h2>
-  <div class="drill-down-key clearfix"></div>
-  <div class="drill-down-graph"></div>
-  <div class="crash-graph-hover">
-    <p class="date"><span class="hover-label">Date:</span> <span class="hover-value"></span></p>
-    <p class="amount"><span class="hover-label">Total:</span> <span class="hover-value"></span></p>
+<div class="graph-wrapper">
+  <div class="stat-graph" id="statGraph">
+    <h2 class="graph-title">{{title | statName}}</h2>
+    <div class="drill-down-key clearfix"></div>
+    <div class="drill-down-graph"></div>
+    <p class="note">Last updated: {{date}}</p>
+    <div class="crash-graph-hover">
+      <p class="date"><span class="hover-label">Date:</span> <span class="hover-value"></span></p>
+      <p class="amount"><span class="hover-label">Total:</span> <span class="hover-value"></span></p>
+      <p class="note"></p>
+    </div>
   </div>
 </div>

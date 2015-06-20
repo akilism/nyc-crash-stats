@@ -16,7 +16,7 @@ directives.directive('crashMap', ['$location', '$window', 'GeoData', 'Socrata', 
     };
   }]);
 
-directives.crashMap = function ($scope, $element, $attrs) {
+directives.crashMap = function ($scope, $element, $attrs, $location, Socrata) {
   var eventSource;
 
   var onHoverCrash = function (layer) {
@@ -52,6 +52,7 @@ directives.crashMap = function ($scope, $element, $attrs) {
   // Setup the geojson features. Runs setFeature for each feature.
   var buildMapFeatures = function (geoJsonData, layer) {
     _.forEach(geoJsonData.features, function (feature) {
+      // console.log(feature);
       var geo = L.geoJson(feature, {
         onEachFeature: setFeature
       });
@@ -100,19 +101,25 @@ directives.crashMap = function ($scope, $element, $attrs) {
       buildMapFeatures(geoJsonData, $scope.layers[type]);
     }
 
+  var bounds = $scope.layers[type].getBounds();
    $scope.layers[type].addTo($scope.crashView);
+   // $scope.crashView.fitBounds(bounds);
   };
 
-  var onViewReset = function (event) { drawCrashes(); };
+  var onViewReset = function (event) {
+    // console.log($scope.crashView.getZoom());
+    drawCrashes();
+    // reboundMap($scope.crashView.getZoom());
+  };
 
    // Set the crashes on the map. Zoom and center on bounds.
   // var setMap = function (locations, shapes, zoom, rebound) {
-  var setMap = function (shapes, zoom, rebound) {
-    if(shapes && !$scope.shapeSet) {
-      displayLayer({'features': shapes}, 'active');
-      $scope.shapeSet = true;
-    }
-  };
+  // var setMap = function (shapes, zoom, rebound) {
+  //   if(shapes && !$scope.shapeSet) {
+  //     displayLayer({'features': shapes}, 'active');
+  //     $scope.shapeSet = true;
+  //   }
+  // };
 
   var reboundMap = function(zoom) {
     // $scope.crashView.eachLayer(function(layer) {
@@ -122,25 +129,9 @@ directives.crashMap = function ($scope, $element, $attrs) {
     var crashLocations = L.geoJson(_.toArray($scope.distinctLocations));
     // crashLocations.addTo($scope.crashView);
     var bounds = crashLocations.getBounds();
-    $scope.crashView.setView(bounds.getCenter(), zoom);
+    // $scope.crashView.setView(bounds.getCenter(), zoom);
+    $scope.crashView.fitBounds(bounds);
     // console.log(bounds);
-  };
-
-
-  var setMapTiles = function () {
-    var tiles = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
-      attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
-      maxZoom: 16,
-      minZoom: 8
-    });
-
-    // var tiles = L.tileLayer('http://openmapsurfer.uni-hd.de/tiles/roadsg/x={x}&y={y}&z={z}', {
-    //     attribution: 'Imagery from <a href="http://giscience.uni-hd.de/">GIScience Research Group @ University of Heidelberg</a> &mdash; Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
-    //     minZoom: 11,
-    //     maxZoom: 14
-    //   });
-
-    tiles.addTo($scope.crashView);
   };
 
   var getLocationClasses = function(location) {
@@ -176,19 +167,19 @@ directives.crashMap = function ($scope, $element, $attrs) {
 
     var domainMin = 1;
 
-    var crashScale = d3.scale.sqrt().domain([domainMin, domainMax]).range([3, 25]);
+    var crashScale = d3.scale.sqrt().domain([domainMin, domainMax]).range([4, 25]);
 
 
     var bounds = path.bounds({type: 'FeatureCollection', features: locations}),
         topLeft = bounds[0],
         bottomRight = bounds[1];
 
-    svg.attr('width', bottomRight[0] - topLeft[0])
-      .attr('height', bottomRight[1] - topLeft[1])
-      .style('left', topLeft[0] + 'px')
-      .style('top', topLeft[1] + 'px');
+    // svg.attr('width', (bottomRight[0] - topLeft[0]) + 150)
+    //   .attr('height', (bottomRight[1] - topLeft[1]) + 150);
+      // .style('left', topLeft[0] + 'px')
+      // .style('top', topLeft[1] + 'px');
 
-    g.attr('transform', 'translate(' + -topLeft[0] + ',' + -topLeft[1] + ')');
+    // g.attr('transform', 'translate(' + -topLeft[0] + ',' + -topLeft[1] + ')');
 
     var crash = g.selectAll('path')
       .data(locations, function(d) {
@@ -204,8 +195,7 @@ directives.crashMap = function ($scope, $element, $attrs) {
       //   return '#00000';
       // });
 
-    var crashUpdate = crash.transition()
-      .attr('d', path)
+    var crashUpdate = crash.attr('d', path)
       .attr('class', function(d) {
         return getLocationClasses(d).join(' ');
       });
@@ -217,9 +207,13 @@ directives.crashMap = function ($scope, $element, $attrs) {
     $scope.drawing = false;
   };
 
-  var getCrashKey = function (crash) {
+  var getCrashKey = function (crash, swap) {
     var re = / /g;
-    return (crash.on_street_name + crash.cross_street_name + crash.zip_code).replace(re, '');
+    if(swap) {
+      return (crash.on_street_name + crash.cross_street_name + crash.zip_code).replace(re, '');
+    } else {
+      return (crash.cross_street_name + crash.on_street_name + crash.zip_code).replace(re, '');
+    }
   };
 
   var buildLocation = function(location) {
@@ -232,7 +226,12 @@ directives.crashMap = function ($scope, $element, $attrs) {
   var setDistinctLocations = function (newCrashes) {
     // console.log('setDistinctLocations start:', new Date());
     _.forEach(_.filter(newCrashes, function(crash) { return crash.location.longitude; }), function (crash) {
-      var crashKey = getCrashKey(crash);
+      var crashKey = getCrashKey(crash, false);
+      var crashKeySwap = getCrashKey(crash, true);
+
+      if(!$scope.distinctLocations.hasOwnProperty(crashKey) && $scope.distinctLocations.hasOwnProperty(crashKeySwap)) {
+        crashKey = crashKeySwap;
+      };
 
       if(!$scope.distinctLocations.hasOwnProperty(crashKey)) {
         $scope.distinctLocations[crashKey] = buildLocation(crash.location);
@@ -255,12 +254,12 @@ directives.crashMap = function ($scope, $element, $attrs) {
       }
 
       $scope.distinctLocations[crashKey].properties.crashIds.push(crash.unique_key);
-      if (crash.contributing_factor_vehicle_1 !== '' && $scope.distinctLocations[crashKey].properties.factors.indexOf(crash.contributing_factor_vehicle_1) < 0) {
-        $scope.distinctLocations[crashKey].properties.factors.push(crash.contributing_factor_vehicle_1);
-      }
-      if (crash.contributing_factor_vehicle_2 !== '' && $scope.distinctLocations[crashKey].properties.factors.indexOf(crash.contributing_factor_vehicle_2) < 0) {
-        $scope.distinctLocations[crashKey].properties.factors.push(crash.contributing_factor_vehicle_2);
-      }
+      // if (crash.contributing_factor_vehicle_1 !== '' && $scope.distinctLocations[crashKey].properties.factors.indexOf(crash.contributing_factor_vehicle_1) < 0) {
+      //   $scope.distinctLocations[crashKey].properties.factors.push(crash.contributing_factor_vehicle_1);
+      // }
+      // if (crash.contributing_factor_vehicle_2 !== '' && $scope.distinctLocations[crashKey].properties.factors.indexOf(crash.contributing_factor_vehicle_2) < 0) {
+      //   $scope.distinctLocations[crashKey].properties.factors.push(crash.contributing_factor_vehicle_2);
+      // }
       if (crash.number_of_persons_killed > 0) {
         $scope.distinctLocations[crashKey].properties.number_of_persons_killed += crash.number_of_persons_killed;
         $scope.distinctLocations[crashKey].properties.killed = true;
@@ -297,18 +296,50 @@ directives.crashMap = function ($scope, $element, $attrs) {
     // console.log('setDistinctLocations end:', new Date());
   };
 
+  var getTransformValues = _.compose(function(a) { return a.splice(4); },
+  function(a) { return a.map(function(i) { return parseInt(i, 10) * -1; }); },
+  function(s) { return s.split(',');},
+  function(s) { return s.replace(' ','');},
+  function(s) { return s.replace(')','');});
+
   var setMap = function() {
-    if(!$scope.mapSet) {
-      $scope.crashView = L.map(document.querySelector('.crash-data-view-map'), {center: [40.7250, -74.00], zoom: $scope.defaultZoom});
-      $scope.crashView.addLayer(L.tileLayer('http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png',
-        { attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-        maxZoom: 16,
-        minZoom: 11 }));
-      $scope.svg = $scope.svg || d3.select($scope.crashView.getPanes().overlayPane).append('svg');
-      $scope.g = $scope.g || $scope.svg.append('g').attr('class', 'leaflet-zoom-hide');
-      $scope.crashView.on('viewreset', onViewReset);
-    }
-  }
+    var $map = $('.crash-data-view-map');
+    $scope.mapSet = true;
+    $scope.crashView = L.map(document.querySelector('.crash-data-view-map'), {center: [40.7250, -74.00], zoom: $scope.defaultZoom});
+    $scope.crashView.addLayer(L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 16,
+      minZoom: 11,
+      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }));
+
+
+
+    $scope.svg = $scope.svg || d3.select($scope.crashView.getPanes().overlayPane).append('svg');
+    $scope.svg.attr('width', $map.width() + 100)
+     .attr('height', $map.height() + 100)
+     .attr('style','top:0px; left:0px;');
+    // $($scope.svg[0]).css({top:position.y + 'px', left: position.x + 'px'});
+    $scope.g = $scope.g || $scope.svg.append('g').attr('class', 'leaflet-zoom-hide');
+    $scope.crashView.on('viewreset', onViewReset)
+    // .on('movestart', function(evt) {
+    //   console.log(evt);
+    // })
+    .on('moveend', function(evt) {
+      // if(evt.target._handlers[0].hasOwnProperty('_positions')) {
+      //   var position = evt.target._handlers[0]._positions[evt.target._handlers[0]._positions.length-1];
+      //   // console.log($scope.svg);
+      //   // $('.leaflet-map-pane').css('transform')
+      //   var $svg = $($scope.svg[0]);
+      //   var transfrm = $('.leaflet-zoom-animated').css('transform');
+      //   var tVals = getTransformValues(transfrm);
+      //   $svg.css({'transform': transfrm});
+      //   $svg.find('g').css({'transform':'matrix(1, 0, 0, 1, ' + tVals[0] + ', ' + tVals[1] + ')'});
+      //   // $scope.svg.attr('style', 'top:' + position.y + 'px; left:' + position.x + 'px');
+      //     //g = transform: translate3d(pos.x + 'px', pos.y + 'px', 0px);
+      // }
+
+    });
+  };
 
   var handleCrashEvent = function (event) {
     // console.log('crash event:', event);
@@ -316,13 +347,15 @@ directives.crashMap = function ($scope, $element, $attrs) {
     // console.log('crash:', crash);
     $scope.unloadedCrashes.push(crash);
 
-    if(!$scope.drawing && $scope.unloadedCrashes.length > 200) {
-
+    if(!$scope.drawing && $scope.unloadedCrashes.length > 100) {
+      if(!$scope.mapSet){ setMap(); }
       setDistinctLocations($scope.unloadedCrashes);
-      setMap();
       $scope.drawing = true;
-      $scope.mapSet = true;
+
       drawCrashes();
+      // if($location.$$path !== '/') {
+      //   reboundMap(13);
+      // }
       // reboundMap($scope.defaultZoom);
       $scope.crashes = $scope.crashes.concat($scope.unloadedCrashes);
       $scope.unloadedCrashes = [];
@@ -335,7 +368,13 @@ directives.crashMap = function ($scope, $element, $attrs) {
     if($scope.unloadedCrashes.length > 0) {
       setDistinctLocations($scope.unloadedCrashes);
       drawCrashes();
-      // reboundMap($scope.defaultZoom);
+      reboundMap(10);
+      // if($location.$$path.indexOf('borough') !== -1) {
+      //   reboundMap($scope.defaultZoom);
+      // } else if($location.$$path !== '/') {
+      //   reboundMap(13);
+      // }
+
       $scope.crashes = $scope.crashes.concat($scope.unloadedCrashes);
       $scope.unloadedCrashes = [];
     }
@@ -344,13 +383,30 @@ directives.crashMap = function ($scope, $element, $attrs) {
 
   var getCrashes = function (type) {
     console.log('opening sse connection', new Date());
-    eventSource = new EventSource('/sse/crashes/city/0/2015');
+    var sourceUrl = '/sse/crashes' + type.type + '/' + type.year;
+    // console.log(sourceUrl);
+    eventSource = new EventSource(sourceUrl);
     eventSource.onmessage = function(evt) {
-      console.log('untyped event: ', evt);
+      // console.log('untyped event: ', evt);
     };
     eventSource.addEventListener('crash', handleCrashEvent);
     eventSource.addEventListener('close', handleCloseEvent);
   };
+
+  var getShape = function(type) {
+    if (type.type == '/city/0') { return []; }
+    var typeParts = type.type.split('/');
+    var options = {
+      'type': typeParts[1],
+      'value': typeParts[2],
+      'shape': true
+    };
+    $scope.type = typeParts[2];
+    return Socrata(options, 'featureTotal').then(function(shapes) {
+      // if(!$scope.mapSet){ setMap(); }
+      displayLayer({'features': shapes}, typeParts[1]);
+    });
+  }
 
   $scope.type;
   $scope.crashes = [];
@@ -360,13 +416,20 @@ directives.crashMap = function ($scope, $element, $attrs) {
   $scope.shapeSet = false;
   $scope.mapSet = false;
 
+
   $scope.$on('loadMap', function (event, type) {
+    console.log($scope.type, type);
     if(!$scope.type || $scope.type.type !== type.type || $scope.type.year !== type.year) {
+      setMap();
       $scope.type = type;
+      $scope.crashes = [];
+      $scope.distinctLocations = {};
+      $scope.unloadedCrashes = [];
       getCrashes(type);
+      getShape(type);
     }
   });
 
 };
 
-directives.crashMap.$inject = ['$scope', '$element', '$attrs'];
+directives.crashMap.$inject = ['$scope', '$element', '$attrs', '$location', 'Socrata'];
